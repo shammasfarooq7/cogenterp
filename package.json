@@ -3,11 +3,17 @@
     "lerna": "^6.3.0"
   },
   "name": "cogenterp",
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/@nestjs",
+      "**/@nestjs/**"
+    ]
+  },
   "version": "1.0.0",
-  "private":true,
+  "private": true,
   "scripts": {
     "start": "lerna run start"
   }
