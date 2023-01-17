@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "@types/passport-local": "^1.0.35",
     "lerna": "^6.3.0"
   },
   "name": "cogenterp",
@@ -16,5 +17,10 @@
   "private": true,
   "scripts": {
     "start": "lerna run start"
+  },
+  "dependencies": {
+    "@nestjs/passport": "^9.0.0",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0"
   }
 }

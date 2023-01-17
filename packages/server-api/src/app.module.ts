@@ -3,6 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { GraphQLModule } from '@nestjs/graphql';
 import { dataSourceOptions } from './data-source-options';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './users/auth/auth.module';
 const { entities, migrations, ...options } = dataSourceOptions;
 
 @Module({
@@ -14,7 +16,9 @@ const { entities, migrations, ...options } = dataSourceOptions;
     driver: ApolloDriver,
     autoSchemaFile: './src/schema.gql',
     playground: true,
-  })
+  }),
+  UsersModule,
+  AuthModule
   ],
   providers: [],
 })
