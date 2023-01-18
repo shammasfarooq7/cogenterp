@@ -33,13 +33,13 @@ let AuthResolver = class AuthResolver {
     }
 };
 __decorate([
-    (0, graphql_1.Mutation)(() => login_response_1.LoginResponse),
     (0, common_1.UseGuards)(gql_auth_guard_1.GqlAuthGuard),
+    (0, graphql_1.Mutation)(() => login_response_1.LoginResponse),
     __param(0, (0, graphql_1.Args)('loginUserInput')),
     __param(1, (0, graphql_1.Context)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [login_user_input_1.LoginUserInput, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AuthResolver.prototype, "login", null);
 __decorate([
     (0, graphql_1.Mutation)(() => user_entity_1.User),

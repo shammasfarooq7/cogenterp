@@ -11,9 +11,9 @@ import { CreateUserInput } from '../dto/create-user.input';
 export class AuthResolver {
   constructor(private authService: AuthService){}
 
-  @Mutation(() => LoginResponse)
   @UseGuards(GqlAuthGuard)
-  login(@Args('loginUserInput') loginUserInput: LoginUserInput, @Context() context){
+  @Mutation(() => LoginResponse)
+  login(@Args('loginUserInput') loginUserInput: LoginUserInput, @Context() context): Promise<LoginResponse>{
     return this.authService.login(context.user);
   }
 

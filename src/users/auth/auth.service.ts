@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt'
 import { CreateUserInput } from '../dto/create-user.input';
 import * as bcrypt from 'bcrypt';
+import { LoginResponse } from '../dto/login-response';
 
 @Injectable()
 export class AuthService {
@@ -23,10 +24,9 @@ export class AuthService {
     }
   }
 
-  async login(user: User){
+  async login(user: User): Promise<LoginResponse>{
     return {
-      access_token: this.jwtService.sign({email: user.email, sub: user.id}),
-      user,
+      access_token: this.jwtService.sign({email: user.email, sub: user.id})
     }
   }
 

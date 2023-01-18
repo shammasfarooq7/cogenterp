@@ -50,8 +50,7 @@ let AuthService = class AuthService {
     }
     async login(user) {
         return {
-            access_token: this.jwtService.sign({ email: user.email, sub: user.id }),
-            user,
+            access_token: this.jwtService.sign({ email: user.email, sub: user.id })
         };
     }
     async signup(createUserInput) {

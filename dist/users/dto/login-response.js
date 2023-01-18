@@ -11,17 +11,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LoginResponse = void 0;
 const graphql_1 = require("@nestjs/graphql");
-const user_entity_1 = require("../entities/user.entity");
 (0, graphql_1.ObjectType)();
 class LoginResponse {
 }
 __decorate([
-    (0, graphql_1.Field)(),
+    (0, graphql_1.Field)({ nullable: true }),
     __metadata("design:type", String)
 ], LoginResponse.prototype, "access_token", void 0);
-__decorate([
-    (0, graphql_1.Field)(() => user_entity_1.User),
-    __metadata("design:type", user_entity_1.User)
-], LoginResponse.prototype, "user", void 0);
 exports.LoginResponse = LoginResponse;
 //# sourceMappingURL=login-response.js.map

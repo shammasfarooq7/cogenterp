@@ -3,9 +3,6 @@ import { User } from "../entities/user.entity";
 
 ObjectType()
 export class LoginResponse{
-  @Field()
-  access_token: string;
-
-  @Field(() => User)
-  user: User
+  @Field({nullable: true})
+  access_token?: string;
 }
