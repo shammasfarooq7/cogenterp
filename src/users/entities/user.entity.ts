@@ -1,8 +1,9 @@
 import { IsPhoneNumber } from '@nestjs/class-validator';
 import { ObjectType, Field } from '@nestjs/graphql';
-import { Column, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @ObjectType()
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid', { name: 'id' })
   @Field(() => String)
