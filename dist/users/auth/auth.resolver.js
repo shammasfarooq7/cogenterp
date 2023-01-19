@@ -15,38 +15,34 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthResolver = void 0;
 const graphql_1 = require("@nestjs/graphql");
 const auth_service_1 = require("./auth.service");
-const login_response_1 = require("../dto/login-response");
-const login_user_input_1 = require("../dto/login-user-input");
-const gql_auth_guard_1 = require("./gql-auth.guard");
-const common_1 = require("@nestjs/common");
 const user_entity_1 = require("../entities/user.entity");
 const create_user_input_1 = require("../dto/create-user.input");
+const login_response_1 = require("../dto/login-response");
+const login_user_input_1 = require("../dto/login-user-input");
 let AuthResolver = class AuthResolver {
     constructor(authService) {
         this.authService = authService;
     }
-    login(loginUserInput, context) {
-        return this.authService.login(context.user);
+    async signin(loginUserInput) {
+        return await this.authService.login(loginUserInput);
     }
-    signup(createUserInput) {
-        return this.authService.signup(createUserInput);
+    async signup(createUserInput) {
+        return await this.authService.signup(createUserInput);
     }
 };
 __decorate([
-    (0, common_1.UseGuards)(gql_auth_guard_1.GqlAuthGuard),
     (0, graphql_1.Mutation)(() => login_response_1.LoginResponse),
     __param(0, (0, graphql_1.Args)('loginUserInput')),
-    __param(1, (0, graphql_1.Context)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [login_user_input_1.LoginUserInput, Object]),
+    __metadata("design:paramtypes", [login_user_input_1.LoginUserInput]),
     __metadata("design:returntype", Promise)
-], AuthResolver.prototype, "login", null);
+], AuthResolver.prototype, "signin", null);
 __decorate([
     (0, graphql_1.Mutation)(() => user_entity_1.User),
     __param(0, (0, graphql_1.Args)('createUserInput')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_user_input_1.CreateUserInput]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AuthResolver.prototype, "signup", null);
 AuthResolver = __decorate([
     (0, graphql_1.Resolver)(),

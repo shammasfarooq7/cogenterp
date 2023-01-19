@@ -48,9 +48,11 @@ let AuthService = class AuthService {
             throw new common_1.InternalServerErrorException(exception);
         }
     }
-    async login(user) {
+    async login(loginUserInput) {
+        const user = await this.userRepo.findOneBy({ email: loginUserInput.email });
+        const token = await this.jwtService.sign({ email: user.email, sub: user.id });
         return {
-            access_token: this.jwtService.sign({ email: user.email, sub: user.id })
+            accessToken: token
         };
     }
     async signup(createUserInput) {

@@ -6,6 +6,7 @@ import { JwtService } from '@nestjs/jwt'
 import { CreateUserInput } from '../dto/create-user.input';
 import * as bcrypt from 'bcrypt';
 import { LoginResponse } from '../dto/login-response';
+import { LoginUserInput } from '../dto/login-user-input';
 
 @Injectable()
 export class AuthService {
@@ -24,10 +25,12 @@ export class AuthService {
     }
   }
 
-  async login(user: User): Promise<LoginResponse>{
+  async login(loginUserInput: LoginUserInput): Promise<LoginResponse>{
+    const user = await this.userRepo.findOneBy({email: loginUserInput.email})
+    const token = await this.jwtService.sign({email: user.email, sub: user.id})
     return {
-      access_token: this.jwtService.sign({email: user.email, sub: user.id})
-    }
+      accessToken: token
+    };
   }
 
   async signup(createUserInput: CreateUserInput){

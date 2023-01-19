@@ -13,8 +13,7 @@ import { User } from '../entities/user.entity';
   imports: [PassportModule, UsersModule, JwtModule.register({
     signOptions: {expiresIn: process.env.JWT_EXPIRY},
     secret: process.env.JWT_SECRET
-  }),
-  TypeOrmModule.forFeature([User])],
+  }), TypeOrmModule.forFeature([User])],
   providers: [AuthService, AuthResolver, LocalStrategy, JwtStrategy]
 })
 export class AuthModule {}

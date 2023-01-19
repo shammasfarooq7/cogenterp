@@ -24,8 +24,7 @@ AuthModule = __decorate([
         imports: [passport_1.PassportModule, users_module_1.UsersModule, jwt_1.JwtModule.register({
                 signOptions: { expiresIn: process.env.JWT_EXPIRY },
                 secret: process.env.JWT_SECRET
-            }),
-            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User])],
+            }), typeorm_1.TypeOrmModule.forFeature([user_entity_1.User])],
         providers: [auth_service_1.AuthService, auth_resolver_1.AuthResolver, local_strategy_1.LocalStrategy, jwt_strategy_1.JwtStrategy]
     })
 ], AuthModule);

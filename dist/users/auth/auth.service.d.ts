@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserInput } from '../dto/create-user.input';
 import { LoginResponse } from '../dto/login-response';
+import { LoginUserInput } from '../dto/login-user-input';
 export declare class AuthService {
     private userRepo;
     private jwtService;
@@ -14,7 +15,7 @@ export declare class AuthService {
         createdAt: Date;
         updatedAt: Date;
     }>;
-    login(user: User): Promise<LoginResponse>;
+    login(loginUserInput: LoginUserInput): Promise<LoginResponse>;
     signup(createUserInput: CreateUserInput): Promise<{
         email: string;
         password: string;
