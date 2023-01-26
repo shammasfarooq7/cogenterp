@@ -38,7 +38,7 @@ let AuthService = class AuthService {
     async validateUser(email, pass) {
         try {
             const user = await this.userRepo.findOneBy({ email: email.trim() });
-            if (user || bcrypt.compareSync(pass, user.password)) {
+            if (user && bcrypt.compareSync(pass, user.password)) {
                 const { password } = user, result = __rest(user, ["password"]);
                 return result;
             }

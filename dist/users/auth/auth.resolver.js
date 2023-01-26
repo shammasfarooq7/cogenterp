@@ -19,6 +19,8 @@ const user_entity_1 = require("../entities/user.entity");
 const create_user_input_1 = require("../dto/create-user.input");
 const login_response_1 = require("../dto/login-response");
 const login_user_input_1 = require("../dto/login-user-input");
+const gql_auth_guard_1 = require("./gql-auth.guard");
+const common_1 = require("@nestjs/common");
 let AuthResolver = class AuthResolver {
     constructor(authService) {
         this.authService = authService;
@@ -31,6 +33,7 @@ let AuthResolver = class AuthResolver {
     }
 };
 __decorate([
+    (0, common_1.UseGuards)(gql_auth_guard_1.GqlAuthGuard),
     (0, graphql_1.Mutation)(() => login_response_1.LoginResponse),
     __param(0, (0, graphql_1.Args)('loginUserInput')),
     __metadata("design:type", Function),
