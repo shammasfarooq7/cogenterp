@@ -10,7 +10,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 
 @Module({
-  imports: [PassportModule, UsersModule, JwtModule.register({
+  imports: [PassportModule.register({
+    defaultStrategy:"jwt"
+  }), UsersModule, JwtModule.register({
     signOptions: {expiresIn: process.env.JWT_EXPIRY},
     secret: process.env.JWT_SECRET
   }), TypeOrmModule.forFeature([User])],
