@@ -26,10 +26,14 @@ export class UsersResolver {
   //   return this.usersService.update(updateUserInput.id, updateUserInput);
   // }
 
+  @Mutation(() => User)
+  async createuser(@Args('createUserInput') createUserInput: CreateUserInput): Promise<User>{
+    return await this.usersService.create(createUserInput);
+  }
 
 
   @Mutation(() => User)
-  removeUser(@Args('id', { type: () => Int }) id: number) {
-    return this.usersService.remove(id);
+  async removeUser(@Args('id', { type: () => Int }) id: number) {
+    return await this.usersService.remove(id);
   }
 }

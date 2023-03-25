@@ -5,6 +5,8 @@ import { dataSourceOptions } from './data-source-options';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { AuthModule } from './users/auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './users/roles.guard';
 const { entities, migrations, ...options } = dataSourceOptions;
 
 @Module({
@@ -20,6 +22,11 @@ const { entities, migrations, ...options } = dataSourceOptions;
   UsersModule,
   AuthModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    }
+  ],
 })
 export class AppModule {}

@@ -25,6 +25,8 @@ const data_source_options_1 = require("./data-source-options");
 const apollo_1 = require("@nestjs/apollo");
 const auth_module_1 = require("./users/auth/auth.module");
 const users_module_1 = require("./users/users.module");
+const core_1 = require("@nestjs/core");
+const roles_guard_1 = require("./users/roles.guard");
 const { entities, migrations } = data_source_options_1.dataSourceOptions, options = __rest(data_source_options_1.dataSourceOptions, ["entities", "migrations"]);
 let AppModule = class AppModule {
 };
@@ -38,7 +40,12 @@ AppModule = __decorate([
             }),
             users_module_1.UsersModule,
             auth_module_1.AuthModule,],
-        providers: [],
+        providers: [
+            {
+                provide: core_1.APP_GUARD,
+                useClass: roles_guard_1.RolesGuard,
+            }
+        ],
     })
 ], AppModule);
 exports.AppModule = AppModule;

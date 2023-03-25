@@ -12,50 +12,23 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UsersService = void 0;
+exports.RoleService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
+const role_entity_1 = require("./entities/role.entity");
 const typeorm_2 = require("typeorm");
-const user_entity_1 = require("./entities/user.entity");
-let UsersService = class UsersService {
-    constructor(userRepo) {
-        this.userRepo = userRepo;
+let RoleService = class RoleService {
+    constructor(roleRepo) {
+        this.roleRepo = roleRepo;
     }
-    async getAllUsers() {
-        try {
-            return await this.userRepo.find();
-        }
-        catch (error) {
-            throw new common_1.InternalServerErrorException(error);
-        }
-    }
-    async findById(id) {
-        try {
-            return await this.userRepo.findOneBy({ id });
-        }
-        catch (exception) {
-            throw new common_1.InternalServerErrorException(exception);
-        }
-    }
-    async findByEmail(email) {
-        try {
-            return await this.userRepo.findOneBy({ email });
-        }
-        catch (exception) {
-            throw new common_1.InternalServerErrorException(exception);
-        }
-    }
-    update(id, updateUserInput) {
-        return `This action updates a #${id} user`;
-    }
-    remove(id) {
-        return `This action removes a #${id} user`;
+    async findByType(role) {
+        return await this.roleRepo.findOneBy({ role });
     }
 };
-UsersService = __decorate([
+RoleService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
+    __param(0, (0, typeorm_1.InjectRepository)(role_entity_1.Role)),
     __metadata("design:paramtypes", [typeorm_2.Repository])
-], UsersService);
-exports.UsersService = UsersService;
-//# sourceMappingURL=users.service.js.map
+], RoleService);
+exports.RoleService = RoleService;
+//# sourceMappingURL=role.service.js.map

@@ -30,10 +30,13 @@ const user_entity_1 = require("../entities/user.entity");
 const typeorm_2 = require("typeorm");
 const jwt_1 = require("@nestjs/jwt");
 const bcrypt = require("bcrypt");
+const role_service_1 = require("../role.service");
+const role_entity_1 = require("../entities/role.entity");
 let AuthService = class AuthService {
-    constructor(userRepo, jwtService) {
+    constructor(userRepo, jwtService, roleService) {
         this.userRepo = userRepo;
         this.jwtService = jwtService;
+        this.roleService = roleService;
     }
     async validateUser(email, pass) {
         try {
@@ -52,16 +55,20 @@ let AuthService = class AuthService {
         const user = await this.userRepo.findOneBy({ email: loginUserInput.email });
         const token = await this.jwtService.sign({ email: user.email, sub: user.id });
         return {
-            accessToken: token
+            accessToken: token,
+            roles: user.roles,
         };
     }
     async signup(createUserInput) {
         try {
             const user = await this.userRepo.findOneBy({ email: createUserInput.email });
+            const roleType = role_entity_1.UserRole.RESOURCE;
+            const role = await this.roleService.findByType(roleType);
+            const password = createUserInput.password || createUserInput.email;
             if (user) {
                 throw new common_1.ConflictException('User already exists');
             }
-            const newUser = await this.userRepo.save(Object.assign({}, createUserInput));
+            const newUser = await this.userRepo.save(Object.assign(Object.assign({}, createUserInput), { password, roles: [role] }));
             return newUser;
         }
         catch (exception) {
@@ -72,7 +79,7 @@ let AuthService = class AuthService {
 AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
-    __metadata("design:paramtypes", [typeorm_2.Repository, jwt_1.JwtService])
+    __metadata("design:paramtypes", [typeorm_2.Repository, jwt_1.JwtService, role_service_1.RoleService])
 ], AuthService);
 exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map

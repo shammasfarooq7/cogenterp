@@ -9,29 +9,29 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LocalStrategy = void 0;
-const passport_1 = require("@nestjs/passport");
-const passport_local_1 = require("passport-local");
-const auth_service_1 = require("./auth.service");
+exports.RolesGuard = void 0;
 const common_1 = require("@nestjs/common");
-let LocalStrategy = class LocalStrategy extends (0, passport_1.PassportStrategy)(passport_local_1.Strategy) {
-    constructor(authService) {
-        super({
-            usernameField: 'email'
-        });
-        this.authService = authService;
+const core_1 = require("@nestjs/core");
+const graphql_1 = require("@nestjs/graphql");
+let RolesGuard = class RolesGuard {
+    constructor(reflector) {
+        this.reflector = reflector;
     }
-    async validate(username, password) {
-        const user = await this.authService.validateUser(username, password);
-        if (!user) {
-            throw new common_1.UnauthorizedException();
+    canActivate(context) {
+        const requiredRoles = this.reflector.getAllAndOverride('roles', [
+            context.getHandler(),
+            context.getClass(),
+        ]);
+        if (!requiredRoles) {
+            return true;
         }
-        return user;
+        const user = graphql_1.GqlExecutionContext.create(context).getContext().user;
+        return requiredRoles.some((role) => { var _a; return (_a = user.roles) === null || _a === void 0 ? void 0 : _a.includes(role); });
     }
 };
-LocalStrategy = __decorate([
+RolesGuard = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [auth_service_1.AuthService])
-], LocalStrategy);
-exports.LocalStrategy = LocalStrategy;
-//# sourceMappingURL=local.strategy.js.map
+    __metadata("design:paramtypes", [core_1.Reflector])
+], RolesGuard);
+exports.RolesGuard = RolesGuard;
+//# sourceMappingURL=roles.guard.js.map

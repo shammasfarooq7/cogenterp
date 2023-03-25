@@ -1,22 +1,29 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
+import { CreateUserInput } from './dto/create-user.input';
+import { UserRole } from './entities/role.entity';
 
 @Injectable()
 export class UsersService {
+  roleService: any;
   constructor(@InjectRepository(User) private userRepo: Repository<User>){}
 
   async create(createUserInput: CreateUserInput) {
     try {
       const user = await this.userRepo.findOneBy({email: createUserInput.email})
+      const roleType = UserRole.RESOURCE;
+      const role = await this.roleService.findByType(roleType);
+      const password = createUserInput.email
       if (user){
         throw new InternalServerErrorException("Email already exist");
       }
       const newUser = await this.userRepo.save({
-        ...createUserInput
+        ...createUserInput,
+        password,
+        roles: [role]
       })
       return newUser;
     } catch (error) {

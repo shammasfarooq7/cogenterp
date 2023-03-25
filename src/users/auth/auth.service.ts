@@ -3,14 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt'
-import { CreateUserInput } from '../dto/create-user.input';
 import * as bcrypt from 'bcrypt';
 import { LoginResponse } from '../dto/login-response';
 import { LoginUserInput } from '../dto/login-user-input';
+import { RoleService } from '../role.service';
+import { UserRole } from '../entities/role.entity';
+import { SignUpUserInput } from '../dto/sign-up-user.input';
 
 @Injectable()
 export class AuthService {
-  constructor(@InjectRepository(User) private userRepo: Repository<User>, private jwtService: JwtService ){}
+    constructor(@InjectRepository(User) private userRepo: Repository<User>, private jwtService: JwtService, private readonly roleService: RoleService  ){}
 
   async validateUser(email: string, pass: string) {
     try {
@@ -29,18 +31,22 @@ export class AuthService {
     const user = await this.userRepo.findOneBy({email: loginUserInput.email})
     const token = await this.jwtService.sign({email: user.email, sub: user.id})
     return {
-      accessToken: token
+      accessToken: token,
+      roles: user.roles,
     };
   }
 
-  async signup(createUserInput: CreateUserInput){
+  async signup(signUpUserInput: SignUpUserInput){
     try {
-      const user = await this.userRepo.findOneBy({email: createUserInput.email})
+      const user = await this.userRepo.findOneBy({email: signUpUserInput.email})
+      const roleType = UserRole.RESOURCE;
+      const role = await this.roleService.findByType(roleType);
       if(user){
         throw new ConflictException('User already exists');
       }
       const newUser = await this.userRepo.save({
-        ...createUserInput
+        ...signUpUserInput,
+        roles: [role]
       });
 
       return newUser;

@@ -8,12 +8,14 @@ import { JwtStrategy } from './jwt-strategy';
 import { UsersModule } from '../users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
+import { Role } from '../entities/role.entity';
+import { RoleService } from '../role.service';
 
 @Module({
   imports: [PassportModule, UsersModule, JwtModule.register({
     signOptions: {expiresIn: process.env.JWT_EXPIRY},
     secret: process.env.JWT_SECRET
-  }), TypeOrmModule.forFeature([User])],
-  providers: [AuthService, AuthResolver, LocalStrategy, JwtStrategy]
+  }), TypeOrmModule.forFeature([User, Role])],
+  providers: [AuthService, AuthResolver, LocalStrategy, JwtStrategy, RoleService]
 })
 export class AuthModule {}
