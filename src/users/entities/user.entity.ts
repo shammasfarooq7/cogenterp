@@ -1,12 +1,13 @@
 import { IsPhoneNumber } from '@nestjs/class-validator';
 import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Role } from './role.entity';
+import { UserPaymentMethod } from './../../modules/userPaymentMethods/entity/userPaymentMethod.entity';
 
 
 export enum UserStatus {
-  DIRECT = 0,
-  INDIRECT = 1,
+  DIRECT = "Direct",
+  INDIRECT = "Indirect",
 }
 
 registerEnumType(UserStatus, {
@@ -15,9 +16,10 @@ registerEnumType(UserStatus, {
 });
 
 export enum EngagementType {
-  FSE = 0,
-  FTE = 1,
-  PTE = 2
+  FSE = "Fse",
+  FTE = "Fte",
+  PTE = "Pte",
+  Remote = "Remote"
 }
 
 registerEnumType(EngagementType, {
@@ -53,7 +55,7 @@ export class User {
   status: UserStatus;
 
   @Column({ nullable: true })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   vendorName: string;
 
   @Column({
@@ -65,11 +67,11 @@ export class User {
   engagementType: EngagementType;
 
   @Column({ nullable: true })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   rpocName: string;
 
-  @Column('varchar', {length: 50, nullable: true })
-  @Field(() => String, {nullable: true})
+  @Column('varchar', { length: 50, nullable: true })
+  @Field(() => String, { nullable: true })
   rpocEmail: string;
 
   @Column({ nullable: true })
@@ -78,59 +80,67 @@ export class User {
   rpocContactNumber: string;
 
   @Column({ nullable: true })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   firstName: string;
 
   @Column({ nullable: true })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   lastName: string;
 
   @Column({ nullable: true })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   middleName: string;
 
   @Column({ nullable: true })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   idCardNumber: string;
 
   @Column({ nullable: true })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   taxNumber: string;
 
-  @Column({ nullable: true })
-  @Field({nullable: true})
-  languages: string;
+  @Column("text", { array: true, nullable: true })
+  @Field(() => [String])
+  languages: string[];
+
+  @Column("text", { array: true, nullable: true })
+  @Field(() => [String])
+  skillSet: string[];
+
+  @Column("text", { array: true, nullable: true })
+  @Field(() => [String])
+  availableTools: string[];
 
   @Column({ nullable: true })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   nationality: string;
 
   @Column({ nullable: true })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   region: string;
 
   @Column({ nullable: true })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   country: string;
 
   @Column({ nullable: true })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   state: string;
 
   @Column({ nullable: true })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   city: string;
 
   @Column({ nullable: true })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   postalCode: string;
 
   @Column({ nullable: true })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   addressLine1: string;
 
   @Column({ nullable: true })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   addressLine2: string;
 
   @Column({ nullable: true })
@@ -138,8 +148,8 @@ export class User {
   @IsPhoneNumber()
   whatsappNumber: string;
 
-  @Column('varchar', {length: 50, nullable: true })
-  @Field(() => String, {nullable: true})
+  @Column('varchar', { length: 50, nullable: true })
+  @Field(() => String, { nullable: true })
   cogentEmail: string;
 
   @Column({ nullable: true })
@@ -166,11 +176,15 @@ export class User {
   @Field({ nullable: true })
   anyExtraRate: string;
 
-  @Field(() => [Role], { nullable: 'itemsAndList' })
-  @ManyToMany(() => Role, (role) => role.users, { eager: true })
-  @JoinTable({ name: 'UserRoles' })
+  @Field(() => [Role])
+  @ManyToMany(() => Role, (role) => role.users)
+  @JoinTable({ name: "user_roles" })
   roles: Role[];
-  
+
+  @Field(() => [UserPaymentMethod])
+  @OneToMany(() => UserPaymentMethod, (userPaymentMethod) => userPaymentMethod.user)
+  userPaymentMethod: UserPaymentMethod[]
+
   @CreateDateColumn({ type: 'timestamptz' })
   @Field(() => Date)
   createdAt: Date;
@@ -183,5 +197,3 @@ export class User {
 
 // add whatsapp group and group link.
 // work permit status
-// language array
-// skill set array

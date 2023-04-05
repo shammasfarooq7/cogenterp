@@ -7,6 +7,7 @@ import { AuthModule } from './users/auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './users/roles.guard';
+import { UserPaymentMethodsModule } from './modules/userPaymentMethods/userPaymentMethods.module';
 const { entities, migrations, ...options } = dataSourceOptions;
 
 @Module({
@@ -21,6 +22,7 @@ const { entities, migrations, ...options } = dataSourceOptions;
   }),
   UsersModule,
   AuthModule,
+  UserPaymentMethodsModule
   ],
   providers: [
     {
