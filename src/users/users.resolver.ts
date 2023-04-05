@@ -5,12 +5,14 @@ import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { CreateResourceInput } from './dto/create-resource-input';
+import { CreateResourcePayload } from './dto/create-resource.dto';
 
 @Resolver(() => User)
 export class UsersResolver {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Query(() => [User])
   async getAllUsers(): Promise<User[]> {
     return await this.usersService.getAllUsers();
@@ -27,10 +29,14 @@ export class UsersResolver {
   // }
 
   @Mutation(() => User)
-  async createuser(@Args('createUserInput') createUserInput: CreateUserInput): Promise<User>{
+  async createuser(@Args('createUserInput') createUserInput: CreateUserInput): Promise<User> {
     return await this.usersService.create(createUserInput);
   }
 
+  @Mutation(() => CreateResourcePayload)
+  async createResource(@Args('createResourceInput') createResourceInput: CreateResourceInput): Promise<CreateResourcePayload> {
+    return await this.usersService.createResource(createResourceInput)
+  }
 
   @Mutation(() => User)
   async removeUser(@Args('id', { type: () => Int }) id: number) {
