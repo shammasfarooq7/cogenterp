@@ -1,4 +1,4 @@
-import { ConflictException, ForbiddenException, Injectable, InternalServerErrorException} from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -12,13 +12,13 @@ import { SignUpUserInput } from '../dto/sign-up-user.input';
 
 @Injectable()
 export class AuthService {
-    constructor(@InjectRepository(User) private userRepo: Repository<User>, private jwtService: JwtService, private readonly roleService: RoleService  ){}
+  constructor(@InjectRepository(User) private userRepo: Repository<User>, private jwtService: JwtService, private readonly roleService: RoleService) { }
 
   async validateUser(email: string, pass: string) {
     try {
-      const user = await this.userRepo.findOneBy({email: email.trim()});
+      const user = await this.userRepo.findOneBy({ email: email.trim() });
       if (user && bcrypt.compareSync(pass, user.password)) {
-        const {password, ...result} = user;
+        const { password, ...result } = user;
         return result
       }
       return null;
@@ -27,21 +27,21 @@ export class AuthService {
     }
   }
 
-  async login(loginUserInput: LoginUserInput): Promise<LoginResponse>{
-    const user = await this.userRepo.findOneBy({email: loginUserInput.email})
-    const token = await this.jwtService.sign({email: user.email, sub: user.id})
+  async login(loginUserInput: LoginUserInput): Promise<LoginResponse> {
+    const user = await this.userRepo.findOneBy({ email: loginUserInput.email })
+    const token = await this.jwtService.sign({ email: user.email, sub: user.id })
     return {
       accessToken: token,
       roles: user.roles,
     };
   }
 
-  async signup(signUpUserInput: SignUpUserInput){
+  async signup(signUpUserInput: SignUpUserInput) {
     try {
-      const user = await this.userRepo.findOneBy({email: signUpUserInput.email})
+      const user = await this.userRepo.findOneBy({ email: signUpUserInput.email })
       const roleType = UserRole.RESOURCE;
       const role = await this.roleService.findByType(roleType);
-      if(user){
+      if (user) {
         throw new ConflictException('User already exists');
       }
       const newUser = await this.userRepo.save({
@@ -52,6 +52,21 @@ export class AuthService {
       return newUser;
     } catch (exception) {
       throw new InternalServerErrorException(exception);
+    }
+  }
+
+  async verifyToken(auth: string) {
+    try {
+      if (auth.split(' ')[0] !== 'Bearer') {
+        throw new UnauthorizedException('Invalid Authorization Token - No Token Provided in Headers');
+      };
+      const token = auth.split(' ')[1];
+      const payload: { sub: string, email: string } = await this.jwtService.verify(token, { secret: process.env.JWT_SECRET });
+
+      return payload
+
+    } catch (error) {
+      throw error
     }
   }
 }

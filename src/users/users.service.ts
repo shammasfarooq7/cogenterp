@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { UpdateUserInput } from './dto/update-user.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -8,12 +8,16 @@ import { UserRole } from './entities/role.entity';
 import { CreateResourceInput } from './dto/create-resource-input';
 import { UserPaymentMethod } from './../modules/userPaymentMethods/entity/userPaymentMethod.entity';
 import { RoleService } from './role.service';
+import { AuthService } from './auth/auth.service';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(User) private userRepo: Repository<User>,
+  constructor(
+    @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(UserPaymentMethod) private userPaymentMethodRepo: Repository<UserPaymentMethod>,
-    private readonly roleService: RoleService) { }
+    private readonly roleService: RoleService,
+    private readonly authService: AuthService,
+  ) { }
 
   async create(createUserInput: CreateUserInput) {
     try {
@@ -101,5 +105,32 @@ export class UsersService {
     })
 
     return { message: "User Created Successfully!" };
+  }
+
+  async getLoggedInUserFromToken(auth: string) {
+    try {
+      const payload = await this.authService.verifyToken(auth);
+      if (payload) {
+
+        const result = await this.userRepo.findOne({
+          select: { id: true, roles: { role: true } },
+          relations: {
+            roles: true
+          },
+          where: {
+            id: payload.sub
+          },
+        });
+
+        return {
+          ...payload,
+          roles: result?.roles?.map(item => item?.role) || []
+        }
+      }
+      throw new UnauthorizedException('Invalid Authorization Token - No Token Provided in Headers');
+    } catch (error) {
+      throw error
+    }
+
   }
 }

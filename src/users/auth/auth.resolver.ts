@@ -6,19 +6,21 @@ import { LoginUserInput } from '../dto/login-user-input';
 import { GqlAuthGuard } from './gql-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { SignUpUserInput } from '../dto/sign-up-user.input';
+import { Public } from './public.decorator';
 
 @Resolver()
 export class AuthResolver {
-  constructor(private authService: AuthService){}
-
+  constructor(private authService: AuthService) { }
+  @Public()
   @UseGuards(GqlAuthGuard)
   @Mutation(() => LoginResponse)
-  async signin(@Args('loginUserInput') loginUserInput: LoginUserInput): Promise<LoginResponse>{
+  async signin(@Args('loginUserInput') loginUserInput: LoginUserInput): Promise<LoginResponse> {
     return await this.authService.login(loginUserInput)
   }
 
+  @Public()
   @Mutation(() => User)
-  async signup(@Args('signUpUserInput') signUpUserInput: SignUpUserInput): Promise<User>{
+  async signup(@Args('signUpUserInput') signUpUserInput: SignUpUserInput): Promise<User> {
     return await this.authService.signup(signUpUserInput);
   }
 }

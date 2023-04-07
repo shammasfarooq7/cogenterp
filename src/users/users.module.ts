@@ -7,12 +7,14 @@ import { User } from './entities/user.entity';
 import { UserPaymentMethod } from './../modules/userPaymentMethods/entity/userPaymentMethod.entity';
 import { RoleService } from './role.service';
 import { Role } from './entities/role.entity';
+import { AuthService } from './auth/auth.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, UserPaymentMethod, Role])
   ],
-  providers: [UsersResolver, UsersService, UserSubscriber, TypeOrmModule, RoleService],
+  providers: [UsersResolver, UsersService, UserSubscriber, TypeOrmModule, RoleService, AuthService, JwtService],
   exports: [UsersService]
 })
 export class UsersModule { }
