@@ -8,6 +8,7 @@ import { UsersModule } from './users/users.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './users/roles.guard';
 import { UserPaymentMethodsModule } from './modules/userPaymentMethods/userPaymentMethods.module';
+import { JwtAuthGuard } from './users/auth/jwt-auth.guard';
 const { entities, migrations, ...options } = dataSourceOptions;
 
 @Module({
@@ -25,6 +26,10 @@ const { entities, migrations, ...options } = dataSourceOptions;
   UserPaymentMethodsModule
   ],
   providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
