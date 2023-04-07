@@ -9,6 +9,7 @@ import { LoginUserInput } from '../dto/login-user-input';
 import { RoleService } from '../role.service';
 import { UserRole } from '../entities/role.entity';
 import { SignUpUserInput } from '../dto/sign-up-user.input';
+import { IPayload } from './interfaces/current-user.interface';
 
 @Injectable()
 export class AuthService {
@@ -61,9 +62,10 @@ export class AuthService {
         throw new UnauthorizedException('Invalid Authorization Token - No Token Provided in Headers');
       };
       const token = auth.split(' ')[1];
-      const payload: { sub: string, email: string } = await this.jwtService.verify(token, { secret: process.env.JWT_SECRET });
-
-      return payload
+      const payload: IPayload = await this.jwtService.verify(token, { secret: process.env.JWT_SECRET });
+      const userId = payload?.sub;
+      delete payload.sub;
+      return { ...payload, userId }
 
     } catch (error) {
       throw error

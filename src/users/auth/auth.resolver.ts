@@ -6,7 +6,7 @@ import { LoginUserInput } from '../dto/login-user-input';
 import { GqlAuthGuard } from './gql-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { SignUpUserInput } from '../dto/sign-up-user.input';
-import { Public } from './public.decorator';
+import { Public } from './decorators/public.decorator';
 
 @Resolver()
 export class AuthResolver {

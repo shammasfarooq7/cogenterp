@@ -118,7 +118,7 @@ export class UsersService {
             roles: true
           },
           where: {
-            id: payload.sub
+            id: payload.userId
           },
         });
 
