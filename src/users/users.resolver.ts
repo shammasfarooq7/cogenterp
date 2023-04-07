@@ -20,6 +20,12 @@ export class UsersResolver {
     return await this.usersService.getAllUsers();
   }
 
+  @Roles(UserRole.ADMIN)
+  @Query(() => User)
+  async getResource(@Args('id') id: string): Promise<User> {
+    return await this.usersService.getResource(id);
+  }
+
   // @Query(() => User, { name: 'user' })
   // findOne(@Args('id', { type: () => Int }) id: number) {
   //   return this.usersService.findOne(id);

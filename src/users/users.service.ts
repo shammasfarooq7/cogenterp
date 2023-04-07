@@ -107,6 +107,15 @@ export class UsersService {
     return { message: "User Created Successfully!" };
   }
 
+  async getResource(id: string) {
+    return await this.userRepo.findOne(
+      {
+        where: { id },
+        relations: { roles: true, userPaymentMethod: true }
+      }
+    )
+  };
+
   async getLoggedInUserFromToken(auth: string) {
     try {
       const payload = await this.authService.verifyToken(auth);

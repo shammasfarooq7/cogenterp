@@ -176,6 +176,22 @@ export class User {
   @Field({ nullable: true })
   anyExtraRate: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  transport: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  mobility: string;
+
+  @Column('varchar', { length: 50, nullable: true })
+  @Field({ nullable: true })
+  onboardedBy: string;
+
+  @Column("boolean", { default: false })
+  @Field()
+  isOnboarded: boolean;
+
   @Field(() => [Role])
   @ManyToMany(() => Role, (role) => role.users)
   @JoinTable({ name: "user_roles" })

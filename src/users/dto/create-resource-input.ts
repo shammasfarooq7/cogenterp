@@ -141,4 +141,16 @@ export class CreateResourceInput {
     @Field(() => String)
     bankAddress: string;
 
+    @Field({ nullable: true })
+    transport: string;
+
+    @Field({ nullable: true })
+    mobility: string;
+
+    @Field({ nullable: true })
+    onboardedBy: string;
+
+    @Field()
+    isOnboarded: boolean;
+
 }

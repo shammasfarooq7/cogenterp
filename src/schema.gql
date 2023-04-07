@@ -73,6 +73,10 @@ type User {
   fullDayRate: String
   monthlyRate: String
   anyExtraRate: String
+  transport: String
+  mobility: String
+  onboardedBy: String
+  isOnboarded: Boolean!
   roles: [Role!]!
   userPaymentMethod: [UserPaymentMethod!]!
   createdAt: DateTime!
@@ -100,7 +104,7 @@ scalar DateTime
 
 type LoginResponse {
   accessToken: String
-  roles: [Role!]
+  roles: [String!]
 }
 
 type CreateResourcePayload {
@@ -109,6 +113,7 @@ type CreateResourcePayload {
 
 type Query {
   getAllUsers: [User!]!
+  getResource(id: String!): User!
   getAllUserPaymentMethods: [UserPaymentMethod!]!
 }
 
@@ -171,6 +176,10 @@ input CreateResourceInput {
   bankName: String!
   branchName: String!
   bankAddress: String!
+  transport: String
+  mobility: String
+  onboardedBy: String
+  isOnboarded: Boolean!
 }
 
 input LoginUserInput {
