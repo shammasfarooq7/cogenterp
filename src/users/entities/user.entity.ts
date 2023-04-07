@@ -1,6 +1,6 @@
 import { IsPhoneNumber } from '@nestjs/class-validator';
 import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm';
 import { Role } from './role.entity';
 import { UserPaymentMethod } from './../../modules/userPaymentMethods/entity/userPaymentMethod.entity';
 
@@ -208,6 +208,10 @@ export class User {
   @UpdateDateColumn({ type: 'timestamptz' })
   @Field(() => Date)
   updatedAt: Date;
+
+  @Column({ nullable: true, type: 'timestamptz' })
+  @Field(() => Date, { nullable: true })
+  deletedAt: Date;
 }
 
 

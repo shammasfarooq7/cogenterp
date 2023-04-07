@@ -1,7 +1,7 @@
 import { ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { UpdateUserInput } from './dto/update-user.input';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UserRole } from './entities/role.entity';
@@ -9,6 +9,7 @@ import { CreateResourceInput } from './dto/create-resource-input';
 import { UserPaymentMethod } from './../modules/userPaymentMethods/entity/userPaymentMethod.entity';
 import { RoleService } from './role.service';
 import { AuthService } from './auth/auth.service';
+import { CommonPayload } from './dto/common.dto';
 
 @Injectable()
 export class UsersService {
@@ -41,7 +42,10 @@ export class UsersService {
 
   async getAllUsers(): Promise<User[]> {
     try {
-      return await this.userRepo.find({ relations: { userPaymentMethod: true, roles: true } });
+      return await this.userRepo.find({
+        where: { deletedAt: IsNull() },
+        relations: { userPaymentMethod: true, roles: true }
+      });
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -71,7 +75,7 @@ export class UsersService {
     return `This action removes a #${id} user`;
   }
 
-  async createResource(createResourceInput: CreateResourceInput) {
+  async createResource(createResourceInput: CreateResourceInput): Promise<CommonPayload> {
 
     const { accountNumber, accountTitle, accountType, bankAddress, bankName,
       beneficiaryAddress, beneficiaryFirstName, beneficiaryLastName,
@@ -104,16 +108,21 @@ export class UsersService {
       user: newUser
     })
 
-    return { message: "User Created Successfully!" };
+    return { message: "Resource Created Successfully!" };
   }
 
   async getResource(id: string) {
     return await this.userRepo.findOne(
       {
-        where: { id },
+        where: { id, deletedAt: IsNull() },
         relations: { roles: true, userPaymentMethod: true }
       }
     )
+  };
+
+  async deleteResource(id: string): Promise<CommonPayload> {
+    await this.userRepo.update({ id }, { deletedAt: new Date() })
+    return { message: "Resource Deleted Successfully!" };
   };
 
   async getLoggedInUserFromToken(auth: string) {

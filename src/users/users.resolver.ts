@@ -4,7 +4,7 @@ import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { CreateResourceInput } from './dto/create-resource-input';
-import { CreateResourcePayload } from './dto/create-resource.dto';
+import { CommonPayload } from './dto/common.dto';
 import { Roles } from './roles.decorator';
 import { UserRole } from './entities/role.entity';
 import { CurrentUser } from './auth/decorators/current-user.decorator';
@@ -41,9 +41,15 @@ export class UsersResolver {
     return await this.usersService.create(createUserInput);
   }
   @Roles(UserRole.ADMIN)
-  @Mutation(() => CreateResourcePayload)
-  async createResource(@Args('createResourceInput') createResourceInput: CreateResourceInput): Promise<CreateResourcePayload> {
+  @Mutation(() => CommonPayload)
+  async createResource(@Args('createResourceInput') createResourceInput: CreateResourceInput): Promise<CommonPayload> {
     return await this.usersService.createResource(createResourceInput)
+  }
+
+  @Roles(UserRole.ADMIN)
+  @Mutation(() => CommonPayload)
+  async deleteResource(@Args('id') id: string): Promise<CommonPayload> {
+    return await this.usersService.deleteResource(id)
   }
 
   @Mutation(() => User)

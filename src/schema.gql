@@ -81,6 +81,7 @@ type User {
   userPaymentMethod: [UserPaymentMethod!]!
   createdAt: DateTime!
   updatedAt: DateTime!
+  deletedAt: DateTime
 }
 
 """The user status"""
@@ -107,7 +108,7 @@ type LoginResponse {
   roles: [String!]
 }
 
-type CreateResourcePayload {
+type CommonPayload {
   message: String!
 }
 
@@ -119,7 +120,8 @@ type Query {
 
 type Mutation {
   createuser(createUserInput: CreateUserInput!): User!
-  createResource(createResourceInput: CreateResourceInput!): CreateResourcePayload!
+  createResource(createResourceInput: CreateResourceInput!): CommonPayload!
+  deleteResource(id: String!): CommonPayload!
   removeUser(id: Int!): User!
   signin(loginUserInput: LoginUserInput!): LoginResponse!
   signup(signUpUserInput: SignUpUserInput!): User!
