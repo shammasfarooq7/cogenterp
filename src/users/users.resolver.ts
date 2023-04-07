@@ -7,6 +7,8 @@ import { CreateResourceInput } from './dto/create-resource-input';
 import { CreateResourcePayload } from './dto/create-resource.dto';
 import { Roles } from './roles.decorator';
 import { UserRole } from './entities/role.entity';
+import { CurrentUser } from './auth/decorators/current-user.decorator';
+import { ICurrentUser } from './auth/interfaces/current-user.interface';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -14,7 +16,7 @@ export class UsersResolver {
 
   @Roles(UserRole.ADMIN)
   @Query(() => [User])
-  async getAllUsers(): Promise<User[]> {
+  async getAllUsers(@CurrentUser() user: ICurrentUser): Promise<User[]> {
     return await this.usersService.getAllUsers();
   }
 
