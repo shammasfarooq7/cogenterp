@@ -9,6 +9,7 @@ import { Roles } from './roles.decorator';
 import { UserRole } from './entities/role.entity';
 import { CurrentUser } from './auth/decorators/current-user.decorator';
 import { ICurrentUser } from './auth/interfaces/current-user.interface';
+import { UpdateResourceInput } from './dto/update-resource-input';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -40,10 +41,17 @@ export class UsersResolver {
   async createuser(@Args('createUserInput') createUserInput: CreateUserInput): Promise<User> {
     return await this.usersService.create(createUserInput);
   }
+
   @Roles(UserRole.ADMIN)
   @Mutation(() => CommonPayload)
   async createResource(@Args('createResourceInput') createResourceInput: CreateResourceInput): Promise<CommonPayload> {
     return await this.usersService.createResource(createResourceInput)
+  }
+
+  @Roles(UserRole.ADMIN)
+  @Mutation(() => CommonPayload)
+  async updateResource(@Args('id') id: string, @Args('updateResourceInput') updateResourceInput: UpdateResourceInput): Promise<CommonPayload> {
+    return await this.usersService.updateResource(id, updateResourceInput);
   }
 
   @Roles(UserRole.ADMIN)

@@ -113,23 +113,25 @@ export class UsersService {
 
   async updateResource(id: string, updateResourceInput: UpdateResourceInput): Promise<CommonPayload> {
 
-    // const { accountNumber, accountTitle, accountType, bankAddress, bankName,
-    //   beneficiaryAddress, beneficiaryFirstName, beneficiaryLastName,
-    //   beneficiaryMiddleName, branchName, sortCode, swiftCode, iban, ...userData } = updateResourceInput;
+    const { accountNumber, accountTitle, accountType, bankAddress, bankName,
+      beneficiaryAddress, beneficiaryFirstName, beneficiaryLastName,
+      beneficiaryMiddleName, branchName, sortCode, swiftCode, iban, ...userData } = updateResourceInput;
 
-    // const user = await this.userRepo.findOne({ where: { id } });
+    const user = await this.userRepo.findOne({ where: { id } });
 
-    // if (!user) throw new NotFoundException(`User with ${id} does not exist!`);
+    if (!user) throw new NotFoundException(`User with ${id} does not exist!`);
 
-    // Object.keys(userData).forEach((key) => { user[key] = userData[key] });
+    Object.keys(userData).forEach((key) => { user[key] = userData[key] });
 
-    // user.userPaymentMethod = [{
-    //   ...user.userPaymentMethod[0], accountNumber, accountTitle, accountType, bankAddress, bankName,
-    //   beneficiaryAddress, beneficiaryFirstName, beneficiaryLastName,
-    //   beneficiaryMiddleName, branchName, sortCode, swiftCode, iban
-    // }]
+    await this.userRepo.save(user);
 
-    // await this.userRepo.save(user);
+    await this.userPaymentMethodRepo.update({
+      userId: user.id
+    }, {
+      accountNumber, accountTitle, accountType, bankAddress, bankName,
+      beneficiaryAddress, beneficiaryFirstName, beneficiaryLastName,
+      beneficiaryMiddleName, branchName, sortCode, swiftCode, iban,
+    });
 
     return { message: "Resource Updated Successfully!" };
   }
