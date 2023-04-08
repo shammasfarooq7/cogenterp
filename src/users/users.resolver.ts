@@ -10,6 +10,7 @@ import { UserRole } from './entities/role.entity';
 import { CurrentUser } from './auth/decorators/current-user.decorator';
 import { ICurrentUser } from './auth/interfaces/current-user.interface';
 import { UpdateResourceInput } from './dto/update-resource-input';
+import { GetAllUsersInput } from './dto/get-all-users-input';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -17,8 +18,8 @@ export class UsersResolver {
 
   @Roles(UserRole.ADMIN)
   @Query(() => [User])
-  async getAllUsers(@CurrentUser() user: ICurrentUser): Promise<User[]> {
-    return await this.usersService.getAllUsers();
+  async getAllUsers(@CurrentUser() user: ICurrentUser, @Args('getAllUsersInput') getAllUsersInput: GetAllUsersInput): Promise<User[]> {
+    return await this.usersService.getAllUsers(getAllUsersInput);
   }
 
   @Roles(UserRole.ADMIN)

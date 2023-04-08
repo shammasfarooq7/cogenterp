@@ -113,9 +113,16 @@ type CommonPayload {
 }
 
 type Query {
-  getAllUsers: [User!]!
+  getAllUsers(getAllUsersInput: GetAllUsersInput!): [User!]!
   getResource(id: String!): User!
   getAllUserPaymentMethods: [UserPaymentMethod!]!
+}
+
+input GetAllUsersInput {
+  role: userRoles
+  page: Float
+  limit: Float
+  searchQuery: String
 }
 
 type Mutation {
@@ -134,6 +141,7 @@ input CreateUserInput {
 }
 
 input CreateResourceInput {
+  email: String!
   phoneNumber: String = null
   status: UserStatus!
   vendorName: String
@@ -185,6 +193,7 @@ input CreateResourceInput {
 }
 
 input UpdateResourceInput {
+  email: String!
   phoneNumber: String = null
   status: UserStatus!
   vendorName: String
