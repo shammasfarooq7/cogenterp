@@ -1,7 +1,7 @@
 import { ConflictException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UpdateUserInput } from './dto/update-user.input';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Repository } from 'typeorm';
+import { ILike, IsNull, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UserRole } from './entities/role.entity';
@@ -11,6 +11,7 @@ import { RoleService } from './role.service';
 import { AuthService } from './auth/auth.service';
 import { CommonPayload } from './dto/common.dto';
 import { UpdateResourceInput } from './dto/update-resource-input';
+import { GetAllUsersInput } from './dto/get-all-users-input';
 
 @Injectable()
 export class UsersService {
@@ -41,11 +42,26 @@ export class UsersService {
     }
   }
 
-  async getAllUsers(): Promise<User[]> {
+  async getAllUsers(getAllUsersInput: GetAllUsersInput): Promise<User[]> {
     try {
+      const { role, limit = 20, page = 0, searchQuery } = getAllUsersInput;
+
+      const whereClause = {
+        deletedAt: IsNull(),
+        ...(role && { roles: { role } }),
+      };
+
+      const where = [
+        { ...(searchQuery && { email: ILike(`%${searchQuery}%`) }), ...whereClause },
+        { ...(searchQuery && { firstName: ILike(`%${searchQuery}%`) }), ...whereClause },
+        { ...(searchQuery && { lastName: ILike(`%${searchQuery}%`) }), ...whereClause },
+      ];
+
       return await this.userRepo.find({
-        where: { deletedAt: IsNull() },
-        relations: { userPaymentMethod: true, roles: true }
+        where,
+        relations: { userPaymentMethod: true, roles: true },
+        skip: page * limit,
+        take: limit
       });
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -78,9 +94,11 @@ export class UsersService {
 
   async createResource(createResourceInput: CreateResourceInput): Promise<CommonPayload> {
 
-    const { accountNumber, accountTitle, accountType, bankAddress, bankName,
+    const {
+      accountNumber, accountTitle, accountType, bankAddress, bankName,
       beneficiaryAddress, beneficiaryFirstName, beneficiaryLastName,
-      beneficiaryMiddleName, branchName, sortCode, swiftCode, iban, ...user } = createResourceInput;
+      beneficiaryMiddleName, branchName, sortCode, swiftCode, iban, ...user
+    } = createResourceInput;
 
     const alreadyExists = await this.userRepo.findOne({
       where: [
@@ -113,9 +131,11 @@ export class UsersService {
 
   async updateResource(id: string, updateResourceInput: UpdateResourceInput): Promise<CommonPayload> {
 
-    const { accountNumber, accountTitle, accountType, bankAddress, bankName,
+    const {
+      accountNumber, accountTitle, accountType, bankAddress, bankName,
       beneficiaryAddress, beneficiaryFirstName, beneficiaryLastName,
-      beneficiaryMiddleName, branchName, sortCode, swiftCode, iban, ...userData } = updateResourceInput;
+      beneficiaryMiddleName, branchName, sortCode, swiftCode, iban, ...userData
+    } = updateResourceInput;
 
     const user = await this.userRepo.findOne({ where: { id } });
 
