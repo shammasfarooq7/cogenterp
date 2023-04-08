@@ -4,9 +4,6 @@ import { EngagementType, UserStatus } from '../entities/user.entity';
 @InputType()
 export class CreateResourceInput {
 
-    @Field(() => String)
-    email: string;
-
     @Field({ nullable: true, defaultValue: null })
     phoneNumber: string;
 

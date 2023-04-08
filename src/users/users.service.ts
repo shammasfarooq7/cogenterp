@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UpdateUserInput } from './dto/update-user.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
@@ -10,6 +10,7 @@ import { UserPaymentMethod } from './../modules/userPaymentMethods/entity/userPa
 import { RoleService } from './role.service';
 import { AuthService } from './auth/auth.service';
 import { CommonPayload } from './dto/common.dto';
+import { UpdateResourceInput } from './dto/update-resource-input';
 
 @Injectable()
 export class UsersService {
@@ -83,7 +84,6 @@ export class UsersService {
 
     const alreadyExists = await this.userRepo.findOne({
       where: [
-        { email: user.email },
         { cogentEmail: user.cogentEmail }
       ]
     });
@@ -109,6 +109,29 @@ export class UsersService {
     })
 
     return { message: "Resource Created Successfully!" };
+  }
+
+  async updateResource(id: string, updateResourceInput: UpdateResourceInput): Promise<CommonPayload> {
+
+    // const { accountNumber, accountTitle, accountType, bankAddress, bankName,
+    //   beneficiaryAddress, beneficiaryFirstName, beneficiaryLastName,
+    //   beneficiaryMiddleName, branchName, sortCode, swiftCode, iban, ...userData } = updateResourceInput;
+
+    // const user = await this.userRepo.findOne({ where: { id } });
+
+    // if (!user) throw new NotFoundException(`User with ${id} does not exist!`);
+
+    // Object.keys(userData).forEach((key) => { user[key] = userData[key] });
+
+    // user.userPaymentMethod = [{
+    //   ...user.userPaymentMethod[0], accountNumber, accountTitle, accountType, bankAddress, bankName,
+    //   beneficiaryAddress, beneficiaryFirstName, beneficiaryLastName,
+    //   beneficiaryMiddleName, branchName, sortCode, swiftCode, iban
+    // }]
+
+    // await this.userRepo.save(user);
+
+    return { message: "Resource Updated Successfully!" };
   }
 
   async getResource(id: string) {
