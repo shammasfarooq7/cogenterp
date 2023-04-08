@@ -1,6 +1,6 @@
 import { IsPhoneNumber } from '@nestjs/class-validator';
 import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm';
 import { Role } from './role.entity';
 import { UserPaymentMethod } from './../../modules/userPaymentMethods/entity/userPaymentMethod.entity';
 
@@ -176,6 +176,22 @@ export class User {
   @Field({ nullable: true })
   anyExtraRate: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  transport: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  mobility: string;
+
+  @Column('varchar', { length: 50, nullable: true })
+  @Field({ nullable: true })
+  onboardedBy: string;
+
+  @Column("boolean", { default: false })
+  @Field()
+  isOnboarded: boolean;
+
   @Field(() => [Role])
   @ManyToMany(() => Role, (role) => role.users)
   @JoinTable({ name: "user_roles" })
@@ -192,6 +208,10 @@ export class User {
   @UpdateDateColumn({ type: 'timestamptz' })
   @Field(() => Date)
   updatedAt: Date;
+
+  @Column({ nullable: true, type: 'timestamptz' })
+  @Field(() => Date, { nullable: true })
+  deletedAt: Date;
 }
 
 

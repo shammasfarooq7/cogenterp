@@ -73,10 +73,15 @@ type User {
   fullDayRate: String
   monthlyRate: String
   anyExtraRate: String
+  transport: String
+  mobility: String
+  onboardedBy: String
+  isOnboarded: Boolean!
   roles: [Role!]!
   userPaymentMethod: [UserPaymentMethod!]!
   createdAt: DateTime!
   updatedAt: DateTime!
+  deletedAt: DateTime
 }
 
 """The user status"""
@@ -100,21 +105,23 @@ scalar DateTime
 
 type LoginResponse {
   accessToken: String
-  roles: [Role!]
+  roles: [String!]
 }
 
-type CreateResourcePayload {
+type CommonPayload {
   message: String!
 }
 
 type Query {
   getAllUsers: [User!]!
+  getResource(id: String!): User!
   getAllUserPaymentMethods: [UserPaymentMethod!]!
 }
 
 type Mutation {
   createuser(createUserInput: CreateUserInput!): User!
-  createResource(createResourceInput: CreateResourceInput!): CreateResourcePayload!
+  createResource(createResourceInput: CreateResourceInput!): CommonPayload!
+  deleteResource(id: String!): CommonPayload!
   removeUser(id: Int!): User!
   signin(loginUserInput: LoginUserInput!): LoginResponse!
   signup(signUpUserInput: SignUpUserInput!): User!
@@ -171,6 +178,10 @@ input CreateResourceInput {
   bankName: String!
   branchName: String!
   bankAddress: String!
+  transport: String
+  mobility: String
+  onboardedBy: String
+  isOnboarded: Boolean!
 }
 
 input LoginUserInput {

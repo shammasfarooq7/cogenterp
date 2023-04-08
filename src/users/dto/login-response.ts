@@ -6,6 +6,6 @@ export class LoginResponse {
   @Field({ nullable: true })
   accessToken?: string;
 
-  @Field((type) => [Role], { nullable: true })
-  roles?: Role[];
+  @Field((type) => [String], { nullable: true })
+  roles?: String[];
 }

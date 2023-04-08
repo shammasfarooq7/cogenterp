@@ -1,7 +1,7 @@
 import { ObjectType, Field } from '@nestjs/graphql';
 
 @ObjectType()
-export class CreateResourcePayload {
+export class CommonPayload {
     @Field(() => String)
     message: string;
 }

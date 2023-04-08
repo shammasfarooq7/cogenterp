@@ -29,11 +29,15 @@ export class AuthService {
   }
 
   async login(loginUserInput: LoginUserInput): Promise<LoginResponse> {
-    const user = await this.userRepo.findOneBy({ email: loginUserInput.email })
+    const user = await this.userRepo.findOne({
+      where: { email: loginUserInput.email },
+      relations: { roles: true },
+      select: { id: true, roles: { role: true } }
+    })
     const token = await this.jwtService.sign({ email: user.email, sub: user.id })
     return {
       accessToken: token,
-      roles: user.roles,
+      roles: user.roles.map(item => item.role),
     };
   }
 
