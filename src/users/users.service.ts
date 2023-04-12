@@ -1,7 +1,7 @@
 import { ConflictException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UpdateUserInput } from './dto/update-user.input';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, IsNull, Repository } from 'typeorm';
+import { Between, ILike, IsNull, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UserRole } from './entities/role.entity';
@@ -12,6 +12,7 @@ import { AuthService } from './auth/auth.service';
 import { CommonPayload } from './dto/common.dto';
 import { UpdateResourceInput } from './dto/update-resource-input';
 import { GetAllUsersInput } from './dto/get-all-users-input';
+import { DashboardStatsPayload } from './dto/dashboard-stats.dto';
 
 @Injectable()
 export class UsersService {
@@ -102,7 +103,7 @@ export class UsersService {
 
     const alreadyExists = await this.userRepo.findOne({
       where: [
-        { cogentEmail: user.cogentEmail }
+        { email: user.email },
       ]
     });
 
@@ -112,9 +113,9 @@ export class UsersService {
 
     const roleType = UserRole.RESOURCE;
     const role = await this.roleService.findByType(roleType);
-
     const newUser = await this.userRepo.save({
       ...user,
+      ...(user.isOnboarded ? { onboardedAt: new Date() } : {}),
       password: "12345678",
       roles: [role],
     });
@@ -142,6 +143,10 @@ export class UsersService {
     if (!user) throw new NotFoundException(`User with ${id} does not exist!`);
 
     Object.keys(userData).forEach((key) => { user[key] = userData[key] });
+
+    if (userData.isOnboarded && !user.isOnboarded) {
+      user["onboardedAt"] = new Date()
+    }
 
     await this.userRepo.save(user);
 
@@ -193,6 +198,50 @@ export class UsersService {
       throw new UnauthorizedException('Invalid Authorization Token - No Token Provided in Headers');
     } catch (error) {
       throw error
+    }
+
+  }
+
+  async getDashboardStats(): Promise<DashboardStatsPayload> {
+
+    const startDate = new Date(new Date().setMonth(new Date().getMonth() - 1));
+    const endDate = new Date()
+
+    const totalResourceCount = await this.userRepo.count({
+      where: {
+        roles: {
+          role: UserRole.RESOURCE
+        },
+        deletedAt: IsNull(),
+      }
+    });
+
+    const newRequestCount = await this.userRepo.count({
+      where: {
+        roles: {
+          role: UserRole.RESOURCE
+        },
+        deletedAt: IsNull(),
+        createdAt: Between(startDate, endDate),
+        isARequest: true
+      }
+    });
+
+    const newHiringCount = await this.userRepo.count({
+      where: {
+        roles: {
+          role: UserRole.RESOURCE
+        },
+        deletedAt: IsNull(),
+        onboardedAt: Between(startDate, endDate),
+        isOnboarded: true
+      }
+    });
+
+    return {
+      totalResourceCount,
+      newRequestCount,
+      newHiringCount
     }
 
   }

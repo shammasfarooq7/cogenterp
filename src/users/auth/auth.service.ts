@@ -32,8 +32,12 @@ export class AuthService {
     const user = await this.userRepo.findOne({
       where: { email: loginUserInput.email },
       relations: { roles: true },
-      select: { id: true, roles: { role: true } }
+      select: { id: true, isOnboarded: true, roles: { role: true } }
     })
+
+    if (!user.isOnboarded) {
+      throw new Error("Your Account is not approved yet. Kindly contact with support team.")
+    }
     const token = await this.jwtService.sign({ email: user.email, sub: user.id })
     return {
       accessToken: token,
@@ -51,6 +55,7 @@ export class AuthService {
       }
       const newUser = await this.userRepo.save({
         ...signUpUserInput,
+        isARequest: true,
         roles: [role]
       });
 

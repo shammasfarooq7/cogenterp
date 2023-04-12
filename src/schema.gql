@@ -77,11 +77,13 @@ type User {
   mobility: String
   onboardedBy: String
   isOnboarded: Boolean!
+  isARequest: Boolean!
   roles: [Role!]!
   userPaymentMethod: [UserPaymentMethod!]!
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
+  onboardedAt: DateTime
 }
 
 """The user status"""
@@ -112,9 +114,16 @@ type CommonPayload {
   message: String!
 }
 
+type DashboardStatsPayload {
+  totalResourceCount: Float!
+  newRequestCount: Float!
+  newHiringCount: Float!
+}
+
 type Query {
   getAllUsers(getAllUsersInput: GetAllUsersInput!): [User!]!
   getResource(id: String!): User!
+  getDashboardStats: DashboardStatsPayload!
   getAllUserPaymentMethods: [UserPaymentMethod!]!
 }
 
