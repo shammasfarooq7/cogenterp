@@ -192,6 +192,10 @@ export class User {
   @Field()
   isOnboarded: boolean;
 
+  @Column("boolean", { default: false })
+  @Field()
+  isARequest: boolean;
+
   @Field(() => [Role])
   @ManyToMany(() => Role, (role) => role.users)
   @JoinTable({ name: "user_roles" })
@@ -212,6 +216,10 @@ export class User {
   @Column({ nullable: true, type: 'timestamptz' })
   @Field(() => Date, { nullable: true })
   deletedAt: Date;
+
+  @Column({ nullable: true, type: 'timestamptz' })
+  @Field(() => Date, { nullable: true })
+  onboardedAt: Date;
 }
 
 

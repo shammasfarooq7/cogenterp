@@ -11,6 +11,7 @@ import { CurrentUser } from './auth/decorators/current-user.decorator';
 import { ICurrentUser } from './auth/interfaces/current-user.interface';
 import { UpdateResourceInput } from './dto/update-resource-input';
 import { GetAllUsersInput } from './dto/get-all-users-input';
+import { DashboardStatsPayload } from './dto/dashboard-stats.dto';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -26,6 +27,12 @@ export class UsersResolver {
   @Query(() => User)
   async getResource(@Args('id') id: string): Promise<User> {
     return await this.usersService.getResource(id);
+  }
+
+  @Roles(UserRole.ADMIN)
+  @Query(() => DashboardStatsPayload)
+  async getDashboardStats(): Promise<DashboardStatsPayload> {
+    return await this.usersService.getDashboardStats();
   }
 
   // @Query(() => User, { name: 'user' })
