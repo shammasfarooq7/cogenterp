@@ -12,6 +12,7 @@ import { ICurrentUser } from './auth/interfaces/current-user.interface';
 import { UpdateResourceInput } from './dto/update-resource-input';
 import { GetAllUsersInput } from './dto/get-all-users-input';
 import { DashboardStatsPayload } from './dto/dashboard-stats.dto';
+import { ResourceDashboardStatsPayload } from './dto/resource-dashboard-stats.dto';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -34,6 +35,13 @@ export class UsersResolver {
   async getDashboardStats(): Promise<DashboardStatsPayload> {
     return await this.usersService.getDashboardStats();
   }
+
+  @Roles(UserRole.ADMIN)
+  @Query(() => ResourceDashboardStatsPayload)
+  async getResourceDashboardStats(): Promise<ResourceDashboardStatsPayload> {
+    return await this.usersService.getResourceDashboardStats();
+  }
+
 
   // @Query(() => User, { name: 'user' })
   // findOne(@Args('id', { type: () => Int }) id: number) {
