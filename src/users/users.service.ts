@@ -13,6 +13,7 @@ import { CommonPayload } from './dto/common.dto';
 import { UpdateResourceInput } from './dto/update-resource-input';
 import { GetAllUsersInput } from './dto/get-all-users-input';
 import { DashboardStatsPayload } from './dto/dashboard-stats.dto';
+import { ResourceDashboardStatsPayload } from './dto/resource-dashboard-stats.dto';
 
 @Injectable()
 export class UsersService {
@@ -244,5 +245,94 @@ export class UsersService {
       newHiringCount
     }
 
-  }
+  };
+
+  async getResourceDashboardStats(): Promise<ResourceDashboardStatsPayload> {
+
+    const lastMonthDate = new Date(new Date().setMonth(new Date().getMonth() - 1));
+    const twoMonthsBeforeDate = new Date(new Date().setMonth(new Date().getMonth() - 2));
+    const currentDate = new Date()
+
+    const getPercentage = (prevMonthValue: number, cuurentMonthValue: number): number => {
+      const diff = cuurentMonthValue - prevMonthValue;
+      if (prevMonthValue == 0) return cuurentMonthValue * 100;
+      return +((diff / prevMonthValue) * 100).toFixed(2);
+    };
+
+    // Resource Count
+
+    const totalResourceCount = await this.userRepo.count({
+      where: {
+        roles: {
+          role: UserRole.RESOURCE
+        },
+        deletedAt: IsNull(),
+      }
+    });
+
+    const lastMonthResourceCount = await this.userRepo.count({
+      where: {
+        roles: {
+          role: UserRole.RESOURCE
+        },
+        deletedAt: IsNull(),
+        createdAt: Between(twoMonthsBeforeDate, lastMonthDate),
+
+      }
+    });
+
+    const currentMonthResourceCount = await this.userRepo.count({
+      where: {
+        roles: {
+          role: UserRole.RESOURCE
+        },
+        deletedAt: IsNull(),
+        createdAt: Between(lastMonthDate, currentDate),
+
+      }
+    });
+
+    const resourceDifference = getPercentage(lastMonthResourceCount, currentMonthResourceCount)
+
+    // OnBoarding Count
+
+    const totalOnboardedCount = await this.userRepo.count({
+      where: {
+        isOnboarded: true,
+        deletedAt: IsNull(),
+      }
+    });
+
+    const lastMonthOnboardedCount = await this.userRepo.count({
+      where: {
+        isOnboarded: true,
+        deletedAt: IsNull(),
+        createdAt: Between(twoMonthsBeforeDate, lastMonthDate),
+
+      }
+    });
+
+    const currentMonthOnboardedCount = await this.userRepo.count({
+      where: {
+        isOnboarded: true,
+        deletedAt: IsNull(),
+        createdAt: Between(lastMonthDate, currentDate),
+
+      }
+    });
+
+    const onboardedDifference = getPercentage(lastMonthOnboardedCount, currentMonthOnboardedCount)
+
+    return {
+      resourceStats: {
+        total: totalResourceCount,
+        difference: resourceDifference
+      },
+      onboardedStats: {
+        total: totalOnboardedCount,
+        difference: onboardedDifference
+      }
+    }
+
+  };
 }

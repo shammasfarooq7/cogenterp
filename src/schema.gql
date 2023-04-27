@@ -120,10 +120,21 @@ type DashboardStatsPayload {
   newHiringCount: Float!
 }
 
+type Stats {
+  total: Float!
+  difference: Float!
+}
+
+type ResourceDashboardStatsPayload {
+  resourceStats: Stats!
+  onboardedStats: Stats!
+}
+
 type Query {
   getAllUsers(getAllUsersInput: GetAllUsersInput!): [User!]!
   getResource(id: String!): User!
   getDashboardStats: DashboardStatsPayload!
+  getResourceDashboardStats: ResourceDashboardStatsPayload!
   getAllUserPaymentMethods: [UserPaymentMethod!]!
 }
 
