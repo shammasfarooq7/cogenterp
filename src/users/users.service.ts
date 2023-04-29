@@ -335,4 +335,13 @@ export class UsersService {
     }
 
   };
+
+  async getCurrentUser(id: string) {
+    return await this.userRepo.findOne(
+      {
+        where: { id, deletedAt: IsNull() },
+        relations: { roles: true, userPaymentMethod: true }
+      }
+    )
+  };
 }

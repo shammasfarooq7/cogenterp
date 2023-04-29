@@ -23,7 +23,8 @@
     "typeorm:migrate": "npm run typeorm migration:run -- -d ./src/data-source.ts",
     "typeorm:revert": "npm run typeorm -- -d ./src/data-source.ts migration:revert",
     "typeorm:generate": "npm run typeorm -- -d ./src/data-source.ts migration:generate ./src/migrations/$npm_config_name-migration",
-    "seed": "ts-node --project=tsconfig.json ./node_modules/typeorm-extension/dist/cli/index.js seed -d src/data-source.ts"
+    "seed": "ts-node --project=tsconfig.json ./node_modules/typeorm-extension/dist/cli/index.js seed -d src/data-source.ts",
+    "createRmsUser": "ts-node ./src/scripts/createRmsUser.ts"
   },
   "dependencies": {
     "@nestjs/apollo": "^10.1.7",
