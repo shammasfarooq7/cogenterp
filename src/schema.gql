@@ -132,6 +132,7 @@ type ResourceDashboardStatsPayload {
 
 type Query {
   getAllUsers(getAllUsersInput: GetAllUsersInput!): [User!]!
+  getCurrentUser: User!
   getResource(id: String!): User!
   getDashboardStats: DashboardStatsPayload!
   getResourceDashboardStats: ResourceDashboardStatsPayload!

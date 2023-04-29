@@ -24,6 +24,12 @@ export class UsersResolver {
     return await this.usersService.getAllUsers(getAllUsersInput);
   }
 
+  @Query(() => User)
+  async getCurrentUser(@CurrentUser() user: ICurrentUser): Promise<User> {
+    const result = await this.usersService.getCurrentUser(user.userId);
+    return result;
+  }
+
   @Roles(UserRole.ADMIN)
   @Query(() => User)
   async getResource(@Args('id') id: string): Promise<User> {
