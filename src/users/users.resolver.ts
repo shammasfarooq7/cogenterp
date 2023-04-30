@@ -18,7 +18,7 @@ import { ResourceDashboardStatsPayload } from './dto/resource-dashboard-stats.dt
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) { }
 
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.RMS)
   @Query(() => [User])
   async getAllUsers(@CurrentUser() user: ICurrentUser, @Args('getAllUsersInput') getAllUsersInput: GetAllUsersInput): Promise<User[]> {
     return await this.usersService.getAllUsers(getAllUsersInput);
@@ -30,19 +30,19 @@ export class UsersResolver {
     return result;
   }
 
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.RMS)
   @Query(() => User)
   async getResource(@Args('id') id: string): Promise<User> {
     return await this.usersService.getResource(id);
   }
 
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.RMS)
   @Query(() => DashboardStatsPayload)
   async getDashboardStats(): Promise<DashboardStatsPayload> {
     return await this.usersService.getDashboardStats();
   }
 
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.RMS)
   @Query(() => ResourceDashboardStatsPayload)
   async getResourceDashboardStats(): Promise<ResourceDashboardStatsPayload> {
     return await this.usersService.getResourceDashboardStats();
@@ -64,19 +64,19 @@ export class UsersResolver {
     return await this.usersService.create(createUserInput);
   }
 
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.RMS)
   @Mutation(() => CommonPayload)
   async createResource(@Args('createResourceInput') createResourceInput: CreateResourceInput): Promise<CommonPayload> {
     return await this.usersService.createResource(createResourceInput)
   }
 
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.RMS)
   @Mutation(() => CommonPayload)
   async updateResource(@Args('id') id: string, @Args('updateResourceInput') updateResourceInput: UpdateResourceInput): Promise<CommonPayload> {
     return await this.usersService.updateResource(id, updateResourceInput);
   }
 
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.RMS)
   @Mutation(() => CommonPayload)
   async deleteResource(@Args('id') id: string): Promise<CommonPayload> {
     return await this.usersService.deleteResource(id)
