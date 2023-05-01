@@ -9,6 +9,9 @@ import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './users/roles.guard';
 import { UserPaymentMethodsModule } from './modules/userPaymentMethods/userPaymentMethods.module';
 import { JwtAuthGuard } from './users/auth/jwt-auth.guard';
+import { ConfigModule } from '@nestjs/config';
+import { SendgridService } from './sendgrid/sendgrid.service';
+import { AzureBlobService } from './azure-blob/azure-blob.service';
 const { entities, migrations, ...options } = dataSourceOptions;
 
 @Module({
@@ -23,7 +26,8 @@ const { entities, migrations, ...options } = dataSourceOptions;
   }),
   UsersModule,
   AuthModule,
-  UserPaymentMethodsModule
+  UserPaymentMethodsModule,
+  ConfigModule.forRoot()
   ],
   providers: [
     {
@@ -33,7 +37,9 @@ const { entities, migrations, ...options } = dataSourceOptions;
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
-    }
+    },
+    SendgridService,
+    AzureBlobService
   ],
 })
 export class AppModule {}

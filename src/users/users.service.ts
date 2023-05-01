@@ -14,6 +14,8 @@ import { UpdateResourceInput } from './dto/update-resource-input';
 import { GetAllUsersInput } from './dto/get-all-users-input';
 import { DashboardStatsPayload } from './dto/dashboard-stats.dto';
 import { ResourceDashboardStatsPayload } from './dto/resource-dashboard-stats.dto';
+import { SendgridService } from 'src/sendgrid/sendgrid.service';
+import { AzureBlobService } from 'src/azure-blob/azure-blob.service';
 
 @Injectable()
 export class UsersService {
@@ -22,6 +24,8 @@ export class UsersService {
     @InjectRepository(UserPaymentMethod) private userPaymentMethodRepo: Repository<UserPaymentMethod>,
     private readonly roleService: RoleService,
     private readonly authService: AuthService,
+    private readonly sendgridService: SendgridService,
+    private readonly azureblobService: AzureBlobService
   ) { }
 
   async create(createUserInput: CreateUserInput) {
@@ -114,10 +118,11 @@ export class UsersService {
 
     const roleType = UserRole.RESOURCE;
     const role = await this.roleService.findByType(roleType);
+    const pass = (Math.random()*1e16).toString(36);
     const newUser = await this.userRepo.save({
       ...user,
       ...(user.isOnboarded ? { onboardedAt: new Date() } : {}),
-      password: "12345678",
+      password: pass,
       roles: [role],
     });
 
@@ -127,6 +132,15 @@ export class UsersService {
       beneficiaryMiddleName, branchName, sortCode, swiftCode, iban,
       user: newUser
     })
+
+    const mail = {
+      to: newUser.email,
+      subject: 'Cogent Sign-In credentials.',
+      from: 'admin@cogentnetworks.com',
+      text: `Your Cogent account has been created. Please login with your email using this password ${pass}`,
+    };
+
+    // await this.sendgridService.send(mail);
 
     return { message: "Resource Created Successfully!" };
   }

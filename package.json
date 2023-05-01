@@ -27,9 +27,11 @@
     "createRmsUser": "ts-node ./src/scripts/createRmsUser.ts"
   },
   "dependencies": {
+    "@azure/storage-blob": "^12.14.0",
     "@nestjs/apollo": "^10.1.7",
     "@nestjs/class-validator": "^0.13.4",
     "@nestjs/common": "^9.0.0",
+    "@nestjs/config": "^2.3.1",
     "@nestjs/core": "^9.0.0",
     "@nestjs/graphql": "^10.1.7",
     "@nestjs/jwt": "^10.0.1",
@@ -37,6 +39,8 @@
     "@nestjs/passport": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/typeorm": "^9.0.1",
+    "@sendgrid/mail": "^7.7.0",
+    "@types/multer": "^1.4.7",
     "@types/passport-jwt": "^3.0.8",
     "@types/passport-local": "^1.0.35",
     "apollo": "^2.11.1",
@@ -53,7 +57,8 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
     "typeorm": "^0.3.11",
-    "typeorm-extension": "^2.4.0"
+    "typeorm-extension": "^2.4.0",
+    "uuidv4": "^6.2.13"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
