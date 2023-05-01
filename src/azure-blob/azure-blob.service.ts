@@ -17,7 +17,9 @@ export class AzureBlobService {
  
   async upload(file:Express.Multer.File){
     const blobClient = this.getBlobClient(file.originalname);
+    const url = blobClient.url; 
     await blobClient.uploadData(file.buffer);
+    return url;
   }
 
   async downloadfile(fileName: string){

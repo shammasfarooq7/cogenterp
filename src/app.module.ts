@@ -12,6 +12,8 @@ import { JwtAuthGuard } from './users/auth/jwt-auth.guard';
 import { ConfigModule } from '@nestjs/config';
 import { SendgridService } from './sendgrid/sendgrid.service';
 import { AzureBlobService } from './azure-blob/azure-blob.service';
+import { AzureBlobModule } from './azure-blob/azure-blob.module';
+import { AzureBlobModule } from './azure-blob/azure-blob.module';
 const { entities, migrations, ...options } = dataSourceOptions;
 
 @Module({
@@ -27,7 +29,8 @@ const { entities, migrations, ...options } = dataSourceOptions;
   UsersModule,
   AuthModule,
   UserPaymentMethodsModule,
-  ConfigModule.forRoot()
+  ConfigModule.forRoot(),
+  AzureBlobModule
   ],
   providers: [
     {
