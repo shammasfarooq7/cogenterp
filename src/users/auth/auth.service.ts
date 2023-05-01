@@ -38,6 +38,12 @@ export class AuthService {
     if (!user.isOnboarded) {
       throw new Error("Your Account is not approved yet. Kindly contact with support team.")
     }
+
+    // Just For now, this line will be removed in future
+    if (!user?.roles.find(role => role.role === UserRole.RMS)) {
+      throw new Error("Only RMS Users are allowed to login.")
+    }
+
     const token = await this.jwtService.sign({ email: user.email, sub: user.id })
     return {
       accessToken: token,

@@ -177,12 +177,14 @@ export class UsersService {
   }
 
   async getResource(id: string) {
-    return await this.userRepo.findOne(
+    const user = await this.userRepo.findOne(
       {
         where: { id, deletedAt: IsNull() },
         relations: { roles: true, userPaymentMethod: true }
       }
     )
+    if (!user) throw new NotFoundException(`User with ${id} does not exist!`)
+    return user
   };
 
   async deleteResource(id: string): Promise<CommonPayload> {
