@@ -27,12 +27,28 @@ registerEnumType(EngagementType, {
   description: 'The user engagement type',
 });
 
+export enum IdCardType {
+  DriverLicense = "dl",
+  Passport = "pp",
+  IdCard = "id",
+  ResidencePermit = "rp"
+}
+
+registerEnumType(IdCardType, {
+  name: 'IdCardType',
+  description: 'The user id card type',
+});
+
 @ObjectType()
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid', { name: 'id' })
   @Field(() => String)
   id: string;
+
+  @PrimaryGeneratedColumn()
+  @Field()
+  cogent_id: number;
 
   @Column('varchar', { length: 50, unique: true })
   @Field(() => String)
@@ -54,9 +70,37 @@ export class User {
   @Field((type) => UserStatus)
   status: UserStatus;
 
+  @Column({
+    type: 'enum',
+    enum: IdCardType,
+    nullable: true
+  })
+  @Field((type) => IdCardType)
+  idCardType: IdCardType;
+
   @Column({ nullable: true })
   @Field({ nullable: true })
   vendorName: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  whatsappGroup: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  whatsappGroupLink: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  workPermitStatus: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  contractDocuments: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  availability: string;
 
   @Column({
     type: 'enum',

@@ -1,5 +1,5 @@
 import { ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
-import { GqlExecutionContext } from "@nestjs/graphql";
+import { GqlContextType, GqlExecutionContext } from "@nestjs/graphql";
 import { AuthGuard } from "@nestjs/passport";
 import { Reflector } from '@nestjs/core';
 import { UsersService } from "../users.service";
@@ -11,9 +11,12 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   getRequest(context: ExecutionContext) {
-    const ctx = GqlExecutionContext.create(context)
-    const result = ctx?.getContext()
-    return ctx.getContext().req;
+    if (context.getType() == 'http') {
+      return context.getArgByIndex(0);
+    } else if (context.getType<GqlContextType>() == 'graphql') {
+      const ctx = GqlExecutionContext.create(context);
+      return ctx.getContext().req;
+    }
   }
 
   async canActivate(context: ExecutionContext) {
