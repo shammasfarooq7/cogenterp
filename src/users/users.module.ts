@@ -9,12 +9,16 @@ import { RoleService } from './role.service';
 import { Role } from './entities/role.entity';
 import { AuthService } from './auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
+import { SendgridService } from '../sendgrid/sendgrid.service';
+import { AzureBlobService } from '../azure-blob/azure-blob.service';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, UserPaymentMethod, Role])
   ],
-  providers: [UsersResolver, UsersService, UserSubscriber, TypeOrmModule, RoleService, AuthService, JwtService],
+  providers: [UsersResolver, UsersService, UserSubscriber, TypeOrmModule, RoleService, AuthService,
+    JwtService, SendgridService, AzureBlobService, ConfigService],
   exports: [UsersService]
 })
 export class UsersModule { }
