@@ -12,6 +12,7 @@ import { JwtAuthGuard } from './users/auth/jwt-auth.guard';
 import { ConfigModule } from '@nestjs/config';
 import { SendgridService } from './sendgrid/sendgrid.service';
 import { AzureBlobService } from './azure-blob/azure-blob.service';
+import { AzureBlobController } from './azure-blob/azure-blob.controller';
 // import { AzureBlobModule } from './azure-blob/azure-blob.module';
 const { entities, migrations, ...options } = dataSourceOptions;
 
@@ -25,12 +26,13 @@ const { entities, migrations, ...options } = dataSourceOptions;
     autoSchemaFile: './src/schema.gql',
     playground: true,
   }),
-  UsersModule,
-  AuthModule,
-  UserPaymentMethodsModule,
+    UsersModule,
+    AuthModule,
+    UserPaymentMethodsModule,
   ConfigModule.forRoot(),
-  // AzureBlobModule
+    // AzureBlobModule
   ],
+  controllers: [AzureBlobController],
   providers: [
     {
       provide: APP_GUARD,
