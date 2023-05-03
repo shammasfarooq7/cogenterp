@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
@@ -13,6 +13,7 @@ import { UpdateResourceInput } from './dto/update-resource-input';
 import { GetAllUsersInput } from './dto/get-all-users-input';
 import { DashboardStatsPayload } from './dto/dashboard-stats.dto';
 import { ResourceDashboardStatsPayload } from './dto/resource-dashboard-stats.dto';
+import { IContext } from './auth/interfaces/context.interface';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -25,8 +26,8 @@ export class UsersResolver {
   }
 
   @Query(() => User)
-  async getCurrentUser(@CurrentUser() user: ICurrentUser): Promise<User> {
-    const result = await this.usersService.getCurrentUser(user.userId);
+  async getCurrentUser(@Context() ctx: IContext): Promise<User> {
+    const result = await this.usersService.getCurrentUser(ctx?.user?.userId);
     return result;
   }
 

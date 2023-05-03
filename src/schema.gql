@@ -81,6 +81,8 @@ type User {
   anyExtraRate: String
   transport: String
   mobility: String
+  resumeDocUrl: String
+  identityDocUrl: String
   onboardedBy: String
   isOnboarded: Boolean!
   isARequest: Boolean!
@@ -224,6 +226,8 @@ input CreateResourceInput {
   transport: String
   mobility: String
   onboardedBy: String
+  resumeDocUrl: String
+  identityDocUrl: String
   isOnboarded: Boolean!
 }
 
@@ -276,6 +280,8 @@ input UpdateResourceInput {
   transport: String
   mobility: String
   onboardedBy: String
+  resumeDocUrl: String
+  identityDocUrl: String
   isOnboarded: Boolean!
 }
 

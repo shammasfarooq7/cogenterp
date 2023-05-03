@@ -225,6 +225,14 @@ export class User {
   @Field({ nullable: true })
   mobility: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  resumeDocUrl: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  identityDocUrl: string;
+
   @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
   onboardedBy: string;

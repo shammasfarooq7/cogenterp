@@ -150,6 +150,12 @@ export class CreateResourceInput {
     @Field({ nullable: true })
     onboardedBy: string;
 
+    @Field({ nullable: true })
+    resumeDocUrl: string;
+
+    @Field({ nullable: true })
+    identityDocUrl: string;
+
     @Field()
     isOnboarded: boolean;
 
