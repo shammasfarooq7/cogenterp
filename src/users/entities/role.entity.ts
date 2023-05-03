@@ -17,7 +17,7 @@ registerEnumType(UserRole, {
 @Entity({ name: 'roles' })
 @ObjectType()
 export class Role {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('increment')
   @Field()
   id: string;
 

@@ -5,7 +5,7 @@ import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGenerat
 @Entity({ name: 'user_payment_methods' })
 @ObjectType()
 export class UserPaymentMethod {
-    @PrimaryGeneratedColumn('uuid')
+    @PrimaryGeneratedColumn('increment')
     @Field()
     id: string;
 

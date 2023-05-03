@@ -44,7 +44,13 @@ type User {
   email: String!
   phoneNumber: String
   status: UserStatus!
+  idCardType: IdCardType!
   vendorName: String
+  whatsappGroup: String
+  whatsappGroupLink: String
+  workPermitStatus: String
+  contractDocuments: String
+  availability: String
   engagementType: EngagementType!
   rpocName: String
   rpocEmail: String
@@ -90,6 +96,14 @@ type User {
 enum UserStatus {
   DIRECT
   INDIRECT
+}
+
+"""The user id card type"""
+enum IdCardType {
+  DriverLicense
+  Passport
+  IdCard
+  ResidencePermit
 }
 
 """The user engagement type"""

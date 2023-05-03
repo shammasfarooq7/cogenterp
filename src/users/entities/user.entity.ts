@@ -1,6 +1,6 @@
 import { IsPhoneNumber } from '@nestjs/class-validator';
 import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Generated, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm';
 import { Role } from './role.entity';
 import { UserPaymentMethod } from './../../modules/userPaymentMethods/entity/userPaymentMethod.entity';
 
@@ -42,13 +42,10 @@ registerEnumType(IdCardType, {
 @ObjectType()
 @Entity('users')
 export class User {
-  @PrimaryGeneratedColumn('uuid', { name: 'id' })
+  @PrimaryGeneratedColumn('increment', { name: 'id' })
   @Field(() => String)
   id: string;
 
-  @PrimaryGeneratedColumn()
-  @Field()
-  cogent_id: number;
 
   @Column('varchar', { length: 50, unique: true })
   @Field(() => String)
