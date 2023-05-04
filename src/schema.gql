@@ -42,14 +42,15 @@ type UserPaymentMethod {
 type User {
   id: String!
   email: String!
-  phoneNumber: String
+  mobileNumber: String
+  contactNumber: String
   status: UserStatus!
   idCardType: IdCardType!
   vendorName: String
   whatsappGroup: String
   whatsappGroupLink: String
   workPermitStatus: String
-  contractDocuments: String
+  contractDocuments: Boolean
   availability: String
   engagementType: EngagementType!
   rpocName: String
@@ -229,6 +230,8 @@ input CreateResourceInput {
   resumeDocUrl: String
   identityDocUrl: String
   isOnboarded: Boolean!
+  workPermitStatus: String!
+  mobileNumber: String!
 }
 
 input UpdateResourceInput {
@@ -283,6 +286,8 @@ input UpdateResourceInput {
   resumeDocUrl: String
   identityDocUrl: String
   isOnboarded: Boolean!
+  workPermitStatus: String!
+  mobileNumber: String!
 }
 
 input LoginUserInput {
@@ -293,5 +298,5 @@ input LoginUserInput {
 input SignUpUserInput {
   email: String!
   password: String!
-  phoneNumber: String = null
+  mobileNumber: String = null
 }

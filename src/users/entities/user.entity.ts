@@ -57,7 +57,12 @@ export class User {
   @Column({ nullable: true })
   @Field({ nullable: true, defaultValue: null })
   @IsPhoneNumber()
-  phoneNumber: string;
+  mobileNumber: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true, defaultValue: null })
+  @IsPhoneNumber()
+  contactNumber: string;
 
   @Column({
     type: 'enum',
@@ -91,9 +96,9 @@ export class User {
   @Field({ nullable: true })
   workPermitStatus: string;
 
-  @Column({ nullable: true })
+  @Column({ type: "boolean", nullable: true })
   @Field({ nullable: true })
-  contractDocuments: string;
+  contractDocuments: boolean;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
@@ -176,11 +181,11 @@ export class User {
   @Field({ nullable: true })
   postalCode: string;
 
-  @Column({ nullable: true })
+  @Column({ type: "text", nullable: true })
   @Field({ nullable: true })
   addressLine1: string;
 
-  @Column({ nullable: true })
+  @Column({ type: "text", nullable: true })
   @Field({ nullable: true })
   addressLine2: string;
 

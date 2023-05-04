@@ -10,5 +10,5 @@ export class SignUpUserInput {
   password: string;
 
   @Field({ nullable: true, defaultValue: null })
-  phoneNumber?: string;
+  mobileNumber?: string;
 }

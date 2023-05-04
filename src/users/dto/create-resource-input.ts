@@ -159,4 +159,10 @@ export class CreateResourceInput {
     @Field()
     isOnboarded: boolean;
 
+    @Field()
+    workPermitStatus: string
+
+    @Field()
+    mobileNumber: string
+
 }
