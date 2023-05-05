@@ -211,7 +211,7 @@ input CreateResourceInput {
   fullDayRate: String
   monthlyRate: String
   anyExtraRate: String
-  accountType: String!
+  accountType: String
   accountTitle: String!
   beneficiaryFirstName: String!
   beneficiaryMiddleName: String!
@@ -232,6 +232,11 @@ input CreateResourceInput {
   isOnboarded: Boolean!
   workPermitStatus: String!
   mobileNumber: String!
+  contactNumber: String!
+  whatsappGroup: String!
+  whatsappGroupLink: String!
+  availability: String!
+  contractDocuments: Boolean!
 }
 
 input UpdateResourceInput {
@@ -267,7 +272,7 @@ input UpdateResourceInput {
   fullDayRate: String
   monthlyRate: String
   anyExtraRate: String
-  accountType: String!
+  accountType: String
   accountTitle: String!
   beneficiaryFirstName: String!
   beneficiaryMiddleName: String!
@@ -288,6 +293,11 @@ input UpdateResourceInput {
   isOnboarded: Boolean!
   workPermitStatus: String!
   mobileNumber: String!
+  contactNumber: String!
+  whatsappGroup: String!
+  whatsappGroupLink: String!
+  availability: String!
+  contractDocuments: Boolean!
 }
 
 input LoginUserInput {

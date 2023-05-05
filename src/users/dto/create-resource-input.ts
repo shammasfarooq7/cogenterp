@@ -102,7 +102,7 @@ export class CreateResourceInput {
 
     // Payment Mehtod Input Type
 
-    @Field(() => String)
+    @Field(() => String, { nullable: true })
     accountType: string;
 
     @Field(() => String)
@@ -164,5 +164,20 @@ export class CreateResourceInput {
 
     @Field()
     mobileNumber: string
+
+    @Field()
+    contactNumber: string
+
+    @Field()
+    whatsappGroup: string
+
+    @Field()
+    whatsappGroupLink: string
+
+    @Field()
+    availability: string
+
+    @Field()
+    contractDocuments: boolean
 
 }

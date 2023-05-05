@@ -118,7 +118,7 @@ export class UsersService {
 
     const roleType = UserRole.RESOURCE;
     const role = await this.roleService.findByType(roleType);
-    const pass = (Math.random()*1e16).toString(36);
+    const pass = (Math.random() * 1e16).toString(36);
     const newUser = await this.userRepo.save({
       ...user,
       ...(user.isOnboarded ? { onboardedAt: new Date() } : {}),
@@ -126,12 +126,13 @@ export class UsersService {
       roles: [role],
     });
 
-    await this.userPaymentMethodRepo.save({
-      accountNumber, accountTitle, accountType, bankAddress, bankName,
-      beneficiaryAddress, beneficiaryFirstName, beneficiaryLastName,
-      beneficiaryMiddleName, branchName, sortCode, swiftCode, iban,
-      user: newUser
-    })
+    if (accountType)
+      await this.userPaymentMethodRepo.save({
+        accountNumber, accountTitle, accountType, bankAddress, bankName,
+        beneficiaryAddress, beneficiaryFirstName, beneficiaryLastName,
+        beneficiaryMiddleName, branchName, sortCode, swiftCode, iban,
+        user: newUser
+      })
 
     const mail = {
       to: newUser.email,
