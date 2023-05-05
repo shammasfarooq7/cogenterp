@@ -68,8 +68,9 @@ export class User {
     type: 'enum',
     enum: UserStatus,
     default: UserStatus.DIRECT,
+    nullable: true
   })
-  @Field((type) => UserStatus)
+  @Field((type) => UserStatus, { nullable: true })
   status: UserStatus;
 
   @Column({
@@ -77,7 +78,7 @@ export class User {
     enum: IdCardType,
     nullable: true
   })
-  @Field((type) => IdCardType)
+  @Field((type) => IdCardType, { nullable: true })
   idCardType: IdCardType;
 
   @Column({ nullable: true })
@@ -108,8 +109,9 @@ export class User {
     type: 'enum',
     enum: EngagementType,
     default: EngagementType.FSE,
+    nullable: true
   })
-  @Field((type) => EngagementType)
+  @Field((type) => EngagementType, { nullable: true })
   engagementType: EngagementType;
 
   @Column({ nullable: true })
@@ -146,15 +148,15 @@ export class User {
   taxNumber: string;
 
   @Column("text", { array: true, nullable: true })
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true })
   languages: string[];
 
   @Column("text", { array: true, nullable: true })
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true })
   skillSet: string[];
 
   @Column("text", { array: true, nullable: true })
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true })
   availableTools: string[];
 
   @Column({ nullable: true })
@@ -255,7 +257,7 @@ export class User {
   @JoinTable({ name: "user_roles" })
   roles: Role[];
 
-  @Field(() => [UserPaymentMethod])
+  @Field(() => [UserPaymentMethod], { nullable: true })
   @OneToMany(() => UserPaymentMethod, (userPaymentMethod) => userPaymentMethod.user)
   userPaymentMethod: UserPaymentMethod[]
 

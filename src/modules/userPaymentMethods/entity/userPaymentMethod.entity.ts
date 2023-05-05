@@ -21,16 +21,16 @@ export class UserPaymentMethod {
     @Field(() => String)
     beneficiaryFirstName: string;
 
-    @Column()
-    @Field(() => String)
+    @Column({ nullable: true })
+    @Field(() => String, { nullable: true })
     beneficiaryMiddleName: string;
 
     @Column()
     @Field(() => String)
     beneficiaryLastName: string;
 
-    @Column()
-    @Field(() => String)
+    @Column({ nullable: true })
+    @Field(() => String, { nullable: true })
     beneficiaryAddress: string;
 
     @Column({ nullable: true })
@@ -53,12 +53,12 @@ export class UserPaymentMethod {
     @Field(() => String)
     bankName: string;
 
-    @Column()
-    @Field(() => String)
+    @Column({ nullable: true })
+    @Field(() => String, { nullable: true })
     branchName: string;
 
-    @Column()
-    @Field(() => String)
+    @Column({ nullable: true })
+    @Field(() => String, { nullable: true })
     bankAddress: string;
 
     @Field(() => User)

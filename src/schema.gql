@@ -23,16 +23,16 @@ type UserPaymentMethod {
   accountType: String!
   accountTitle: String!
   beneficiaryFirstName: String!
-  beneficiaryMiddleName: String!
+  beneficiaryMiddleName: String
   beneficiaryLastName: String!
-  beneficiaryAddress: String!
+  beneficiaryAddress: String
   sortCode: String
   accountNumber: String!
   iban: String!
   swiftCode: String!
   bankName: String!
-  branchName: String!
-  bankAddress: String!
+  branchName: String
+  bankAddress: String
   user: User!
   userId: String
   createdAt: String!
@@ -44,15 +44,15 @@ type User {
   email: String!
   mobileNumber: String
   contactNumber: String
-  status: UserStatus!
-  idCardType: IdCardType!
+  status: UserStatus
+  idCardType: IdCardType
   vendorName: String
   whatsappGroup: String
   whatsappGroupLink: String
   workPermitStatus: String
   contractDocuments: Boolean
   availability: String
-  engagementType: EngagementType!
+  engagementType: EngagementType
   rpocName: String
   rpocEmail: String
   rpocContactNumber: String
@@ -61,9 +61,9 @@ type User {
   middleName: String
   idCardNumber: String
   taxNumber: String
-  languages: [String!]!
-  skillSet: [String!]!
-  availableTools: [String!]!
+  languages: [String!]
+  skillSet: [String!]
+  availableTools: [String!]
   nationality: String
   region: String
   country: String
@@ -88,7 +88,7 @@ type User {
   isOnboarded: Boolean!
   isARequest: Boolean!
   roles: [Role!]!
-  userPaymentMethod: [UserPaymentMethod!]!
+  userPaymentMethod: [UserPaymentMethod!]
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
