@@ -14,14 +14,15 @@ import { GetAllUsersInput } from './dto/get-all-users-input';
 import { DashboardStatsPayload } from './dto/dashboard-stats.dto';
 import { ResourceDashboardStatsPayload } from './dto/resource-dashboard-stats.dto';
 import { IContext } from './auth/interfaces/context.interface';
+import { GetAllUsersStatsPayload } from './dto/get-all-users.dto';
 
 @Resolver(() => User)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) { }
 
   @Roles(UserRole.ADMIN, UserRole.RMS)
-  @Query(() => [User])
-  async getAllUsers(@CurrentUser() user: ICurrentUser, @Args('getAllUsersInput') getAllUsersInput: GetAllUsersInput): Promise<User[]> {
+  @Query(() => GetAllUsersStatsPayload)
+  async getAllUsers(@CurrentUser() user: ICurrentUser, @Args('getAllUsersInput') getAllUsersInput: GetAllUsersInput): Promise<GetAllUsersStatsPayload> {
     return await this.usersService.getAllUsers(getAllUsersInput);
   }
 

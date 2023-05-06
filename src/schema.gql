@@ -156,8 +156,13 @@ type ResourceDashboardStatsPayload {
   onboardedStats: Stats!
 }
 
+type GetAllUsersStatsPayload {
+  users: [User!]!
+  count: Float!
+}
+
 type Query {
-  getAllUsers(getAllUsersInput: GetAllUsersInput!): [User!]!
+  getAllUsers(getAllUsersInput: GetAllUsersInput!): GetAllUsersStatsPayload!
   getCurrentUser: User!
   getResource(id: String!): User!
   getDashboardStats: DashboardStatsPayload!

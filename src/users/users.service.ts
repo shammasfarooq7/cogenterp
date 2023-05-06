@@ -16,6 +16,7 @@ import { DashboardStatsPayload } from './dto/dashboard-stats.dto';
 import { ResourceDashboardStatsPayload } from './dto/resource-dashboard-stats.dto';
 import { SendgridService } from 'src/sendgrid/sendgrid.service';
 import { AzureBlobService } from 'src/azure-blob/azure-blob.service';
+import { GetAllUsersStatsPayload } from './dto/get-all-users.dto';
 
 @Injectable()
 export class UsersService {
@@ -48,7 +49,7 @@ export class UsersService {
     }
   }
 
-  async getAllUsers(getAllUsersInput: GetAllUsersInput): Promise<User[]> {
+  async getAllUsers(getAllUsersInput: GetAllUsersInput): Promise<GetAllUsersStatsPayload> {
     try {
       const { role, limit = 20, page = 0, searchQuery } = getAllUsersInput;
 
@@ -66,12 +67,19 @@ export class UsersService {
 
       ];
 
-      return await this.userRepo.find({
+      const users = await this.userRepo.find({
         where,
         relations: { userPaymentMethod: true, roles: true },
         skip: page * limit,
         take: limit
       });
+
+      const count = await this.userRepo.count({ where })
+      return {
+        count,
+        users
+      }
+
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
