@@ -170,13 +170,26 @@ export class UsersService {
 
     await this.userRepo.save(user);
 
-    await this.userPaymentMethodRepo.update({
-      userId: user.id
-    }, {
+    const paymentPayload = {
       accountNumber, accountTitle, accountType, bankAddress, bankName,
       beneficiaryAddress, beneficiaryFirstName, beneficiaryLastName,
       beneficiaryMiddleName, branchName, sortCode, swiftCode, iban,
-    });
+    };
+    if (!user?.userPaymentMethod?.length) {
+      await this.userPaymentMethodRepo.save({
+        ...paymentPayload,
+        user
+      })
+    }
+    else {
+      await this.userPaymentMethodRepo.update({
+        userId: user.id
+      }, {
+        accountNumber, accountTitle, accountType, bankAddress, bankName,
+        beneficiaryAddress, beneficiaryFirstName, beneficiaryLastName,
+        beneficiaryMiddleName, branchName, sortCode, swiftCode, iban,
+      });
+    }
 
     return { message: "Resource Updated Successfully!" };
   }
@@ -366,11 +379,11 @@ export class UsersService {
     )
   };
 
-  async approveUserRequest(id: string){
+  async approveUserRequest(id: string) {
     const user = await this.userRepo.findOne({ where: { id } });
     if (!user) throw new NotFoundException(`User does not exist!`);
 
-    await this.userRepo.save({id: user.id, requestApproved: true})
+    await this.userRepo.save({ id: user.id, requestApproved: true })
 
     const mail = {
       to: user.email,
