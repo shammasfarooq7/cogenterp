@@ -15,9 +15,9 @@ import { LoginTracker } from '../entities/login-tracker.entity';
 @Injectable()
 export class AuthService {
   constructor(@InjectRepository(User) private userRepo: Repository<User>,
-  private jwtService: JwtService,
-  private readonly roleService: RoleService,
-  @InjectRepository(LoginTracker) private loginTrackerRepo: Repository<LoginTracker>) { }
+    private jwtService: JwtService,
+    private readonly roleService: RoleService,
+    @InjectRepository(LoginTracker) private loginTrackerRepo: Repository<LoginTracker>) { }
 
   async validateUser(email: string, pass: string) {
     try {
@@ -35,8 +35,8 @@ export class AuthService {
   async login(loginUserInput: LoginUserInput): Promise<LoginResponse> {
     const user = await this.userRepo.findOne({
       where: { email: loginUserInput.email },
-      relations: { roles: true },
-      select: { id: true, requestApproved: true, roles: { role: true } }
+      relations: { roles: true, loginTracker: true },
+      select: { id: true, requestApproved: true, roles: { role: true }, }
     })
 
     if (user?.roles.find(role => role.role === UserRole.RESOURCE) && !user.requestApproved) {
@@ -47,8 +47,14 @@ export class AuthService {
     // if (!user?.roles.find(role => role.role === UserRole.RMS)) {
     //   throw new Error("Only RMS Users are allowed to login.")
     // }
+    if (user?.loginTracker?.id) {
+      await this.loginTrackerRepo.save({ id: user.loginTracker.id, lastLogin: new Date() })
+    }
+    else {
+      const loginTracker = await this.loginTrackerRepo.save({ lastLogin: new Date(), user })
+      await this.userRepo.update({ id: user.id }, { loginTracker })
+    }
 
-    // await this.loginTrackerRepo.save({id: user.loginTracker.id, lastLogin: Date.now()})
 
     const token = await this.jwtService.sign({ email: user.email, sub: user.id })
     return {

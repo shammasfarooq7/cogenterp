@@ -2,9 +2,12 @@ import { ObjectType, Field } from '@nestjs/graphql';
 import {
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { User } from './user.entity';
 
 @Entity('loginTracker')
 @ObjectType()
@@ -16,6 +19,10 @@ export class LoginTracker {
   @CreateDateColumn({ type: 'timestamptz' })
   @Field(() => Date)
   lastLogin: Date;
+
+  @OneToOne(() => User)
+  @JoinColumn({ name: 'userId' })
+  user: User;
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field(() => Date)
