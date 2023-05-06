@@ -29,10 +29,10 @@ registerEnumType(EngagementType, {
 });
 
 export enum IdCardType {
-  DriverLicense = "dl",
-  Passport = "pp",
-  IdCard = "id",
-  ResidencePermit = "rp"
+  DriverLicense = "DriverLicense",
+  Passport = "Passport",
+  IdCard = "IdCard",
+  ResidencePermit = "ResidencePermit"
 }
 
 registerEnumType(IdCardType, {

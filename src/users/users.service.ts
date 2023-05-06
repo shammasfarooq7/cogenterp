@@ -163,6 +163,7 @@ export class UsersService {
     if (!user) throw new NotFoundException(`User with ${id} does not exist!`);
 
     Object.keys(userData).forEach((key) => { user[key] = userData[key] });
+    user["requestApproved"] = user.requestApproved;
 
     if (userData.isOnboarded && !user.isOnboarded) {
       user["onboardedAt"] = new Date()
