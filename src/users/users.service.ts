@@ -346,6 +346,9 @@ export class UsersService {
 
     const totalOnboardedCount = await this.userRepo.count({
       where: {
+        roles: {
+          role: UserRole.RESOURCE
+        },
         isOnboarded: true,
         deletedAt: IsNull(),
       }
@@ -353,6 +356,9 @@ export class UsersService {
 
     const lastMonthOnboardedCount = await this.userRepo.count({
       where: {
+        roles: {
+          role: UserRole.RESOURCE
+        },
         isOnboarded: true,
         deletedAt: IsNull(),
         createdAt: Between(twoMonthsBeforeDate, lastMonthDate),
@@ -362,6 +368,9 @@ export class UsersService {
 
     const currentMonthOnboardedCount = await this.userRepo.count({
       where: {
+        roles: {
+          role: UserRole.RESOURCE
+        },
         isOnboarded: true,
         deletedAt: IsNull(),
         createdAt: Between(lastMonthDate, currentDate),
@@ -408,10 +417,10 @@ export class UsersService {
 
     // await this.sendgridService.send(mail);
 
-    return { message: "Request Approved Updated Successfully!" };
+    return { message: "Request Approved Successfully!" };
   }
 
-  async getNewRequestUsers(getAllUsersInput: GetAllUsersInput): Promise<User[]> {
+  async getNewRequestUsers(getAllUsersInput: GetAllUsersInput): Promise<GetAllUsersStatsPayload> {
     try {
       const { role, limit = 20, page = 0 } = getAllUsersInput;
 
@@ -421,12 +430,15 @@ export class UsersService {
         ...(role && { roles: { role } }),
       };
 
-      return await this.userRepo.find({
+      const users = await this.userRepo.find({
         where,
         relations: { userPaymentMethod: true, roles: true },
         skip: page * limit,
         take: limit
       });
+      const count = await this.userRepo.count({ where });
+
+      return { count, users }
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

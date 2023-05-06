@@ -167,7 +167,7 @@ type Query {
   getResource(id: String!): User!
   getDashboardStats: DashboardStatsPayload!
   getResourceDashboardStats: ResourceDashboardStatsPayload!
-  getNewRequestUsers(getNewRequestUsers: GetAllUsersInput!): [User!]!
+  getNewRequestUsers(getNewRequestUsersInput: GetAllUsersInput!): GetAllUsersStatsPayload!
   getAllUserPaymentMethods: [UserPaymentMethod!]!
 }
 
