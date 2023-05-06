@@ -158,7 +158,7 @@ export class UsersService {
       beneficiaryMiddleName, branchName, sortCode, swiftCode, iban, ...userData
     } = updateResourceInput;
 
-    const user = await this.userRepo.findOne({ where: { id } });
+    const user = await this.userRepo.findOne({ where: { id }, relations: { userPaymentMethod: true } });
 
     if (!user) throw new NotFoundException(`User with ${id} does not exist!`);
 
@@ -168,28 +168,33 @@ export class UsersService {
     if (userData.isOnboarded && !user.isOnboarded) {
       user["onboardedAt"] = new Date()
     }
+    if (!accountType) {
+      user.userPaymentMethod = [];
+    }
 
     await this.userRepo.save(user);
 
-    const paymentPayload = {
-      accountNumber, accountTitle, accountType, bankAddress, bankName,
-      beneficiaryAddress, beneficiaryFirstName, beneficiaryLastName,
-      beneficiaryMiddleName, branchName, sortCode, swiftCode, iban,
-    };
-    if (!user?.userPaymentMethod?.length) {
-      await this.userPaymentMethodRepo.save({
-        ...paymentPayload,
-        user
-      })
-    }
-    else {
-      await this.userPaymentMethodRepo.update({
-        userId: user.id
-      }, {
+    if (accountType) {
+      const paymentPayload = {
         accountNumber, accountTitle, accountType, bankAddress, bankName,
         beneficiaryAddress, beneficiaryFirstName, beneficiaryLastName,
         beneficiaryMiddleName, branchName, sortCode, swiftCode, iban,
-      });
+      };
+      if (!user?.userPaymentMethod?.length) {
+        await this.userPaymentMethodRepo.save({
+          ...paymentPayload,
+          user
+        })
+      }
+      else {
+        await this.userPaymentMethodRepo.update({
+          userId: user.id
+        }, {
+          accountNumber, accountTitle, accountType, bankAddress, bankName,
+          beneficiaryAddress, beneficiaryFirstName, beneficiaryLastName,
+          beneficiaryMiddleName, branchName, sortCode, swiftCode, iban,
+        });
+      }
     }
 
     return { message: "Resource Updated Successfully!" };
