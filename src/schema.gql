@@ -191,7 +191,6 @@ input CreateUserInput {
 input CreateResourceInput {
   email: String!
   phoneNumber: String = null
-  requestApproved: String = "false"
   status: UserStatus!
   vendorName: String
   engagementType: EngagementType!
@@ -255,7 +254,6 @@ input CreateResourceInput {
 input UpdateResourceInput {
   email: String!
   phoneNumber: String = null
-  requestApproved: String = "false"
   status: UserStatus!
   vendorName: String
   engagementType: EngagementType!
