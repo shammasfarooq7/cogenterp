@@ -1,5 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { EngagementType, UserStatus } from '../entities/user.entity';
+import { EngagementType, UserStatus, IdCardType, InterviewStatus } from '../entities/user.entity';
 
 @InputType()
 export class CreateResourceInput {
@@ -155,6 +155,12 @@ export class CreateResourceInput {
 
     @Field({ nullable: true })
     identityDocUrl: string;
+
+    @Field({ nullable: true })
+    idCardType: IdCardType
+
+    @Field({ nullable: true })
+    interviewStatus: InterviewStatus
 
     @Field()
     isOnboarded: boolean;

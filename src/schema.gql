@@ -46,6 +46,7 @@ type User {
   contactNumber: String
   status: UserStatus
   idCardType: IdCardType
+  interviewStatus: InterviewStatus
   vendorName: String
   whatsappGroup: String
   whatsappGroupLink: String
@@ -107,6 +108,13 @@ enum IdCardType {
   Passport
   IdCard
   ResidencePermit
+}
+
+"""The user interview status"""
+enum InterviewStatus {
+  Complete
+  Scheduled
+  NotScheduled
 }
 
 """The user engagement type"""
@@ -229,6 +237,8 @@ input CreateResourceInput {
   onboardedBy: String
   resumeDocUrl: String
   identityDocUrl: String
+  idCardType: String
+  interviewStatus: String
   isOnboarded: Boolean!
   workPermitStatus: String!
   mobileNumber: String!
@@ -290,6 +300,8 @@ input UpdateResourceInput {
   onboardedBy: String
   resumeDocUrl: String
   identityDocUrl: String
+  idCardType: String
+  interviewStatus: String
   isOnboarded: Boolean!
   workPermitStatus: String!
   mobileNumber: String!

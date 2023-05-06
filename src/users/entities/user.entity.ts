@@ -39,6 +39,16 @@ registerEnumType(IdCardType, {
   description: 'The user id card type',
 });
 
+export enum InterviewStatus {
+  Complete = "Complete",
+  Scheduled = "Scheduled",
+  NotScheduled = "NotScheduled",
+}
+
+registerEnumType(InterviewStatus, {
+  name: 'InterviewStatus',
+  description: 'The user interview status',
+});
 @ObjectType()
 @Entity('users')
 export class User {
@@ -80,6 +90,14 @@ export class User {
   })
   @Field((type) => IdCardType, { nullable: true })
   idCardType: IdCardType;
+
+  @Column({
+    type: 'enum',
+    enum: InterviewStatus,
+    nullable: true
+  })
+  @Field(() => InterviewStatus, { nullable: true })
+  interviewStatus: InterviewStatus;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
