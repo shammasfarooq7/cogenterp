@@ -54,6 +54,7 @@ export class UsersService {
 
       const whereClause = {
         deletedAt: IsNull(),
+        requestApproved: true,
         ...(role && { roles: { role } }),
       };
 
@@ -61,6 +62,8 @@ export class UsersService {
         { ...(searchQuery && { email: ILike(`%${searchQuery}%`) }), ...whereClause },
         { ...(searchQuery && { firstName: ILike(`%${searchQuery}%`) }), ...whereClause },
         { ...(searchQuery && { lastName: ILike(`%${searchQuery}%`) }), ...whereClause },
+        { ...(searchQuery && { country: ILike(`%${searchQuery}%`) }), ...whereClause },
+
       ];
 
       return await this.userRepo.find({
@@ -123,6 +126,7 @@ export class UsersService {
       ...user,
       ...(user.isOnboarded ? { onboardedAt: new Date() } : {}),
       password: pass,
+      requestApproved: true,
       roles: [role],
     });
 
@@ -141,7 +145,7 @@ export class UsersService {
       text: `Your Cogent account has been created. Please login with your email using this password ${pass}`,
     };
 
-    // await this.sendgridService.send(mail);
+    await this.sendgridService.send(mail);
 
     return { message: "Resource Created Successfully!" };
   }
@@ -361,4 +365,44 @@ export class UsersService {
       }
     )
   };
+
+  async approveUserRequest(id: string){
+    const user = await this.userRepo.findOne({ where: { id } });
+    if (!user) throw new NotFoundException(`User does not exist!`);
+
+    await this.userRepo.save({id: user.id, requestApproved: true})
+
+    const mail = {
+      to: user.email,
+      subject: 'Request.',
+      from: 'admin@cogentnetworks.com',
+      text: `Your Cogent account request is approved. Please login and update your data.`,
+    };
+
+    await this.sendgridService.send(mail);
+
+    return { message: "Request Approved Updated Successfully!" };
+  }
+
+  async getNewRequestUsers(getAllUsersInput: GetAllUsersInput): Promise<User[]> {
+    try {
+      const { role, limit = 20, page = 0 } = getAllUsersInput;
+
+      const where = {
+        deletedAt: IsNull(),
+        requestApproved: false,
+        ...(role && { roles: { role } }),
+      };
+
+      return await this.userRepo.find({
+        where,
+        relations: { userPaymentMethod: true, roles: true },
+        skip: page * limit,
+        take: limit
+      });
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
 }

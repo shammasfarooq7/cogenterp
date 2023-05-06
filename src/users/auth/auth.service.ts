@@ -10,10 +10,14 @@ import { RoleService } from '../role.service';
 import { UserRole } from '../entities/role.entity';
 import { SignUpUserInput } from '../dto/sign-up-user.input';
 import { IPayload } from './interfaces/current-user.interface';
+import { LoginTracker } from '../entities/login-tracker.entity';
 
 @Injectable()
 export class AuthService {
-  constructor(@InjectRepository(User) private userRepo: Repository<User>, private jwtService: JwtService, private readonly roleService: RoleService) { }
+  constructor(@InjectRepository(User) private userRepo: Repository<User>,
+  private jwtService: JwtService,
+  private readonly roleService: RoleService,
+  @InjectRepository(LoginTracker) private loginTrackerRepo: Repository<LoginTracker>) { }
 
   async validateUser(email: string, pass: string) {
     try {
@@ -32,17 +36,19 @@ export class AuthService {
     const user = await this.userRepo.findOne({
       where: { email: loginUserInput.email },
       relations: { roles: true },
-      select: { id: true, isOnboarded: true, roles: { role: true } }
+      select: { id: true, requestApproved: true, roles: { role: true } }
     })
 
-    if (!user.isOnboarded) {
+    if (user?.roles.find(role => role.role === UserRole.RESOURCE) && !user.requestApproved) {
       throw new Error("Your Account is not approved yet. Kindly contact with support team.")
     }
 
     // Just For now, this line will be removed in future
-    if (!user?.roles.find(role => role.role === UserRole.RMS)) {
-      throw new Error("Only RMS Users are allowed to login.")
-    }
+    // if (!user?.roles.find(role => role.role === UserRole.RMS)) {
+    //   throw new Error("Only RMS Users are allowed to login.")
+    // }
+
+    await this.loginTrackerRepo.save({id: user.loginTracker.id, lastLogin: Date.now()})
 
     const token = await this.jwtService.sign({ email: user.email, sub: user.id })
     return {

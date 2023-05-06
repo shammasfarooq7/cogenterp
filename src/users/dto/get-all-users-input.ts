@@ -1,5 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { EngagementType, UserStatus } from '../entities/user.entity';
+// import { EngagementType, UserStatus } from '../entities/user.entity';
 import { UserRole } from "./../entities/role.entity"
 
 @InputType()

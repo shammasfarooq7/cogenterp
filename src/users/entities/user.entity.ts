@@ -1,8 +1,9 @@
 import { IsPhoneNumber } from '@nestjs/class-validator';
 import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, Generated, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Generated, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm';
 import { Role } from './role.entity';
 import { UserPaymentMethod } from './../../modules/userPaymentMethods/entity/userPaymentMethod.entity';
+import { LoginTracker } from './login-tracker.entity';
 
 
 export enum UserStatus {
@@ -270,6 +271,10 @@ export class User {
   @Field()
   isARequest: boolean;
 
+  @Column("boolean", { default: false })
+  @Field()
+  requestApproved: boolean;
+
   @Field(() => [Role])
   @ManyToMany(() => Role, (role) => role.users)
   @JoinTable({ name: "user_roles" })
@@ -278,6 +283,12 @@ export class User {
   @Field(() => [UserPaymentMethod], { nullable: true })
   @OneToMany(() => UserPaymentMethod, (userPaymentMethod) => userPaymentMethod.user)
   userPaymentMethod: UserPaymentMethod[]
+
+  @OneToOne(() => LoginTracker, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'loginTrackerId' })
+  loginTracker: LoginTracker;
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field(() => Date)
@@ -294,6 +305,7 @@ export class User {
   @Column({ nullable: true, type: 'timestamptz' })
   @Field(() => Date, { nullable: true })
   onboardedAt: Date;
+
 }
 
 

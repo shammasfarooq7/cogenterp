@@ -10,6 +10,9 @@ export class CreateResourceInput {
     @Field({ nullable: true, defaultValue: null })
     phoneNumber: string;
 
+    @Field({ nullable: true, defaultValue: false })
+    requestApproved: string;
+
     @Field(() => UserStatus)
     status: UserStatus;
 

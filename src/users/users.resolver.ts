@@ -83,8 +83,20 @@ export class UsersResolver {
     return await this.usersService.deleteResource(id)
   }
 
-  @Mutation(() => User)
-  async removeUser(@Args('id', { type: () => Int }) id: number) {
-    return await this.usersService.remove(id);
+  // @Mutation(() => User)
+  // async removeUser(@Args('id', { type: () => Int }) id: number) {
+  //   return await this.usersService.remove(id);
+  // }
+
+  @Roles(UserRole.ADMIN, UserRole.RMS)
+  @Mutation(() => CommonPayload)
+  async approveUserRequest(@Args('id') id: string): Promise<CommonPayload> {
+    return await this.usersService.approveUserRequest(id)
+  }
+
+  @Roles(UserRole.ADMIN, UserRole.RMS)
+  @Query(() => [User])
+  async getNewRequestUsers(@CurrentUser() user: ICurrentUser, @Args('getNewRequestUsers') getAllUsersInput: GetAllUsersInput): Promise<User[]> {
+    return await this.usersService.getNewRequestUsers(getAllUsersInput);
   }
 }
