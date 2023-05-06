@@ -10,12 +10,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { Role } from '../entities/role.entity';
 import { RoleService } from '../role.service';
+import { LoginTracker } from '../entities/login-tracker.entity';
 
 @Module({
   imports: [PassportModule, UsersModule, JwtModule.register({
     signOptions: { expiresIn: process.env.JWT_EXPIRY },
     secret: process.env.JWT_SECRET
-  }), TypeOrmModule.forFeature([User, Role])],
+  }), TypeOrmModule.forFeature([User, Role, LoginTracker])],
   providers: [AuthService, AuthResolver, LocalStrategy, JwtStrategy, RoleService]
 })
 export class AuthModule { }

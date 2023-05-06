@@ -88,6 +88,7 @@ type User {
   onboardedBy: String
   isOnboarded: Boolean!
   isARequest: Boolean!
+  requestApproved: Boolean!
   roles: [Role!]!
   userPaymentMethod: [UserPaymentMethod!]
   createdAt: DateTime!
@@ -161,6 +162,7 @@ type Query {
   getResource(id: String!): User!
   getDashboardStats: DashboardStatsPayload!
   getResourceDashboardStats: ResourceDashboardStatsPayload!
+  getNewRequestUsers(getNewRequestUsers: GetAllUsersInput!): [User!]!
   getAllUserPaymentMethods: [UserPaymentMethod!]!
 }
 
@@ -176,7 +178,7 @@ type Mutation {
   createResource(createResourceInput: CreateResourceInput!): CommonPayload!
   updateResource(id: String!, updateResourceInput: UpdateResourceInput!): CommonPayload!
   deleteResource(id: String!): CommonPayload!
-  removeUser(id: Int!): User!
+  approveUserRequest(id: String!): CommonPayload!
   signin(loginUserInput: LoginUserInput!): LoginResponse!
   signup(signUpUserInput: SignUpUserInput!): User!
 }
@@ -189,6 +191,7 @@ input CreateUserInput {
 input CreateResourceInput {
   email: String!
   phoneNumber: String = null
+  requestApproved: String = "false"
   status: UserStatus!
   vendorName: String
   engagementType: EngagementType!
@@ -252,6 +255,7 @@ input CreateResourceInput {
 input UpdateResourceInput {
   email: String!
   phoneNumber: String = null
+  requestApproved: String = "false"
   status: UserStatus!
   vendorName: String
   engagementType: EngagementType!
