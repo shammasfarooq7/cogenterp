@@ -48,7 +48,7 @@ export class AuthService {
     //   throw new Error("Only RMS Users are allowed to login.")
     // }
 
-    await this.loginTrackerRepo.save({id: user.loginTracker.id, lastLogin: Date.now()})
+    // await this.loginTrackerRepo.save({id: user.loginTracker.id, lastLogin: Date.now()})
 
     const token = await this.jwtService.sign({ email: user.email, sub: user.id })
     return {

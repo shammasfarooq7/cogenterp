@@ -138,14 +138,14 @@ export class UsersService {
         user: newUser
       })
 
-    const mail = {
-      to: newUser.email,
-      subject: 'Cogent Sign-In credentials.',
-      from: 'admin@cogentnetworks.com',
-      text: `Your Cogent account has been created. Please login with your email using this password ${pass}`,
-    };
+    // const mail = {
+    //   to: newUser.email,
+    //   subject: 'Cogent Sign-In credentials.',
+    //   from: 'admin@cogentnetworks.com',
+    //   text: `Your Cogent account has been created. Please login with your email using this password ${pass}`,
+    // };
 
-    await this.sendgridService.send(mail);
+    // await this.sendgridService.send(mail);
 
     return { message: "Resource Created Successfully!" };
   }
@@ -379,7 +379,7 @@ export class UsersService {
       text: `Your Cogent account request is approved. Please login and update your data.`,
     };
 
-    await this.sendgridService.send(mail);
+    // await this.sendgridService.send(mail);
 
     return { message: "Request Approved Updated Successfully!" };
   }

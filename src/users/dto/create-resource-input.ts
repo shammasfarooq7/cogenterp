@@ -108,7 +108,7 @@ export class CreateResourceInput {
     @Field(() => String, { nullable: true })
     accountType: string;
 
-    @Field(() => String)
+    @Field(() => String,{nullable:true})
     accountTitle: string;
 
     @Field(() => String)
@@ -174,13 +174,13 @@ export class CreateResourceInput {
     @Field()
     mobileNumber: string
 
-    @Field()
+    @Field({nullable:true})
     contactNumber: string
 
-    @Field()
+    @Field({nullable:true})
     whatsappGroup: string
 
-    @Field()
+    @Field({nullable:true})
     whatsappGroupLink: string
 
     @Field()
