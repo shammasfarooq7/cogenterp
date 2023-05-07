@@ -1,6 +1,6 @@
 import { IsPhoneNumber } from '@nestjs/class-validator';
 import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, Generated, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Generated, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm';
 import { Role } from './role.entity';
 import { UserPaymentMethod } from './../../modules/userPaymentMethods/entity/userPaymentMethod.entity';
 import { LoginTracker } from './login-tracker.entity';
@@ -259,9 +259,14 @@ export class User {
   @Field({ nullable: true })
   identityDocUrl: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @ManyToOne(() => User, user => user.onboardedUsers, { nullable: true })
+  @JoinColumn({ name: 'onboardedBy' })
   @Field({ nullable: true })
-  onboardedBy: string;
+  onboardedBy: User;
+
+  @OneToMany(() => User, user => user.onboardedBy, { nullable: true })
+  @Field(() => [User], { nullable: true })
+  onboardedUsers: () => User[];
 
   @Column("boolean", { default: false })
   @Field()

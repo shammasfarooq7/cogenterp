@@ -40,26 +40,26 @@ const userData = {
     fullDayRate: "400",
     monthlyRate: "4000",
     anyExtraRate: "none",
-    onboardedBy: "Admin",
+    // onboardedBy: "Admin",
     transport: "Personal",
     isOnboarded: true
 }
 
-const paymentMethod = {
-    accountType: "Current",
-    accountTitle: "My Account Title",
-    beneficiaryFirstName: "Shammas",
-    beneficiaryMiddleName: "",
-    beneficiaryLastName: "Farooq",
-    beneficiaryAddress: "beneficiaryAddress",
-    sortCode: "sortCode",
-    accountNumber: "accountNumber",
-    iban: "Iban",
-    swiftCode: "swiftCode",
-    bankName: "SCB",
-    branchName: "Lahore",
-    bankAddress: "bank address",
-}
+// const paymentMethod = {
+//     accountType: "Current",
+//     accountTitle: "My Account Title",
+//     beneficiaryFirstName: "Shammas",
+//     beneficiaryMiddleName: "",
+//     beneficiaryLastName: "Farooq",
+//     beneficiaryAddress: "beneficiaryAddress",
+//     sortCode: "sortCode",
+//     accountNumber: "accountNumber",
+//     iban: "Iban",
+//     swiftCode: "swiftCode",
+//     bankName: "SCB",
+//     branchName: "Lahore",
+//     bankAddress: "bank address",
+// }
 
 const createRmsUser = async () => {
     const AppDataSource: Connection = await createConnection({
@@ -97,10 +97,10 @@ const createRmsUser = async () => {
         });
 
 
-        await userPaymentMethodRepo.save({
-            ...paymentMethod,
-            user: newRmsUser
-        })
+        // await userPaymentMethodRepo.save({
+        //     ...paymentMethod,
+        //     user: newRmsUser
+        // })
 
         console.log({ Message: "RMS User Created Successfully!" });
         return

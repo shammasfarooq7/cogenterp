@@ -85,7 +85,8 @@ type User {
   mobility: String
   resumeDocUrl: String
   identityDocUrl: String
-  onboardedBy: String
+  onboardedBy: User
+  onboardedUsers: [User!]
   isOnboarded: Boolean!
   isARequest: Boolean!
   requestApproved: Boolean!
@@ -241,7 +242,6 @@ input CreateResourceInput {
   bankAddress: String!
   transport: String
   mobility: String
-  onboardedBy: String
   resumeDocUrl: String
   identityDocUrl: String
   idCardType: String
@@ -304,7 +304,6 @@ input UpdateResourceInput {
   bankAddress: String!
   transport: String
   mobility: String
-  onboardedBy: String
   resumeDocUrl: String
   identityDocUrl: String
   idCardType: String
