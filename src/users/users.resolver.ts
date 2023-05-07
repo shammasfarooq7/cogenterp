@@ -68,14 +68,14 @@ export class UsersResolver {
 
   @Roles(UserRole.ADMIN, UserRole.RMS)
   @Mutation(() => CommonPayload)
-  async createResource(@Args('createResourceInput') createResourceInput: CreateResourceInput): Promise<CommonPayload> {
-    return await this.usersService.createResource(createResourceInput)
+  async createResource(@Args('createResourceInput') createResourceInput: CreateResourceInput, @Context() ctx: IContext): Promise<CommonPayload> {
+    return await this.usersService.createResource(ctx?.user?.userId, createResourceInput)
   }
 
   @Roles(UserRole.ADMIN, UserRole.RMS)
   @Mutation(() => CommonPayload)
-  async updateResource(@Args('id') id: string, @Args('updateResourceInput') updateResourceInput: UpdateResourceInput): Promise<CommonPayload> {
-    return await this.usersService.updateResource(id, updateResourceInput);
+  async updateResource(@Args('id') id: string, @Args('updateResourceInput') updateResourceInput: UpdateResourceInput, @Context() ctx: IContext): Promise<CommonPayload> {
+    return await this.usersService.updateResource(ctx?.user?.userId, id, updateResourceInput);
   }
 
   @Roles(UserRole.ADMIN, UserRole.RMS)

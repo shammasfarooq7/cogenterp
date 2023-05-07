@@ -147,8 +147,8 @@ export class CreateResourceInput {
     @Field({ nullable: true })
     mobility: string;
 
-    @Field({ nullable: true })
-    onboardedBy: string;
+    // @Field({ nullable: true })
+    // onboardedBy: string;
 
     @Field({ nullable: true })
     resumeDocUrl: string;

@@ -69,7 +69,7 @@ export class UsersService {
 
       const users = await this.userRepo.find({
         where,
-        relations: { userPaymentMethod: true, roles: true },
+        relations: { userPaymentMethod: true, roles: true, onboardedBy: true },
         skip: page * limit,
         take: limit
       });
@@ -109,7 +109,7 @@ export class UsersService {
     return `This action removes a #${id} user`;
   }
 
-  async createResource(createResourceInput: CreateResourceInput): Promise<CommonPayload> {
+  async createResource(userId: string, createResourceInput: CreateResourceInput): Promise<CommonPayload> {
 
     const {
       accountNumber, accountTitle, accountType, bankAddress, bankName,
@@ -127,12 +127,14 @@ export class UsersService {
       throw new ConflictException('Resource already exists');
     };
 
+    const currentUser = await this.userRepo.findOne({ where: { id: userId } })
+
     const roleType = UserRole.RESOURCE;
     const role = await this.roleService.findByType(roleType);
     const pass = (Math.random() * 1e16).toString(36);
     const newUser = await this.userRepo.save({
       ...user,
-      ...(user.isOnboarded ? { onboardedAt: new Date() } : {}),
+      ...(user.isOnboarded ? { onboardedAt: new Date(), onboardedBy: currentUser } : {}),
       password: pass,
       requestApproved: true,
       roles: [role],
@@ -158,7 +160,7 @@ export class UsersService {
     return { message: "Resource Created Successfully!" };
   }
 
-  async updateResource(id: string, updateResourceInput: UpdateResourceInput): Promise<CommonPayload> {
+  async updateResource(currentUserId: string, id: string, updateResourceInput: UpdateResourceInput): Promise<CommonPayload> {
 
     const {
       accountNumber, accountTitle, accountType, bankAddress, bankName,
@@ -170,12 +172,15 @@ export class UsersService {
 
     if (!user) throw new NotFoundException(`User with ${id} does not exist!`);
 
+    if (userData.isOnboarded && !user.isOnboarded) {
+      const currentUser = await this.userRepo.findOne({ where: { id: currentUserId } })
+      user["onboardedAt"] = new Date();
+      user["onboardedBy"] = currentUser;
+    };
+
     Object.keys(userData).forEach((key) => { user[key] = userData[key] });
     user["requestApproved"] = user.requestApproved;
 
-    if (userData.isOnboarded && !user.isOnboarded) {
-      user["onboardedAt"] = new Date()
-    }
     if (!accountType) {
       user.userPaymentMethod = [];
     }
@@ -212,7 +217,7 @@ export class UsersService {
     const user = await this.userRepo.findOne(
       {
         where: { id, deletedAt: IsNull() },
-        relations: { roles: true, userPaymentMethod: true }
+        relations: { roles: true, userPaymentMethod: true, onboardedBy: true }
       }
     )
     if (!user) throw new NotFoundException(`User with ${id} does not exist!`)
