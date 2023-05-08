@@ -44,9 +44,9 @@ export class AuthService {
     }
 
     // Just For now, this line will be removed in future
-    // if (!user?.roles.find(role => role.role === UserRole.RMS)) {
-    //   throw new Error("Only RMS Users are allowed to login.")
-    // }
+    if (!user?.roles.find(role => role.role === UserRole.RMS)) {
+      throw new Error("Only RMS Users are allowed to login.")
+    }
     if (user?.loginTracker?.id) {
       await this.loginTrackerRepo.save({ id: user.loginTracker.id, lastLogin: new Date() })
     }
