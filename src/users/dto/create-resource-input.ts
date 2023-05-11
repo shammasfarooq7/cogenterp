@@ -105,7 +105,7 @@ export class CreateResourceInput {
     @Field(() => String, { nullable: true })
     accountType: string;
 
-    @Field(() => String,{nullable:true})
+    @Field(() => String, { nullable: true })
     accountTitle: string;
 
     @Field(() => String)
@@ -162,7 +162,7 @@ export class CreateResourceInput {
     @Field({ nullable: true })
     interviewStatus: InterviewStatus
 
-    @Field()
+    @Field({ nullable: true })
     isOnboarded: boolean;
 
     @Field()
@@ -171,19 +171,19 @@ export class CreateResourceInput {
     @Field()
     mobileNumber: string
 
-    @Field({nullable:true})
+    @Field({ nullable: true })
     contactNumber: string
 
-    @Field({nullable:true})
+    @Field({ nullable: true })
     whatsappGroup: string
 
-    @Field({nullable:true})
+    @Field({ nullable: true })
     whatsappGroupLink: string
 
-    @Field()
+    @Field({ nullable: true })
     availability: string
 
-    @Field()
+    @Field({ nullable: true })
     contractDocuments: boolean
 
 }

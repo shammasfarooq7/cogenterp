@@ -172,7 +172,18 @@ export class UsersService {
 
     if (!user) throw new NotFoundException(`User with ${id} does not exist!`);
 
-    if (userData.isOnboarded && !user.isOnboarded) {
+    const alreadyExists = await this.userRepo.findOne({
+      where: [
+        { email: userData?.email },
+      ],
+      select: { id: true }
+    });
+
+    if (alreadyExists?.id !== user?.id) {
+      throw new ConflictException('Resource with this email already exists!');
+    };
+
+    if (userData?.isOnboarded && !user?.isOnboarded) {
       const currentUser = await this.userRepo.findOne({ where: { id: currentUserId } })
       user["onboardedAt"] = new Date();
       user["onboardedBy"] = currentUser;
@@ -210,7 +221,7 @@ export class UsersService {
       }
     }
 
-    return { message: "Resource Updated Successfully!" };
+    return { message: "Info Updated Successfully!" };
   }
 
   async getResource(id: string) {
@@ -221,6 +232,7 @@ export class UsersService {
       }
     )
     if (!user) throw new NotFoundException(`User with ${id} does not exist!`)
+    if (user.roles.find(item => item.role === "rms")) throw new NotFoundException(`Kindly provide correct resource id!`)
     return user
   };
 

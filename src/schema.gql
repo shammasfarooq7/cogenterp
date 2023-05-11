@@ -165,7 +165,7 @@ type GetAllUsersStatsPayload {
 type Query {
   getAllUsers(getAllUsersInput: GetAllUsersInput!): GetAllUsersStatsPayload!
   getCurrentUser: User!
-  getResource(id: String!): User!
+  getResource(id: String = null): User!
   getDashboardStats: DashboardStatsPayload!
   getResourceDashboardStats: ResourceDashboardStatsPayload!
   getNewRequestUsers(getNewRequestUsersInput: GetAllUsersInput!): GetAllUsersStatsPayload!
@@ -246,14 +246,14 @@ input CreateResourceInput {
   identityDocUrl: String
   idCardType: String
   interviewStatus: String
-  isOnboarded: Boolean!
+  isOnboarded: Boolean
   workPermitStatus: String!
   mobileNumber: String!
   contactNumber: String
   whatsappGroup: String
   whatsappGroupLink: String
-  availability: String!
-  contractDocuments: Boolean!
+  availability: String
+  contractDocuments: Boolean
 }
 
 input UpdateResourceInput {
@@ -308,14 +308,14 @@ input UpdateResourceInput {
   identityDocUrl: String
   idCardType: String
   interviewStatus: String
-  isOnboarded: Boolean!
+  isOnboarded: Boolean
   workPermitStatus: String!
   mobileNumber: String!
   contactNumber: String
   whatsappGroup: String
   whatsappGroupLink: String
-  availability: String!
-  contractDocuments: Boolean!
+  availability: String
+  contractDocuments: Boolean
 }
 
 input LoginUserInput {

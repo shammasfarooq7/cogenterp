@@ -32,10 +32,10 @@ export class UsersResolver {
     return result;
   }
 
-  @Roles(UserRole.ADMIN, UserRole.RMS)
+  @Roles(UserRole.ADMIN, UserRole.RMS, UserRole.RESOURCE)
   @Query(() => User)
-  async getResource(@Args('id') id: string): Promise<User> {
-    return await this.usersService.getResource(id);
+  async getResource(@Context() ctx: IContext, @Args('id', { nullable: true, defaultValue: null }) id: string | null): Promise<User> {
+    return await this.usersService.getResource(id || ctx?.user?.userId);
   }
 
   @Roles(UserRole.ADMIN, UserRole.RMS)
@@ -72,7 +72,7 @@ export class UsersResolver {
     return await this.usersService.createResource(ctx?.user?.userId, createResourceInput)
   }
 
-  @Roles(UserRole.ADMIN, UserRole.RMS)
+  @Roles(UserRole.ADMIN, UserRole.RMS, UserRole.RESOURCE)
   @Mutation(() => CommonPayload)
   async updateResource(@Args('id') id: string, @Args('updateResourceInput') updateResourceInput: UpdateResourceInput, @Context() ctx: IContext): Promise<CommonPayload> {
     return await this.usersService.updateResource(ctx?.user?.userId, id, updateResourceInput);
