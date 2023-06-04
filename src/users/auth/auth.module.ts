@@ -10,7 +10,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { Role } from '../entities/role.entity';
 import { RoleService } from '../role.service';
-import { LoginTracker } from '../entities/login-tracker.entity';
+import { LoginTracker } from '../entities/loginTracker.entity';
 
 @Module({
   imports: [PassportModule, UsersModule, JwtModule.register({

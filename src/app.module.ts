@@ -14,6 +14,7 @@ import { SendgridService } from './sendgrid/sendgrid.service';
 import { AzureBlobService } from './azure-blob/azure-blob.service';
 import { AzureBlobController } from './azure-blob/azure-blob.controller';
 // import { AzureBlobModule } from './azure-blob/azure-blob.module';
+import { TicketsModule } from './tickets/tickets.module';
 const { entities, migrations, ...options } = dataSourceOptions;
 
 @Module({
@@ -30,6 +31,7 @@ const { entities, migrations, ...options } = dataSourceOptions;
     AuthModule,
     UserPaymentMethodsModule,
   ConfigModule.forRoot(),
+  TicketsModule,
     // AzureBlobModule
   ],
   controllers: [AzureBlobController],

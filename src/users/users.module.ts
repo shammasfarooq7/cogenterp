@@ -12,7 +12,7 @@ import { JwtService } from '@nestjs/jwt';
 import { SendgridService } from '../sendgrid/sendgrid.service';
 import { AzureBlobService } from '../azure-blob/azure-blob.service';
 import { ConfigService } from '@nestjs/config';
-import { LoginTracker } from './entities/login-tracker.entity';
+import { LoginTracker } from './entities/loginTracker.entity';
 
 @Module({
   imports: [

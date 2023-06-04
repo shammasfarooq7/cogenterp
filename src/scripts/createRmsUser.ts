@@ -5,7 +5,7 @@ import { Role, UserRole } from '../users/entities/role.entity';
 import { UserPaymentMethod } from '../modules/userPaymentMethods/entity/userPaymentMethod.entity';
 import { dataSourceOptions } from '../data-source-options';
 import * as bcrypt from 'bcrypt';
-import { LoginTracker } from '../users/entities/login-tracker.entity';
+import { LoginTracker } from '../users/entities/loginTracker.entity';
 
 
 const userData = {

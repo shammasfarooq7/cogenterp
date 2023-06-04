@@ -3,7 +3,9 @@ import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
 import { Column, CreateDateColumn, Entity, Generated, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm';
 import { Role } from './role.entity';
 import { UserPaymentMethod } from './../../modules/userPaymentMethods/entity/userPaymentMethod.entity';
-import { LoginTracker } from './login-tracker.entity';
+import { LoginTracker } from './loginTracker.entity';
+import { TicketDate } from 'src/tickets/entities/ticketDate.entitiy';
+import { TimeSheet } from 'src/tickets/entities/timeSheet.entity';
 
 
 export enum UserStatus {
@@ -294,6 +296,16 @@ export class User {
   })
   @JoinColumn({ name: 'loginTrackerId' })
   loginTracker: LoginTracker;
+
+  @ManyToMany(() => TicketDate, ticketDate => ticketDate.users)
+  @JoinTable({ name: 'time_sheets' })
+  @Field(() => [TicketDate])
+  ticketDates: TicketDate[];
+
+  @ManyToMany(() => TimeSheet, timeSheet => timeSheet.user)
+  @JoinTable({ name: 'time_sheets' })
+  @Field(() => [TimeSheet])
+  timeSheets: TimeSheet[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field(() => Date)

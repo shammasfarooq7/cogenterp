@@ -10,7 +10,7 @@ import { RoleService } from '../role.service';
 import { UserRole } from '../entities/role.entity';
 import { SignUpUserInput } from '../dto/sign-up-user.input';
 import { IPayload } from './interfaces/current-user.interface';
-import { LoginTracker } from '../entities/login-tracker.entity';
+import { LoginTracker } from '../entities/loginTracker.entity';
 
 @Injectable()
 export class AuthService {
