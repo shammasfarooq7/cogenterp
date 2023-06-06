@@ -11,13 +11,21 @@ export class TicketDate {
   @Field(() => String)
   id: string;
 
-  @ManyToOne(() => Ticket, ticket => ticket.ticketDates)
-  @Field(() => Ticket)
-  ticket: Ticket;
-
   @Column()
   @Field(() => String)
   ticketId: string;
+
+  @Column({ type: 'date' })
+  @Field()
+  date: Date;
+
+  @Column({ type: 'time with time zone' })
+  @Field()
+  scheduledTime: string;
+
+  @ManyToOne(() => Ticket, ticket => ticket.ticketDates)
+  @Field(() => Ticket)
+  ticket: Ticket;
 
   @ManyToMany(() => User, user => user.ticketDates)
   @JoinTable({ name: 'time_sheets' })

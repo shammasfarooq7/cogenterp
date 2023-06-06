@@ -12,6 +12,34 @@ export class TimeSheet {
 
   @Column()
   @Field(() => String)
+  checkIn: string;
+
+  @Column()
+  @Field(() => String)
+  checkOut: string;
+
+  @Column()
+  @Field(() => String)
+  sdId: string;
+
+  @Column()
+  @Field(() => String)
+  sdCheckIn: string;
+
+  @Column()
+  @Field(() => String)
+  sdCheckOut: string;
+
+  @Column()
+  @Field(() => String)
+  feopsCheckIn: string;
+
+  @Column()
+  @Field(() => String)
+  feopsCheckOut: string;
+
+  @Column()
+  @Field(() => String)
   userId: string;
 
   @ManyToOne(() => User, user => user.timeSheets)
