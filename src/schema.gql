@@ -200,7 +200,17 @@ type CommonPayload {
   message: String!
 }
 
-type DashboardStatsPayload {
+type GetAllUsersStatsPayload {
+  users: [User!]!
+  count: Float!
+}
+
+type GetAllResourcesStatsPayload {
+  resources: [Resource!]!
+  count: Float!
+}
+
+type RMSDashboardStatsPayload {
   totalResourceCount: Float!
   newRequestCount: Float!
   newHiringCount: Float!
@@ -216,24 +226,14 @@ type ResourceDashboardStatsPayload {
   onboardedStats: Stats!
 }
 
-type GetAllUsersStatsPayload {
-  users: [User!]!
-  count: Float!
-}
-
-type GetAllResourcesStatsPayload {
-  resources: [Resource!]!
-  count: Float!
-}
-
 type Query {
   getAllUsers(getAllUsersInput: GetAllUsersInput!): GetAllUsersStatsPayload!
   getCurrentUser: User!
-  getDashboardStats: DashboardStatsPayload!
-  getResourceDashboardStats: ResourceDashboardStatsPayload!
   getNewRequestUsers(getNewRequestUsersInput: GetAllUsersInput!): GetAllUsersStatsPayload!
   getAllResources(getAllResourcesInput: GetAllResourcesInput!): GetAllResourcesStatsPayload!
   getResource(id: String = null): Resource!
+  getRMSDashboardStats: RMSDashboardStatsPayload!
+  getResourceDashboardStats: ResourceDashboardStatsPayload!
   getAllUserPaymentMethods: [UserPaymentMethod!]!
 }
 
@@ -252,7 +252,6 @@ input GetAllResourcesInput {
 
 type Mutation {
   createuser(createUserInput: CreateUserInput!): User!
-  deleteResource(id: String!): CommonPayload!
   approveUserRequest(id: String!): CommonPayload!
   createResource(createResourceInput: CreateResourceInput!): CommonPayload!
   updateResource(id: String!, updateResourceInput: UpdateResourceInput!): CommonPayload!

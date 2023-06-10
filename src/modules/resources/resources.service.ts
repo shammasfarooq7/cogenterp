@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, IsNull, Repository } from 'typeorm';
+import { Between, ILike, IsNull, Repository } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { UserRole } from '../../users/entities/role.entity';
 import { CreateResourceInput } from '../../users/dto/create-resource-input';
@@ -11,6 +11,8 @@ import { UserPaymentMethod } from '../userPaymentMethods/entity/userPaymentMetho
 import { GetAllResourcesInput } from '../dto/get-all-resources-input';
 import { GetAllResourcesStatsPayload } from '../dto/get-all-resources.dto';
 import { UpdateResourceInput } from '../dto/update-resource-input';
+import { RMSDashboardStatsPayload } from '../dto/rms-dashboard-stats.dto';
+import { ResourceDashboardStatsPayload } from '../dto/resource-dashboard-stats.dto';
 
 @Injectable()
 export class ResourcesService {
@@ -46,7 +48,7 @@ export class ResourcesService {
         take: limit
       });
 
-      const count = await this.userRepo.count({ where })
+      const count = await this.resourceRepo.count({ where })
       return {
         count,
         resources
@@ -200,5 +202,164 @@ export class ResourcesService {
 
     return { message: "Resource Updated Successfully!" };
   }
+
+  async deleteResource(id: string): Promise<CommonPayload> {
+    await this.resourceRepo.update({ id }, { deletedAt: new Date() })
+    return { message: "Resource Deleted Successfully!" };
+  };
+
+
+  async getRMSDashboardStats(): Promise<RMSDashboardStatsPayload> {
+    const date = new Date();
+    const startDate = new Date(date.setDate(date.getDate() - 15));
+    const endDate = new Date();
+
+    const totalResourceCount = await this.resourceRepo.count({
+      where: {
+        deletedAt: IsNull(),
+      }
+    });
+
+    const newRequestCount = await this.resourceRepo.count({
+      where: {
+        deletedAt: IsNull(),
+        createdAt: Between(startDate, endDate),
+        isARequest: true
+      }
+    });
+
+    const newHiringCount = await this.resourceRepo.count({
+      where: {
+        deletedAt: IsNull(),
+        onboardedAt: Between(startDate, endDate),
+        isOnboarded: true
+      }
+    });
+
+    return {
+      totalResourceCount,
+      newRequestCount,
+      newHiringCount
+    }
+
+  };
+
+  async getResourceDashboardStats(): Promise<ResourceDashboardStatsPayload> {
+
+    const lastMonthDate = new Date(new Date().setMonth(new Date().getMonth() - 1));
+    const twoMonthsBeforeDate = new Date(new Date().setMonth(new Date().getMonth() - 2));
+    const currentDate = new Date()
+
+    const getPercentage = (prevMonthValue: number, cuurentMonthValue: number): number => {
+      const diff = cuurentMonthValue - prevMonthValue;
+      if (prevMonthValue == 0) return cuurentMonthValue * 100;
+      return +((diff / prevMonthValue) * 100).toFixed(2);
+    };
+
+    // Resource Count
+
+    const totalResourceCount = await this.resourceRepo.count({
+      where: {
+        deletedAt: IsNull(),
+      }
+    });
+
+    const lastMonthResourceCount = await this.resourceRepo.count({
+      where: {
+        deletedAt: IsNull(),
+        createdAt: Between(twoMonthsBeforeDate, lastMonthDate),
+      }
+    });
+
+    const currentMonthResourceCount = await this.resourceRepo.count({
+      where: {
+        deletedAt: IsNull(),
+        createdAt: Between(lastMonthDate, currentDate),
+
+      }
+    });
+
+    const resourceDifference = getPercentage(lastMonthResourceCount, currentMonthResourceCount)
+
+    // OnBoarding Count
+
+    const totalOnboardedCount = await this.resourceRepo.count({
+      where: {
+        isOnboarded: true,
+        deletedAt: IsNull(),
+      }
+    });
+
+    const lastMonthOnboardedCount = await this.resourceRepo.count({
+      where: {
+        isOnboarded: true,
+        deletedAt: IsNull(),
+        createdAt: Between(twoMonthsBeforeDate, lastMonthDate),
+
+      }
+    });
+
+    const currentMonthOnboardedCount = await this.resourceRepo.count({
+      where: {
+        isOnboarded: true,
+        deletedAt: IsNull(),
+        createdAt: Between(lastMonthDate, currentDate),
+
+      }
+    });
+
+    const onboardedDifference = getPercentage(lastMonthOnboardedCount, currentMonthOnboardedCount)
+
+
+    // InterviewSchedule Count
+
+    // const totalInterviewScheduleCount = await this.userRepo.count({
+    //   where: {
+    //     roles: {
+    //       role: UserRole.RESOURCE
+    //     },
+    //     interviewStatus: In(["Completed", "Scheduled"]),
+    //     deletedAt: IsNull(),
+    //   }
+    // });
+
+    // const lastMonthTotalInterviewScheduleCount = await this.userRepo.count({
+    //   where: {
+    //     roles: {
+    //       role: UserRole.RESOURCE
+    //     },
+    //     isOnboarded: true,
+    //     deletedAt: IsNull(),
+    //     createdAt: Between(twoMonthsBeforeDate, lastMonthDate),
+
+    //   }
+    // });
+
+    // const currentMonthOnboardedCount = await this.userRepo.count({
+    //   where: {
+    //     roles: {
+    //       role: UserRole.RESOURCE
+    //     },
+    //     isOnboarded: true,
+    //     deletedAt: IsNull(),
+    //     createdAt: Between(lastMonthDate, currentDate),
+
+    //   }
+    // });
+
+    // const onboardedDifference = getPercentage(lastMonthOnboardedCount, currentMonthOnboardedCount)
+
+    return {
+      resourceStats: {
+        total: totalResourceCount,
+        difference: resourceDifference
+      },
+      onboardedStats: {
+        total: totalOnboardedCount,
+        difference: onboardedDifference
+      }
+    }
+
+  };
 
 }

@@ -39,17 +39,17 @@ export class UsersResolver {
   //   return await this.usersService.getResource(id || ctx?.user?.userId);
   // }
 
-  @Roles(UserRole.ADMIN, UserRole.RMS)
-  @Query(() => DashboardStatsPayload)
-  async getDashboardStats(): Promise<DashboardStatsPayload> {
-    return await this.usersService.getDashboardStats();
-  }
+  // @Roles(UserRole.ADMIN, UserRole.RMS)
+  // @Query(() => DashboardStatsPayload)
+  // async getDashboardStats(): Promise<DashboardStatsPayload> {
+  //   return await this.usersService.getDashboardStats();
+  // }
 
-  @Roles(UserRole.ADMIN, UserRole.RMS)
-  @Query(() => ResourceDashboardStatsPayload)
-  async getResourceDashboardStats(): Promise<ResourceDashboardStatsPayload> {
-    return await this.usersService.getResourceDashboardStats();
-  }
+  // @Roles(UserRole.ADMIN, UserRole.RMS)
+  // @Query(() => ResourceDashboardStatsPayload)
+  // async getResourceDashboardStats(): Promise<ResourceDashboardStatsPayload> {
+  //   return await this.usersService.getResourceDashboardStats();
+  // }
 
 
   // @Query(() => User, { name: 'user' })
@@ -78,12 +78,6 @@ export class UsersResolver {
   // async updateResource(@Args('id') id: string, @Args('updateResourceInput') updateResourceInput: UpdateResourceInput, @Context() ctx: IContext): Promise<CommonPayload> {
   //   return await this.usersService.updateResource(ctx?.user?.userId, id, updateResourceInput);
   // }
-
-  @Roles(UserRole.ADMIN, UserRole.RMS)
-  @Mutation(() => CommonPayload)
-  async deleteResource(@Args('id') id: string): Promise<CommonPayload> {
-    return await this.usersService.deleteResource(id)
-  }
 
   // @Mutation(() => User)
   // async removeUser(@Args('id', { type: () => Int }) id: number) {
