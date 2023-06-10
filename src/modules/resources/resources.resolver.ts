@@ -11,6 +11,8 @@ import { CreateResourceInput } from '../dto/create-resource-input';
 import { GetAllResourcesStatsPayload } from '../dto/get-all-resources.dto';
 import { GetAllResourcesInput } from '../dto/get-all-resources-input';
 import { UpdateResourceInput } from '../dto/update-resource-input';
+import { RMSDashboardStatsPayload } from '../dto/rms-dashboard-stats.dto';
+import { ResourceDashboardStatsPayload } from '../dto/resource-dashboard-stats.dto';
 
 @Resolver(() => Resource)
 export class ResourcesResolver {
@@ -28,17 +30,17 @@ export class ResourcesResolver {
     return await this.resourcesService.getResource(id || ctx?.user?.userId);
   }
 
-  // @Roles(UserRole.ADMIN, UserRole.RMS)
-  // @Query(() => DashboardStatsPayload)
-  // async getDashboardStats(): Promise<DashboardStatsPayload> {
-  //   return await this.usersService.getDashboardStats();
-  // }
+  @Roles(UserRole.ADMIN, UserRole.RMS)
+  @Query(() => RMSDashboardStatsPayload)
+  async getRMSDashboardStats(): Promise<RMSDashboardStatsPayload> {
+    return await this.resourcesService.getRMSDashboardStats();
+  }
 
-  // @Roles(UserRole.ADMIN, UserRole.RMS)
-  // @Query(() => ResourceDashboardStatsPayload)
-  // async getResourceDashboardStats(): Promise<ResourceDashboardStatsPayload> {
-  //   return await this.usersService.getResourceDashboardStats();
-  // }
+  @Roles(UserRole.ADMIN, UserRole.RMS)
+  @Query(() => ResourceDashboardStatsPayload)
+  async getResourceDashboardStats(): Promise<ResourceDashboardStatsPayload> {
+    return await this.resourcesService.getResourceDashboardStats();
+  }
 
 
   @Roles(UserRole.ADMIN, UserRole.RMS)

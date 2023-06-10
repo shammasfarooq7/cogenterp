@@ -298,4 +298,4 @@ export class User {
 }
 
 
-// Email, Password, roles,Logintracker,createdAt,updatedAt,deletedAt,onboardedUsers
+// Email, Password, roles, Logintracker, createdAt, updatedAt, deletedAt, onboardedUsers,resource
