@@ -62,7 +62,7 @@ export class Resource {
   @Field(() => String)
   email: string;
 
-  @OneToOne(() => User, user => user.resource,)
+  @OneToOne(() => User, user => user.resource)
   @JoinColumn({ name: 'userId' })
   user: User;
 
@@ -278,7 +278,7 @@ export class Resource {
   requestApproved: boolean;
 
   @Field(() => [UserPaymentMethod], { nullable: true })
-  @OneToMany(() => UserPaymentMethod, (userPaymentMethod) => userPaymentMethod.user)
+  @OneToMany(() => UserPaymentMethod, (userPaymentMethod) => userPaymentMethod.resource, { nullable: true })
   userPaymentMethod: UserPaymentMethod[]
 
   @CreateDateColumn({ type: 'timestamptz' })

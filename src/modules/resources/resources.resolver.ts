@@ -10,6 +10,7 @@ import { ResourcesService } from './resources.service';
 import { CreateResourceInput } from '../dto/create-resource-input';
 import { GetAllResourcesStatsPayload } from '../dto/get-all-resources.dto';
 import { GetAllResourcesInput } from '../dto/get-all-resources-input';
+import { UpdateResourceInput } from '../dto/update-resource-input';
 
 @Resolver(() => Resource)
 export class ResourcesResolver {
@@ -21,11 +22,11 @@ export class ResourcesResolver {
     return await this.resourcesService.getAllResources(getAllResourcesInput);
   }
 
-  // @Roles(UserRole.ADMIN, UserRole.RMS, UserRole.RESOURCE)
-  // @Query(() => Resource)
-  // async getResource(@Context() ctx: IContext, @Args('id', { nullable: true, defaultValue: null }) id: string | null): Promise<Resource> {
-  //   return await this.usersService.getResource(id || ctx?.user?.userId);
-  // }
+  @Roles(UserRole.ADMIN, UserRole.RMS, UserRole.RESOURCE)
+  @Query(() => Resource)
+  async getResource(@Context() ctx: IContext, @Args('id', { nullable: true, defaultValue: null }) id: string | null): Promise<Resource> {
+    return await this.resourcesService.getResource(id || ctx?.user?.userId);
+  }
 
   // @Roles(UserRole.ADMIN, UserRole.RMS)
   // @Query(() => DashboardStatsPayload)
@@ -46,11 +47,11 @@ export class ResourcesResolver {
     return await this.resourcesService.createResource(ctx?.user?.userId, createResourceInput)
   }
 
-  // @Roles(UserRole.ADMIN, UserRole.RMS, UserRole.RESOURCE)
-  // @Mutation(() => CommonPayload)
-  // async updateResource(@Args('id') id: string, @Args('updateResourceInput') updateResourceInput: UpdateResourceInput, @Context() ctx: IContext): Promise<CommonPayload> {
-  //   return await this.usersService.updateResource(ctx?.user?.userId, id, updateResourceInput);
-  // }
+  @Roles(UserRole.ADMIN, UserRole.RMS, UserRole.RESOURCE)
+  @Mutation(() => CommonPayload)
+  async updateResource(@Args('id') id: string, @Args('updateResourceInput') updateResourceInput: UpdateResourceInput, @Context() ctx: IContext): Promise<CommonPayload> {
+    return await this.resourcesService.updateResource(ctx?.user?.userId, id, updateResourceInput);
+  }
 
   // @Roles(UserRole.ADMIN, UserRole.RMS)
   // @Mutation(() => CommonPayload)

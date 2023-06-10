@@ -274,7 +274,8 @@ export class User {
   @JoinColumn({ name: 'loginTrackerId' })
   loginTracker: LoginTracker;
 
-  @OneToOne(() => Resource, resource => resource.user, { cascade: true })
+  @Field(() => Resource, { nullable: true })
+  @OneToOne(() => Resource, resource => resource.user, { nullable: true, onDelete: "CASCADE" })
   @JoinColumn({ name: 'resourceId' })
   resource: Resource;
 

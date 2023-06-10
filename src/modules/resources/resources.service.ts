@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, IsNull, Repository } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
@@ -10,6 +10,7 @@ import { Resource } from 'src/modules/resources/entity/resource.entity';
 import { UserPaymentMethod } from '../userPaymentMethods/entity/userPaymentMethod.entity';
 import { GetAllResourcesInput } from '../dto/get-all-resources-input';
 import { GetAllResourcesStatsPayload } from '../dto/get-all-resources.dto';
+import { UpdateResourceInput } from '../dto/update-resource-input';
 
 @Injectable()
 export class ResourcesService {
@@ -56,12 +57,23 @@ export class ResourcesService {
     }
   }
 
+  async getResource(id: string) {
+    const resource = await this.resourceRepo.findOne(
+      {
+        where: { id, deletedAt: IsNull() },
+        relations: { userPaymentMethod: true, onboardedBy: true }
+      }
+    )
+    if (!resource) throw new NotFoundException(`Resource with ${id} does not exist!`)
+    return resource
+  };
+
   async createResource(userId: string, createResourceInput: CreateResourceInput): Promise<CommonPayload> {
 
     const {
       accountNumber, accountTitle, accountType, bankAddress, bankName,
       beneficiaryAddress, beneficiaryFirstName, beneficiaryLastName,
-      beneficiaryMiddleName, branchName, sortCode, swiftCode, iban, email, ...resource
+      beneficiaryMiddleName, branchName, sortCode, swiftCode, iban, email, firstName, lastName, middleName, ...resource
     } = createResourceInput;
 
     const alreadyExists = await this.userRepo.findOne({
@@ -82,7 +94,7 @@ export class ResourcesService {
 
     // Create User
     const newUser = await this.userRepo.save({
-      email,
+      email, firstName, lastName, middleName,
       password: pass,
       roles: [role],
     })
@@ -91,7 +103,7 @@ export class ResourcesService {
     const newResource = await this.resourceRepo.save({
       ...resource,
       ...(resource?.isOnboarded ? { onboardedAt: new Date(), onboardedBy: currentUser } : {}),
-      password: pass,
+      email, firstName, lastName, middleName,
       requestApproved: true,
       roles: [role],
       user: newUser
@@ -109,7 +121,8 @@ export class ResourcesService {
         accountNumber, accountTitle, accountType, bankAddress, bankName,
         beneficiaryAddress, beneficiaryFirstName, beneficiaryLastName,
         beneficiaryMiddleName, branchName, sortCode, swiftCode, iban,
-        user: newUser
+        user: newUser,
+        resource: newResource
       })
 
     // const mail = {
@@ -122,6 +135,70 @@ export class ResourcesService {
     // await this.sendgridService.send(mail);
 
     return { message: "Resource Created Successfully!" };
+  }
+
+  async updateResource(currentUserId: string, id: string, updateResourceInput: UpdateResourceInput): Promise<CommonPayload> {
+
+    const {
+      accountNumber, accountTitle, accountType, bankAddress, bankName,
+      beneficiaryAddress, beneficiaryFirstName, beneficiaryLastName,
+      beneficiaryMiddleName, branchName, sortCode, swiftCode, iban, ...resourceData
+    } = updateResourceInput;
+
+    const resource = await this.resourceRepo.findOne({ where: { id }, relations: { userPaymentMethod: true } });
+
+    if (!resource) throw new NotFoundException(`Resource with ${id} does not exist!`);
+
+    const alreadyExists = await this.resourceRepo.findOne({
+      where: [
+        { email: resourceData?.email },
+      ],
+      select: { id: true }
+    });
+
+    if (alreadyExists?.id !== resource?.id) {
+      throw new ConflictException('Resource with this email already exists!');
+    };
+
+    if (resourceData?.isOnboarded && !resource?.isOnboarded) {
+      const currentUser = await this.userRepo.findOne({ where: { id: currentUserId } })
+      resource["onboardedAt"] = new Date();
+      resource["onboardedBy"] = currentUser;
+    };
+
+    Object.keys(resourceData).forEach((key) => { resource[key] = resourceData[key] });
+    resource["requestApproved"] = resource.requestApproved;
+
+    if (!accountType) {
+      resource.userPaymentMethod = [];
+    }
+
+    await this.resourceRepo.save(resource);
+
+    if (accountType) {
+      const paymentPayload = {
+        accountNumber, accountTitle, accountType, bankAddress, bankName,
+        beneficiaryAddress, beneficiaryFirstName, beneficiaryLastName,
+        beneficiaryMiddleName, branchName, sortCode, swiftCode, iban,
+      };
+      if (!resource?.userPaymentMethod?.length) {
+        await this.userPaymentMethodRepo.save({
+          ...paymentPayload,
+          resource
+        })
+      }
+      else {
+        await this.userPaymentMethodRepo.update({
+          userId: resource.id
+        }, {
+          accountNumber, accountTitle, accountType, bankAddress, bankName,
+          beneficiaryAddress, beneficiaryFirstName, beneficiaryLastName,
+          beneficiaryMiddleName, branchName, sortCode, swiftCode, iban,
+        });
+      }
+    }
+
+    return { message: "Resource Updated Successfully!" };
   }
 
 }

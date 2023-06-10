@@ -18,27 +18,6 @@ enum userRoles {
   ADMIN
 }
 
-type UserPaymentMethod {
-  id: String!
-  accountType: String!
-  accountTitle: String!
-  beneficiaryFirstName: String!
-  beneficiaryMiddleName: String
-  beneficiaryLastName: String!
-  beneficiaryAddress: String
-  sortCode: String
-  accountNumber: String!
-  iban: String!
-  swiftCode: String!
-  bankName: String!
-  branchName: String
-  bankAddress: String
-  user: User!
-  userId: String
-  createdAt: String!
-  updatedAt: String!
-}
-
 type Resource {
   id: String!
   email: String!
@@ -130,6 +109,28 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type UserPaymentMethod {
+  id: String!
+  accountType: String!
+  accountTitle: String!
+  beneficiaryFirstName: String!
+  beneficiaryMiddleName: String
+  beneficiaryLastName: String!
+  beneficiaryAddress: String
+  sortCode: String
+  accountNumber: String!
+  iban: String!
+  swiftCode: String!
+  bankName: String!
+  branchName: String
+  bankAddress: String
+  user: User!
+  resource: Resource!
+  userId: String
+  createdAt: String!
+  updatedAt: String!
+}
+
 type User {
   id: String!
   email: String!
@@ -183,6 +184,7 @@ type User {
   requestApproved: Boolean!
   roles: [Role!]!
   userPaymentMethod: [UserPaymentMethod!]
+  resource: Resource
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
@@ -227,11 +229,11 @@ type GetAllResourcesStatsPayload {
 type Query {
   getAllUsers(getAllUsersInput: GetAllUsersInput!): GetAllUsersStatsPayload!
   getCurrentUser: User!
-  getResource(id: String = null): Resource!
   getDashboardStats: DashboardStatsPayload!
   getResourceDashboardStats: ResourceDashboardStatsPayload!
   getNewRequestUsers(getNewRequestUsersInput: GetAllUsersInput!): GetAllUsersStatsPayload!
   getAllResources(getAllResourcesInput: GetAllResourcesInput!): GetAllResourcesStatsPayload!
+  getResource(id: String = null): Resource!
   getAllUserPaymentMethods: [UserPaymentMethod!]!
 }
 
@@ -250,10 +252,10 @@ input GetAllResourcesInput {
 
 type Mutation {
   createuser(createUserInput: CreateUserInput!): User!
-  updateResource(id: String!, updateResourceInput: UpdateResourceInput!): CommonPayload!
   deleteResource(id: String!): CommonPayload!
   approveUserRequest(id: String!): CommonPayload!
   createResource(createResourceInput: CreateResourceInput!): CommonPayload!
+  updateResource(id: String!, updateResourceInput: UpdateResourceInput!): CommonPayload!
   signin(loginUserInput: LoginUserInput!): LoginResponse!
   signup(signUpUserInput: SignUpUserInput!): User!
 }
@@ -263,7 +265,7 @@ input CreateUserInput {
   phoneNumber: String = null
 }
 
-input UpdateResourceInput {
+input CreateResourceInput {
   email: String!
   phoneNumber: String = null
   status: UserStatus!
@@ -325,7 +327,7 @@ input UpdateResourceInput {
   contractDocuments: Boolean
 }
 
-input CreateResourceInput {
+input UpdateResourceInput {
   email: String!
   phoneNumber: String = null
   status: UserStatus!
