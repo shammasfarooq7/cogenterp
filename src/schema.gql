@@ -18,6 +18,97 @@ enum userRoles {
   ADMIN
 }
 
+type Resource {
+  id: String!
+  email: String!
+  mobileNumber: String
+  contactNumber: String
+  status: UserStatus
+  idCardType: IdCardType
+  interviewStatus: InterviewStatus
+  vendorName: String
+  whatsappGroup: String
+  whatsappGroupLink: String
+  workPermitStatus: String
+  contractDocuments: Boolean
+  availability: String
+  engagementType: EngagementType
+  rpocName: String
+  rpocEmail: String
+  rpocContactNumber: String
+  firstName: String
+  lastName: String
+  middleName: String
+  idCardNumber: String
+  taxNumber: String
+  languages: [String!]
+  skillSet: [String!]
+  availableTools: [String!]
+  nationality: String
+  region: String
+  country: String
+  state: String
+  city: String
+  postalCode: String
+  addressLine1: String
+  addressLine2: String
+  whatsappNumber: String
+  cogentEmail: String
+  descriptionColor: String
+  hourlyRate: String
+  halfDayRate: String
+  fullDayRate: String
+  monthlyRate: String
+  anyExtraRate: String
+  transport: String
+  mobility: String
+  resumeDocUrl: String
+  identityDocUrl: String
+  onboardedBy: User
+  isOnboarded: Boolean!
+  isARequest: Boolean!
+  requestApproved: Boolean!
+  userPaymentMethod: [UserPaymentMethod!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  onboardedAt: DateTime
+}
+
+"""The user status"""
+enum UserStatus {
+  DIRECT
+  INDIRECT
+}
+
+"""The user id card type"""
+enum IdCardType {
+  DriverLicense
+  Passport
+  IdCard
+  ResidencePermit
+}
+
+"""The user interview status"""
+enum InterviewStatus {
+  Complete
+  Scheduled
+  NotScheduled
+}
+
+"""The user engagement type"""
+enum EngagementType {
+  FSE
+  FTE
+  PTE
+  Remote
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type UserPaymentMethod {
   id: String!
   accountType: String!
@@ -34,6 +125,7 @@ type UserPaymentMethod {
   branchName: String
   bankAddress: String
   user: User!
+  resource: Resource!
   userId: String
   createdAt: String!
   updatedAt: String!
@@ -86,51 +178,18 @@ type User {
   resumeDocUrl: String
   identityDocUrl: String
   onboardedBy: User
-  onboardedUsers: [User!]
+  onboardedResources: [Resource!]
   isOnboarded: Boolean!
   isARequest: Boolean!
   requestApproved: Boolean!
   roles: [Role!]!
   userPaymentMethod: [UserPaymentMethod!]
+  resource: Resource
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
   onboardedAt: DateTime
 }
-
-"""The user status"""
-enum UserStatus {
-  DIRECT
-  INDIRECT
-}
-
-"""The user id card type"""
-enum IdCardType {
-  DriverLicense
-  Passport
-  IdCard
-  ResidencePermit
-}
-
-"""The user interview status"""
-enum InterviewStatus {
-  Complete
-  Scheduled
-  NotScheduled
-}
-
-"""The user engagement type"""
-enum EngagementType {
-  FSE
-  FTE
-  PTE
-  Remote
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 type LoginResponse {
   accessToken: String
@@ -162,13 +221,19 @@ type GetAllUsersStatsPayload {
   count: Float!
 }
 
+type GetAllResourcesStatsPayload {
+  resources: [Resource!]!
+  count: Float!
+}
+
 type Query {
   getAllUsers(getAllUsersInput: GetAllUsersInput!): GetAllUsersStatsPayload!
   getCurrentUser: User!
-  getResource(id: String = null): User!
   getDashboardStats: DashboardStatsPayload!
   getResourceDashboardStats: ResourceDashboardStatsPayload!
   getNewRequestUsers(getNewRequestUsersInput: GetAllUsersInput!): GetAllUsersStatsPayload!
+  getAllResources(getAllResourcesInput: GetAllResourcesInput!): GetAllResourcesStatsPayload!
+  getResource(id: String = null): Resource!
   getAllUserPaymentMethods: [UserPaymentMethod!]!
 }
 
@@ -179,12 +244,18 @@ input GetAllUsersInput {
   searchQuery: String
 }
 
+input GetAllResourcesInput {
+  page: Float
+  limit: Float
+  searchQuery: String
+}
+
 type Mutation {
   createuser(createUserInput: CreateUserInput!): User!
-  createResource(createResourceInput: CreateResourceInput!): CommonPayload!
-  updateResource(id: String!, updateResourceInput: UpdateResourceInput!): CommonPayload!
   deleteResource(id: String!): CommonPayload!
   approveUserRequest(id: String!): CommonPayload!
+  createResource(createResourceInput: CreateResourceInput!): CommonPayload!
+  updateResource(id: String!, updateResourceInput: UpdateResourceInput!): CommonPayload!
   signin(loginUserInput: LoginUserInput!): LoginResponse!
   signup(signUpUserInput: SignUpUserInput!): User!
 }

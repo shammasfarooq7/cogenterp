@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { Ticket } from './ticket.entity';
-import { User } from 'src/users/entities/user.entity';
 import { TimeSheet } from './timeSheet.entity';
+import { Resource } from 'src/modules/resources/entity/resource.entity';
 
 @Entity("ticket_dates")
 @ObjectType()
@@ -10,10 +10,6 @@ export class TicketDate {
   @PrimaryGeneratedColumn('increment', { name: 'id' })
   @Field(() => String)
   id: string;
-
-  @Column()
-  @Field(() => String)
-  ticketId: string;
 
   @Column({ type: 'date' })
   @Field()
@@ -23,14 +19,18 @@ export class TicketDate {
   @Field()
   scheduledTime: string;
 
+  @Column()
+  @Field(() => String)
+  ticketId: string;
+
   @ManyToOne(() => Ticket, ticket => ticket.ticketDates)
   @Field(() => Ticket)
   ticket: Ticket;
 
-  @ManyToMany(() => User, user => user.ticketDates)
+  @ManyToMany(() => Resource, resource => resource.ticketDates)
   @JoinTable({ name: 'time_sheets' })
-  @Field(() => [User])
-  users: User[];
+  @Field(() => [Resource])
+  resources: Resource[];
 
   @ManyToMany(() => TimeSheet, timeSheet => timeSheet.ticketDate)
   @JoinTable({ name: 'time_sheets' })

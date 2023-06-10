@@ -4,8 +4,6 @@ import { TicketType } from '../entities/ticket.entity';
 
 @InputType()
 export class CreateTicketInput {
-  @Field(() => String)
-  cogentCaseNumber: string;
 
   @Field(() => TicketType)
   ticketType: TicketType;

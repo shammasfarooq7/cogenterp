@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Up
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { User } from 'src/users/entities/user.entity';
 import { TicketDate } from './ticketDate.entitiy';
+import { Resource } from 'src/modules/resources/entity/resource.entity';
 
 @Entity("time_sheets")
 @ObjectType()
@@ -40,11 +41,11 @@ export class TimeSheet {
 
   @Column()
   @Field(() => String)
-  userId: string;
+  resourceId: string;
 
-  @ManyToOne(() => User, user => user.timeSheets)
-  @Field(() => User)
-  user: User;
+  @ManyToOne(() => Resource, resource => resource.timeSheets)
+  @Field(() => Resource)
+  resource: Resource;
 
   @Column()
   @Field(() => String)

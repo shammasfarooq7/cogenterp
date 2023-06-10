@@ -15,6 +15,7 @@ import { DashboardStatsPayload } from './dto/dashboard-stats.dto';
 import { ResourceDashboardStatsPayload } from './dto/resource-dashboard-stats.dto';
 import { IContext } from './auth/interfaces/context.interface';
 import { GetAllUsersStatsPayload } from './dto/get-all-users.dto';
+import { Resource } from 'src/modules/resources/entity/resource.entity';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -32,11 +33,11 @@ export class UsersResolver {
     return result;
   }
 
-  @Roles(UserRole.ADMIN, UserRole.RMS, UserRole.RESOURCE)
-  @Query(() => User)
-  async getResource(@Context() ctx: IContext, @Args('id', { nullable: true, defaultValue: null }) id: string | null): Promise<User> {
-    return await this.usersService.getResource(id || ctx?.user?.userId);
-  }
+  // @Roles(UserRole.ADMIN, UserRole.RMS, UserRole.RESOURCE)
+  // @Query(() => Resource)
+  // async getResource(@Context() ctx: IContext, @Args('id', { nullable: true, defaultValue: null }) id: string | null): Promise<Resource> {
+  //   return await this.usersService.getResource(id || ctx?.user?.userId);
+  // }
 
   @Roles(UserRole.ADMIN, UserRole.RMS)
   @Query(() => DashboardStatsPayload)
@@ -66,17 +67,17 @@ export class UsersResolver {
     return await this.usersService.create(createUserInput);
   }
 
-  @Roles(UserRole.ADMIN, UserRole.RMS)
-  @Mutation(() => CommonPayload)
-  async createResource(@Args('createResourceInput') createResourceInput: CreateResourceInput, @Context() ctx: IContext): Promise<CommonPayload> {
-    return await this.usersService.createResource(ctx?.user?.userId, createResourceInput)
-  }
+  // @Roles(UserRole.ADMIN, UserRole.RMS)
+  // @Mutation(() => CommonPayload)
+  // async createResource(@Args('createResourceInput') createResourceInput: CreateResourceInput, @Context() ctx: IContext): Promise<CommonPayload> {
+  //   return await this.usersService.createResource(ctx?.user?.userId, createResourceInput)
+  // }
 
-  @Roles(UserRole.ADMIN, UserRole.RMS, UserRole.RESOURCE)
-  @Mutation(() => CommonPayload)
-  async updateResource(@Args('id') id: string, @Args('updateResourceInput') updateResourceInput: UpdateResourceInput, @Context() ctx: IContext): Promise<CommonPayload> {
-    return await this.usersService.updateResource(ctx?.user?.userId, id, updateResourceInput);
-  }
+  // @Roles(UserRole.ADMIN, UserRole.RMS, UserRole.RESOURCE)
+  // @Mutation(() => CommonPayload)
+  // async updateResource(@Args('id') id: string, @Args('updateResourceInput') updateResourceInput: UpdateResourceInput, @Context() ctx: IContext): Promise<CommonPayload> {
+  //   return await this.usersService.updateResource(ctx?.user?.userId, id, updateResourceInput);
+  // }
 
   @Roles(UserRole.ADMIN, UserRole.RMS)
   @Mutation(() => CommonPayload)
