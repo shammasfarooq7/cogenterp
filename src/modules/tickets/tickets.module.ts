@@ -6,10 +6,11 @@ import { TicketDate } from './entities/ticketDate.entitiy';
 import { TicketDetail } from './entities/ticketDetail.entity';
 import { TimeSheet } from './entities/timeSheet.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { TicketAttachment } from './entities/ticketAttachment.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Ticket, TicketDate, TicketDetail, TimeSheet])
+    TypeOrmModule.forFeature([Ticket, TicketDate, TicketDetail, TimeSheet, TicketAttachment])
   ],
   providers: [TicketsResolver, TicketsService, TypeOrmModule],
   exports: [TicketsService]
