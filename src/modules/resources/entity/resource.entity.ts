@@ -1,47 +1,70 @@
 import { IsPhoneNumber } from '@nestjs/class-validator';
 import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
 import { Column, CreateDateColumn, Entity, Generated, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm';
-import { Role } from './role.entity';
-import { UserPaymentMethod } from './../../modules/userPaymentMethods/entity/userPaymentMethod.entity';
-import { LoginTracker } from './login-tracker.entity';
-import { IdCardType, Resource, InterviewStatus, EngagementType, ResourceStatus } from './../../modules/resources/entity/resource.entity';
+import { Role } from '../../../users/entities/role.entity';
+import { UserPaymentMethod } from './../../../modules/userPaymentMethods/entity/userPaymentMethod.entity';
+import { LoginTracker } from './../../../users/entities/login-tracker.entity';
+import { User } from 'src/users/entities/user.entity';
 
+
+export enum ResourceStatus {
+  DIRECT = "Direct",
+  INDIRECT = "Indirect",
+}
 
 registerEnumType(ResourceStatus, {
-  name: 'UserStatus',
+  name: 'ResourceStatus',
   description: 'The user status',
 });
+
+export enum EngagementType {
+  FSE = "Fse",
+  FTE = "Fte",
+  PTE = "Pte",
+  Remote = "Remote"
+}
 
 registerEnumType(EngagementType, {
   name: 'EngagementType',
   description: 'The user engagement type',
 });
 
+export enum IdCardType {
+  DriverLicense = "DriverLicense",
+  Passport = "Passport",
+  IdCard = "IdCard",
+  ResidencePermit = "ResidencePermit"
+}
+
 registerEnumType(IdCardType, {
   name: 'IdCardType',
   description: 'The user id card type',
 });
 
-
+export enum InterviewStatus {
+  Complete = "Complete",
+  Scheduled = "Scheduled",
+  NotScheduled = "NotScheduled",
+}
 
 registerEnumType(InterviewStatus, {
   name: 'InterviewStatus',
   description: 'The user interview status',
 });
 @ObjectType()
-@Entity('users')
-export class User {
+@Entity('resources')
+export class Resource {
   @PrimaryGeneratedColumn('increment', { name: 'id' })
   @Field(() => String)
   id: string;
-
 
   @Column('varchar', { length: 50, unique: true })
   @Field(() => String)
   email: string;
 
-  @Column('varchar', { length: 100 })
-  password: string;
+  @OneToOne(() => User, user => user.resource,)
+  @JoinColumn({ name: 'userId' })
+  user: User;
 
   @Column({ nullable: true })
   @Field({ nullable: true, defaultValue: null })
@@ -237,15 +260,10 @@ export class User {
   @Field({ nullable: true })
   identityDocUrl: string;
 
-  @ManyToOne(() => User, { nullable: true })
+  @ManyToOne(() => User, user => user.onboardedResources, { nullable: true })
   @JoinColumn({ name: 'onboardedBy' })
-  @Field({ nullable: true })
+  @Field(() => User, { nullable: true })
   onboardedBy: User;
-
-  @OneToMany(() => Resource, resource => resource.onboardedBy, { nullable: true })
-  @JoinColumn({ name: 'onboardedResources' })
-  @Field(() => [Resource], { nullable: true })
-  onboardedResources: () => Resource[];
 
   @Column("boolean", { default: false })
   @Field()
@@ -259,24 +277,9 @@ export class User {
   @Field()
   requestApproved: boolean;
 
-  @Field(() => [Role])
-  @ManyToMany(() => Role, (role) => role.users)
-  @JoinTable({ name: "user_roles" })
-  roles: Role[];
-
   @Field(() => [UserPaymentMethod], { nullable: true })
   @OneToMany(() => UserPaymentMethod, (userPaymentMethod) => userPaymentMethod.user)
   userPaymentMethod: UserPaymentMethod[]
-
-  @OneToOne(() => LoginTracker, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn({ name: 'loginTrackerId' })
-  loginTracker: LoginTracker;
-
-  @OneToOne(() => Resource, resource => resource.user, { cascade: true })
-  @JoinColumn({ name: 'resourceId' })
-  resource: Resource;
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field(() => Date)
@@ -293,8 +296,4 @@ export class User {
   @Column({ nullable: true, type: 'timestamptz' })
   @Field(() => Date, { nullable: true })
   onboardedAt: Date;
-
 }
-
-
-// Email, Password, roles,Logintracker,createdAt,updatedAt,deletedAt,onboardedUsers

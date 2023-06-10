@@ -13,10 +13,11 @@ import { SendgridService } from '../sendgrid/sendgrid.service';
 import { AzureBlobService } from '../azure-blob/azure-blob.service';
 import { ConfigService } from '@nestjs/config';
 import { LoginTracker } from './entities/login-tracker.entity';
+import { Resource } from 'src/modules/resources/entity/resource.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, UserPaymentMethod, Role, LoginTracker])
+    TypeOrmModule.forFeature([User, UserPaymentMethod, Role, LoginTracker, Resource])
   ],
   providers: [UsersResolver, UsersService, UserSubscriber, TypeOrmModule, RoleService, AuthService,
     JwtService, SendgridService, AzureBlobService, ConfigService],

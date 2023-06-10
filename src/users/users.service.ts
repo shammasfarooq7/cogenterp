@@ -1,7 +1,7 @@
 import { ConflictException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UpdateUserInput } from './dto/update-user.input';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, ILike, IsNull, Repository } from 'typeorm';
+import { Between, ILike, In, IsNull, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UserRole } from './entities/role.entity';
@@ -17,11 +17,13 @@ import { ResourceDashboardStatsPayload } from './dto/resource-dashboard-stats.dt
 import { SendgridService } from 'src/sendgrid/sendgrid.service';
 import { AzureBlobService } from 'src/azure-blob/azure-blob.service';
 import { GetAllUsersStatsPayload } from './dto/get-all-users.dto';
+import { Resource } from 'src/modules/resources/entity/resource.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private userRepo: Repository<User>,
+    @InjectRepository(Resource) private resourceRepo: Repository<Resource>,
     @InjectRepository(UserPaymentMethod) private userPaymentMethodRepo: Repository<UserPaymentMethod>,
     private readonly roleService: RoleService,
     private readonly authService: AuthService,
@@ -69,7 +71,7 @@ export class UsersService {
 
       const users = await this.userRepo.find({
         where,
-        relations: { userPaymentMethod: true, roles: true, onboardedBy: true },
+        relations: { userPaymentMethod: true, roles: true, },
         skip: page * limit,
         take: limit
       });
@@ -225,14 +227,13 @@ export class UsersService {
   }
 
   async getResource(id: string) {
-    const user = await this.userRepo.findOne(
+    const user = await this.resourceRepo.findOne(
       {
         where: { id, deletedAt: IsNull() },
-        relations: { roles: true, userPaymentMethod: true, onboardedBy: true }
+        relations: { userPaymentMethod: true, onboardedBy: true }
       }
     )
     if (!user) throw new NotFoundException(`User with ${id} does not exist!`)
-    if (user.roles.find(item => item.role === "rms")) throw new NotFoundException(`Kindly provide correct resource id!`)
     return user
   };
 
@@ -269,9 +270,9 @@ export class UsersService {
   }
 
   async getDashboardStats(): Promise<DashboardStatsPayload> {
-
-    const startDate = new Date(new Date().setMonth(new Date().getMonth() - 1));
-    const endDate = new Date()
+    const date = new Date();
+    const startDate = new Date(date.setDate(date.getDate() - 15));
+    const endDate = new Date();
 
     const totalResourceCount = await this.userRepo.count({
       where: {
@@ -396,6 +397,45 @@ export class UsersService {
     });
 
     const onboardedDifference = getPercentage(lastMonthOnboardedCount, currentMonthOnboardedCount)
+
+
+    // InterviewSchedule Count
+
+    // const totalInterviewScheduleCount = await this.userRepo.count({
+    //   where: {
+    //     roles: {
+    //       role: UserRole.RESOURCE
+    //     },
+    //     interviewStatus: In(["Completed", "Scheduled"]),
+    //     deletedAt: IsNull(),
+    //   }
+    // });
+
+    // const lastMonthTotalInterviewScheduleCount = await this.userRepo.count({
+    //   where: {
+    //     roles: {
+    //       role: UserRole.RESOURCE
+    //     },
+    //     isOnboarded: true,
+    //     deletedAt: IsNull(),
+    //     createdAt: Between(twoMonthsBeforeDate, lastMonthDate),
+
+    //   }
+    // });
+
+    // const currentMonthOnboardedCount = await this.userRepo.count({
+    //   where: {
+    //     roles: {
+    //       role: UserRole.RESOURCE
+    //     },
+    //     isOnboarded: true,
+    //     deletedAt: IsNull(),
+    //     createdAt: Between(lastMonthDate, currentDate),
+
+    //   }
+    // });
+
+    // const onboardedDifference = getPercentage(lastMonthOnboardedCount, currentMonthOnboardedCount)
 
     return {
       resourceStats: {

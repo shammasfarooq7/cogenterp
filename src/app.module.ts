@@ -13,6 +13,7 @@ import { ConfigModule } from '@nestjs/config';
 import { SendgridService } from './sendgrid/sendgrid.service';
 import { AzureBlobService } from './azure-blob/azure-blob.service';
 import { AzureBlobController } from './azure-blob/azure-blob.controller';
+import { ResourcesModule } from './modules/resources/resources.module';
 // import { AzureBlobModule } from './azure-blob/azure-blob.module';
 const { entities, migrations, ...options } = dataSourceOptions;
 
@@ -27,6 +28,7 @@ const { entities, migrations, ...options } = dataSourceOptions;
     playground: true,
   }),
     UsersModule,
+    ResourcesModule,
     AuthModule,
     UserPaymentMethodsModule,
   ConfigModule.forRoot(),
