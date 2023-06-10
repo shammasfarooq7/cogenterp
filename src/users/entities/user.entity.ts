@@ -1,10 +1,10 @@
 import { IsPhoneNumber } from '@nestjs/class-validator';
 import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, Generated, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm';
 import { Role } from './role.entity';
 import { UserPaymentMethod } from './../../modules/userPaymentMethods/entity/userPaymentMethod.entity';
 import { LoginTracker } from './loginTracker.entity'
-import { IdCardType, Resource, InterviewStatus, EngagementType, ResourceStatus } from './../../modules/resources/entity/resource.entity';
+import { IdCardType, Resource, InterviewStatus, ResourceStatus, EngagementType } from './../../modules/resources/entity/resource.entity';
 
 
 registerEnumType(ResourceStatus, {

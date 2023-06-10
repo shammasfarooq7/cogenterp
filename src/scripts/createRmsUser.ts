@@ -1,4 +1,3 @@
-import { EngagementType, User, UserStatus } from '../users/entities/user.entity';
 import { IsNull, Connection, createConnection } from 'typeorm';
 // import { AppDataSource } from "../data-source"
 import { Role, UserRole } from '../users/entities/role.entity';
@@ -6,6 +5,7 @@ import { UserPaymentMethod } from '../modules/userPaymentMethods/entity/userPaym
 import { dataSourceOptions } from '../data-source-options';
 import * as bcrypt from 'bcrypt';
 import { LoginTracker } from '../users/entities/loginTracker.entity';
+import { User } from 'src/users/entities/user.entity';
 
 
 const userData = {

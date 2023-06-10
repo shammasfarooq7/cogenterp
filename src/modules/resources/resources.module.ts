@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { LoginTracker } from '../../users/entities/login-tracker.entity';
 import { Resource } from 'src/modules/resources/entity/resource.entity';
 import { AzureBlobService } from 'src/azure-blob/azure-blob.service';
 import { SendgridService } from 'src/sendgrid/sendgrid.service';
@@ -14,6 +13,7 @@ import { User } from 'src/users/entities/user.entity';
 import { UserSubscriber } from 'src/users/subscribers/user.subscriber';
 import { ResourcesService } from './resources.service';
 import { ResourcesResolver } from './resources.resolver';
+import { LoginTracker } from 'src/users/entities/loginTracker.entity';
 
 @Module({
   imports: [
