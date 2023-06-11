@@ -1,8 +1,9 @@
-import { Field } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { TicketDetail } from './ticketDetail.entity';
 
-@Entity()
+@Entity("ticket_attachments")
+@ObjectType()
 export class TicketAttachment {
   @PrimaryGeneratedColumn('increment', { name: 'id' })
   @Field(() => String)
@@ -13,8 +14,10 @@ export class TicketAttachment {
   url: string;
 
   @Column()
+  @Field()
   ticketDetailsId: number;
 
+  @Field(() => TicketDetail)
   @ManyToOne(() => TicketDetail, ticketDetail => ticketDetail.attachments)
   @JoinColumn({ name: 'ticketDetailsId' })
   ticketDetail: TicketDetail;

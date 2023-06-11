@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
 import { TicketsResolver } from './tickets.resolver';
 import { Ticket } from './entities/ticket.entity';
-import { TicketDate } from './entities/ticketDate.entitiy';
+import { TicketDate } from './entities/ticketDate.entity';
 import { TicketDetail } from './entities/ticketDetail.entity';
 import { TimeSheet } from './entities/timeSheet.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -16,4 +16,4 @@ import { TicketAttachment } from './entities/ticketAttachment.entity';
   exports: [TicketsService]
 
 })
-export class TicketsModule {}
+export class TicketsModule { }

@@ -3,7 +3,7 @@ import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
 import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm';
 import { UserPaymentMethod } from './../../../modules/userPaymentMethods/entity/userPaymentMethod.entity';
 import { User } from 'src/users/entities/user.entity';
-import { TicketDate } from 'src/modules/tickets/entities/ticketDate.entitiy';
+import { TicketDate } from 'src/modules/tickets/entities/ticketDate.entity';
 import { TimeSheet } from 'src/modules/tickets/entities/timeSheet.entity';
 
 

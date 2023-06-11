@@ -202,10 +202,12 @@ export class TicketDetail {
   @Field({ nullable: true })
   serviceDocUrl: string;
 
+  @Field(() => [Ticket])
   @OneToMany(() => Ticket, ticket => ticket.ticketDetail)
   tickets: Ticket[];
 
-  @OneToMany(() => TicketAttachment, attachment => attachment.ticketDetail)
+  @Field(() => [TicketAttachment])
+  @OneToMany(() => TicketAttachment, ticketAttachment => ticketAttachment.ticketDetail)
   attachments: TicketAttachment[];
 
   @CreateDateColumn({ type: 'timestamptz' })

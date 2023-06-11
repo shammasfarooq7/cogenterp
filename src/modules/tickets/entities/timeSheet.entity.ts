@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { User } from 'src/users/entities/user.entity';
-import { TicketDate } from './ticketDate.entitiy';
+import { TicketDate } from './ticketDate.entity';
 import { Resource } from 'src/modules/resources/entity/resource.entity';
 
 @Entity("time_sheets")

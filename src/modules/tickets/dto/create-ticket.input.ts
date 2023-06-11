@@ -8,9 +8,6 @@ export class CreateTicketInput {
   @Field(() => TicketType)
   ticketType: TicketType;
 
-  @Field({ nullable: true })
-  isExternal?: boolean;
-
   @Field(() => String)
   numberOfHoursReq: string;
 
@@ -97,4 +94,7 @@ export class CreateTicketInput {
 
   @Field({ nullable: true })
   serviceDocUrl?: string;
+
+  @Field(() => [Date])
+  ticketDates: Date[]
 }

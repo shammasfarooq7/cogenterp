@@ -18,6 +18,146 @@ enum userRoles {
   ADMIN
 }
 
+type TicketAttachment {
+  id: String!
+  url: String
+  ticketDetailsId: Float!
+  ticketDetail: TicketDetail!
+}
+
+type TicketDetail {
+  id: String!
+  accountName: String!
+  endClientName: String!
+  country: String!
+  city: String!
+  provinceState: String!
+  siteAddress: String!
+  postCode: String!
+  spocName: String!
+  spocContactNumber: String!
+  spocEmailAddress: String!
+  siteAccessInstruction: String!
+  customerCaseNumber: String!
+  jobSummary: String!
+  caseDetails: String!
+  scopeOfWork: String!
+  instructions: String!
+  addInstruction: String!
+  specialInstruction: String!
+  hardwareSN: String!
+  toolsRequested: [String!]
+  technologyType: TechnologyType
+  region: Region
+  serviceType: [String!]
+  serviceLevel: ServiceLevel!
+  servicePriority: ServicePriority!
+  slaPriority: SlaPriority!
+  serviceDocUrl: String
+  tickets: [Ticket!]!
+  attachments: [TicketAttachment!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""technology type"""
+enum TechnologyType {
+  EUC
+  NETWORK
+  OTHER
+}
+
+"""region"""
+enum Region {
+  EMEA
+  APAC
+  AMER
+  LATAM
+}
+
+"""service level"""
+enum ServiceLevel {
+  L0
+  L1
+  L2
+  L3
+  L4
+}
+
+"""service priority"""
+enum ServicePriority {
+  P1
+  P2
+  P3
+  P4
+  P5
+}
+
+"""sla priority"""
+enum SlaPriority {
+  t3BD
+  NBD
+  SBD
+  SBDH4
+  t4x7
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Ticket {
+  id: String!
+  cogentCaseNumber: String!
+  cogentWorkOrderNumber: [String!]
+  ticketType: TicketType!
+  numberOfHoursReq: String!
+  numberOfResource: String!
+  ticketDetailId: String!
+  ticketDetail: TicketDetail!
+  ticketDates: [TicketDate!]!
+  ticketReceivedTime: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""The ticket type"""
+enum TicketType {
+  FSE
+  FTE
+  PTE
+}
+
+type TimeSheet {
+  id: String!
+  checkIn: String!
+  checkOut: String!
+  sdId: String!
+  sdCheckIn: String!
+  sdCheckOut: String!
+  feopsCheckIn: String!
+  feopsCheckOut: String!
+  resourceId: String!
+  resource: Resource!
+  ticketDateId: String!
+  ticketDate: TicketDate!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type TicketDate {
+  id: String!
+  date: DateTime!
+  scheduledTime: String!
+  ticketId: String!
+  ticket: Ticket!
+  resources: [Resource!]!
+  timeSheets: [TimeSheet!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
 type Resource {
   id: String!
   email: String!
@@ -69,6 +209,8 @@ type Resource {
   isARequest: Boolean!
   requestApproved: Boolean!
   userPaymentMethod: [UserPaymentMethod!]
+  ticketDates: [TicketDate!]!
+  timeSheets: [TimeSheet!]!
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
@@ -103,11 +245,6 @@ enum EngagementType {
   PTE
   Remote
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 type UserPaymentMethod {
   id: String!
@@ -235,6 +372,8 @@ type Query {
   getRMSDashboardStats: RMSDashboardStatsPayload!
   getResourceDashboardStats: ResourceDashboardStatsPayload!
   getAllUserPaymentMethods: [UserPaymentMethod!]!
+  tickets: [Ticket!]!
+  ticket(id: Int!): Ticket!
 }
 
 input GetAllUsersInput {
@@ -257,6 +396,8 @@ type Mutation {
   updateResource(id: String!, updateResourceInput: UpdateResourceInput!): CommonPayload!
   signin(loginUserInput: LoginUserInput!): LoginResponse!
   signup(signUpUserInput: SignUpUserInput!): User!
+  createTicket(createTicketInput: CreateTicketInput!): Ticket!
+  removeTicket(id: Int!): Ticket!
 }
 
 input CreateUserInput {
@@ -397,4 +538,38 @@ input SignUpUserInput {
   email: String!
   password: String!
   mobileNumber: String = null
+}
+
+input CreateTicketInput {
+  ticketType: TicketType!
+  numberOfHoursReq: String!
+  numberOfResource: String!
+  accountName: String!
+  endClientName: String!
+  country: String!
+  city: String!
+  provinceState: String!
+  siteAddress: String!
+  postCode: String!
+  spocName: String!
+  spocContactNumber: String!
+  spocEmailAddress: String!
+  siteAccessInstruction: String!
+  customerCaseNumber: String!
+  jobSummary: String!
+  caseDetails: String!
+  scopeOfWork: String!
+  instructions: String!
+  addInstruction: String!
+  specialInstruction: String!
+  hardwareSN: String!
+  toolsRequested: [String!]
+  technologyType: TechnologyType
+  region: Region
+  serviceType: [String!]
+  serviceLevel: ServiceLevel!
+  servicePriority: ServicePriority!
+  slaPriority: SlaPriority!
+  serviceDocUrl: String
+  ticketDates: [DateTime!]!
 }
