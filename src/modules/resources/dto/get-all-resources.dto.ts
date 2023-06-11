@@ -1,5 +1,5 @@
 import { ObjectType, Field } from '@nestjs/graphql';
-import { Resource } from '../resources/entity/resource.entity';
+import { Resource } from '../entity/resource.entity';
 
 @ObjectType()
 export class GetAllResourcesStatsPayload {

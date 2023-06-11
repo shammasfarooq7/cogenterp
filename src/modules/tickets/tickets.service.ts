@@ -4,10 +4,13 @@ import { UpdateTicketInput } from './dto/update-ticket.input';
 import { TicketDetail } from './entities/ticketDetail.entity';
 import { AppDataSource } from 'src/data-source';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { Ticket } from './entities/ticket.entity';
 import { TicketDate } from './entities/ticketDate.entity';
 import { ICurrentUser } from 'src/users/auth/interfaces/current-user.interface';
+import { GetAllTicketsInput } from './dto/get-all-tickets-input';
+import { GetAllTicketsPayload } from './dto/get-all-tickets.dto';
+import { CommonPayload } from 'src/users/dto/common.dto';
 
 @Injectable()
 export class TicketsService {
@@ -17,7 +20,7 @@ export class TicketsService {
     @InjectRepository(TicketDate) private ticketDateRepo: Repository<TicketDate>,
   ) { }
 
-  async create(currentUser: ICurrentUser, createTicketInput: CreateTicketInput) {
+  async create(currentUser: ICurrentUser, createTicketInput: CreateTicketInput): Promise<CommonPayload> {
     const queryRunner = AppDataSource.createQueryRunner();
 
     try {
@@ -81,19 +84,46 @@ export class TicketsService {
 
   }
 
-  findAll() {
-    return `This action returns all tickets`;
+  async findAll(getAllTicketsInput: GetAllTicketsInput): Promise<GetAllTicketsPayload> {
+
+    const { limit = 20, page = 0 } = getAllTicketsInput;
+
+    const [tickets, count] = await this.ticketRepo.findAndCount({
+      where: {
+        deletedAt: IsNull()
+      },
+      skip: page * limit,
+      take: limit
+    })
+
+    return {
+      count,
+      tickets
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} ticket`;
+  async findOne(id: string): Promise<Ticket> {
+
+    const ticket = await this.ticketRepo.findOne({
+      where: {
+        id,
+        deletedAt: IsNull()
+      }
+    })
+
+    return ticket;
   }
 
   update(id: number, updateTicketInput: UpdateTicketInput) {
     return `This action updates a #${id} ticket`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} ticket`;
+  async delete(id: string): Promise<CommonPayload> {
+    await this.ticketRepo.update(
+      { id },
+      { deletedAt: new Date() })
+
+    return { message: "Ticket Deleted Successfully!" };
+
   }
 }

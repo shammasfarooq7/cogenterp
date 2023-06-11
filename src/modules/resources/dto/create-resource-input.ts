@@ -1,5 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { IdCardType, InterviewStatus, EngagementType, ResourceStatus} from '../../modules/resources/entity/resource.entity';
+import { IdCardType, InterviewStatus, EngagementType, ResourceStatus} from '../entity/resource.entity';
 
 @InputType()
 export class CreateResourceInput {

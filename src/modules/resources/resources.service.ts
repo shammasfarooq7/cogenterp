@@ -8,11 +8,11 @@ import { RoleService } from '../../users/role.service';
 import { CommonPayload } from '../../users/dto/common.dto';
 import { Resource } from 'src/modules/resources/entity/resource.entity';
 import { UserPaymentMethod } from '../userPaymentMethods/entity/userPaymentMethod.entity';
-import { GetAllResourcesInput } from '../dto/get-all-resources-input';
-import { GetAllResourcesStatsPayload } from '../dto/get-all-resources.dto';
-import { UpdateResourceInput } from '../dto/update-resource-input';
-import { RMSDashboardStatsPayload } from '../dto/rms-dashboard-stats.dto';
-import { ResourceDashboardStatsPayload } from '../dto/resource-dashboard-stats.dto';
+import { GetAllResourcesInput } from './dto/get-all-resources-input';
+import { GetAllResourcesStatsPayload } from './dto/get-all-resources.dto';
+import { UpdateResourceInput } from './dto/update-resource-input';
+import { RMSDashboardStatsPayload } from './dto/rms-dashboard-stats.dto';
+import { ResourceDashboardStatsPayload } from './dto/resource-dashboard-stats.dto';
 
 @Injectable()
 export class ResourcesService {

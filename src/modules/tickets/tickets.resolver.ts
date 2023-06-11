@@ -4,23 +4,26 @@ import { Ticket } from './entities/ticket.entity';
 import { CreateTicketInput } from './dto/create-ticket.input';
 import { UpdateTicketInput } from './dto/update-ticket.input';
 import { IContext } from 'src/users/auth/interfaces/context.interface';
+import { GetAllTicketsPayload } from './dto/get-all-tickets.dto';
+import { GetAllTicketsInput } from './dto/get-all-tickets-input';
+import { CommonPayload } from 'src/users/dto/common.dto';
 
 @Resolver(() => Ticket)
 export class TicketsResolver {
   constructor(private readonly ticketsService: TicketsService) { }
 
-  @Mutation(() => Ticket)
-  createTicket(@Context() ctx: IContext, @Args('createTicketInput') createTicketInput: CreateTicketInput) {
+  @Mutation(() => CommonPayload)
+  createTicket(@Context() ctx: IContext, @Args('createTicketInput') createTicketInput: CreateTicketInput): Promise<CommonPayload> {
     return this.ticketsService.create(ctx.user, createTicketInput);
   }
 
-  @Query(() => [Ticket], { name: 'tickets' })
-  findAll() {
-    return this.ticketsService.findAll();
+  @Query(() => GetAllTicketsPayload)
+  findAll(@Context() ctx: IContext, @Args('getAllTicketsInput') getAllTicketsInput: GetAllTicketsInput): Promise<GetAllTicketsPayload> {
+    return this.ticketsService.findAll(getAllTicketsInput);
   }
 
-  @Query(() => Ticket, { name: 'ticket' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  @Query(() => Ticket)
+  findOne(@Args('id') id: string): Promise<Ticket> {
     return this.ticketsService.findOne(id);
   }
 
@@ -29,8 +32,8 @@ export class TicketsResolver {
   //   return this.ticketsService.update(updateTicketInput.id, updateTicketInput);
   // }
 
-  @Mutation(() => Ticket)
-  removeTicket(@Args('id', { type: () => Int }) id: number) {
-    return this.ticketsService.remove(id);
+  @Mutation(() => CommonPayload)
+  deleteTicket(@Args('id') id: string): Promise<CommonPayload> {
+    return this.ticketsService.delete(id);
   }
 }

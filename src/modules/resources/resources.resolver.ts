@@ -7,12 +7,12 @@ import { ICurrentUser } from '../../users/auth/interfaces/current-user.interface
 import { IContext } from '../../users/auth/interfaces/context.interface';
 import { Resource } from 'src/modules/resources/entity/resource.entity';
 import { ResourcesService } from './resources.service';
-import { CreateResourceInput } from '../dto/create-resource-input';
-import { GetAllResourcesStatsPayload } from '../dto/get-all-resources.dto';
-import { GetAllResourcesInput } from '../dto/get-all-resources-input';
-import { UpdateResourceInput } from '../dto/update-resource-input';
-import { RMSDashboardStatsPayload } from '../dto/rms-dashboard-stats.dto';
-import { ResourceDashboardStatsPayload } from '../dto/resource-dashboard-stats.dto';
+import { CreateResourceInput } from './dto/create-resource-input';
+import { GetAllResourcesStatsPayload } from './dto/get-all-resources.dto';
+import { GetAllResourcesInput } from './dto/get-all-resources-input';
+import { UpdateResourceInput } from './dto/update-resource-input';
+import { RMSDashboardStatsPayload } from './dto/rms-dashboard-stats.dto';
+import { ResourceDashboardStatsPayload } from './dto/resource-dashboard-stats.dto';
 
 @Resolver(() => Resource)
 export class ResourcesResolver {

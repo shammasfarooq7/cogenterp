@@ -120,6 +120,7 @@ type Ticket {
   ticketReceivedTime: DateTime!
   createdAt: DateTime!
   updatedAt: DateTime!
+  deletedAt: DateTime
 }
 
 """The ticket type"""
@@ -363,6 +364,11 @@ type ResourceDashboardStatsPayload {
   onboardedStats: Stats!
 }
 
+type GetAllTicketsPayload {
+  tickets: [Ticket!]!
+  count: Float!
+}
+
 type Query {
   getAllUsers(getAllUsersInput: GetAllUsersInput!): GetAllUsersStatsPayload!
   getCurrentUser: User!
@@ -372,8 +378,8 @@ type Query {
   getRMSDashboardStats: RMSDashboardStatsPayload!
   getResourceDashboardStats: ResourceDashboardStatsPayload!
   getAllUserPaymentMethods: [UserPaymentMethod!]!
-  tickets: [Ticket!]!
-  ticket(id: Int!): Ticket!
+  findAll(getAllTicketsInput: GetAllTicketsInput!): GetAllTicketsPayload!
+  findOne(id: String!): Ticket!
 }
 
 input GetAllUsersInput {
@@ -389,6 +395,11 @@ input GetAllResourcesInput {
   searchQuery: String
 }
 
+input GetAllTicketsInput {
+  page: Float
+  limit: Float
+}
+
 type Mutation {
   createuser(createUserInput: CreateUserInput!): User!
   approveUserRequest(id: String!): CommonPayload!
@@ -396,8 +407,8 @@ type Mutation {
   updateResource(id: String!, updateResourceInput: UpdateResourceInput!): CommonPayload!
   signin(loginUserInput: LoginUserInput!): LoginResponse!
   signup(signUpUserInput: SignUpUserInput!): User!
-  createTicket(createTicketInput: CreateTicketInput!): Ticket!
-  removeTicket(id: Int!): Ticket!
+  createTicket(createTicketInput: CreateTicketInput!): CommonPayload!
+  deleteTicket(id: String!): CommonPayload!
 }
 
 input CreateUserInput {
