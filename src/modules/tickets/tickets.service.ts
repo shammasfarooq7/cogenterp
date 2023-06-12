@@ -11,7 +11,7 @@ import { ICurrentUser } from 'src/users/auth/interfaces/current-user.interface';
 import { GetAllTicketsInput } from './dto/get-all-tickets-input';
 import { GetAllTicketsPayload } from './dto/get-all-tickets.dto';
 import { CommonPayload } from 'src/users/dto/common.dto';
-import { UserRole } from '../userRoles/entity/userRole.entity';
+import { UserRole } from 'src/users/entities/role.entity';
 
 @Injectable()
 export class TicketsService {
@@ -28,20 +28,14 @@ export class TicketsService {
       await queryRunner.startTransaction()
       const { ticketType, ticketDates, numberOfHoursReq, numberOfResource, ...TicketDetail } = createTicketInput;
 
-      const isExternal = !currentUser.roles?.includes("sd");
-      // check against enum itself
-      // const isExternal = !currentUser.roles?.includes(UserRole.SD);
-
-
+      const isExternal = !currentUser.roles?.includes(UserRole.SD);
       // Create ticket detail
       const ticketDetail = await this.ticketDetailRepo.save({
         ...TicketDetail
       })
 
       // For ticket type FSE,PTE
-      // check against enum itself
-      // if (ticketType === TicketType.PTE || TicketType.FTE) {
-      if (ticketType === "PTE" || ticketType === "FTE") {
+      if (ticketType === TicketType.PTE || ticketType === TicketType.FTE) {
         // Create one ticket
         const ticket = await this.ticketRepo.save({
           ticketType,
