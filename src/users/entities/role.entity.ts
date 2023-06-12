@@ -7,7 +7,8 @@ export enum UserRole {
   SD = 'sd',
   RESOURCE = 'resource',
   FEOPS = 'feops',
-  ADMIN = 'admin'
+  ADMIN = 'admin',
+  CUSTOMER = 'customer',
 }
 registerEnumType(UserRole, {
   name: 'userRoles',

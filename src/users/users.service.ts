@@ -19,17 +19,17 @@ export class UsersService {
 
   async create(createUserInput: CreateUserInput) {
     try {
-      const user = await this.userRepo.findOneBy({ email: createUserInput.email })
-      const roleType = UserRole.RESOURCE;
-      const role = await this.roleService.findByType(roleType);
-      const password = createUserInput.email
+      const { email, role } = createUserInput;
+      const user = await this.userRepo.findOneBy({ email })
+      const roleType = await this.roleService.findByType(role);
+      const password = email
       if (user) {
         throw new InternalServerErrorException("Email already exist");
       }
       const newUser = await this.userRepo.save({
         ...createUserInput,
         password,
-        roles: [role]
+        roles: [roleType]
       })
       return newUser;
     } catch (error) {

@@ -16,6 +16,7 @@ enum userRoles {
   RESOURCE
   FEOPS
   ADMIN
+  CUSTOMER
 }
 
 type TicketAttachment {
@@ -414,6 +415,7 @@ type Mutation {
 input CreateUserInput {
   email: String!
   phoneNumber: String = null
+  role: userRoles!
 }
 
 input CreateResourceInput {
