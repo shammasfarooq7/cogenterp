@@ -1,9 +1,10 @@
-import { Field } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { Project } from 'src/modules/project/entities/project.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, OneToOne } from 'typeorm';
 
-@Entity()
+@ObjectType()
+@Entity('customers')
 export class Customer {
   @PrimaryGeneratedColumn('increment', { name: 'id' })
   @Field(() => String)

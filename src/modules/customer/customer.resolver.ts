@@ -7,6 +7,10 @@ import { Roles } from '../../users/roles.decorator';
 import { CommonPayload } from 'src/users/dto/common.dto';
 import { IContext } from 'src/users/auth/interfaces/context.interface';
 import { UserRole } from 'src/users/entities/role.entity';
+import { CurrentUser } from 'src/users/auth/decorators/current-user.decorator';
+import { ICurrentUser } from 'src/users/auth/interfaces/current-user.interface';
+import { GetAllCustomersPayload } from './dto/get-all-customers.dto';
+import { GetAllCustomersInput } from './dto/get-all-customers.input';
 
 @Resolver(() => Customer)
 export class CustomerResolver {
@@ -19,23 +23,21 @@ export class CustomerResolver {
     return await this.customerService.createCustomer(ctx?.user?.userId, createCustomer)
   }
 
-  // @Query(() => [Customer], { name: 'customer' })
-  // findAll() {
-  //   return this.customerService.findAll();
-  // }
+  @Roles(UserRole.ADMIN)
+  @Query(() => GetAllCustomersPayload)
+  async getAllCustomer(@CurrentUser() user: ICurrentUser, @Args('getAllCustomerInput') getAllCustomerInput: GetAllCustomersInput): Promise<GetAllCustomersPayload> {
+    return await this.customerService.getAllCustomers(getAllCustomerInput);
+  }
 
-  // @Query(() => Customer, { name: 'customer' })
-  // findOne(@Args('id', { type: () => Int }) id: number) {
-  //   return this.customerService.findOne(id);
-  // }
+  @Roles(UserRole.ADMIN)
+  @Query(() => Customer)
+  async getCustomer(@Context() ctx: IContext, @Args('id', { nullable: true, defaultValue: null }) id: string | null): Promise<Customer> {
+    return await this.customerService.getCustomer(id || ctx?.user?.userId);
+  }
 
-  // @Mutation(() => Customer)
-  // updateCustomer(@Args('updateCustomerInput') updateCustomerInput: UpdateCustomerInput) {
-  //   return this.customerService.update(updateCustomerInput.id, updateCustomerInput);
-  // }
-
-  // @Mutation(() => Customer)
-  // removeCustomer(@Args('id', { type: () => Int }) id: number) {
-  //   return this.customerService.remove(id);
-  // }
+  @Roles(UserRole.ADMIN)
+  @Mutation(() => CommonPayload)
+  async updateCustomer(@Args('id') id: string, @Args('updateCustomerInput') updateCustomerInput: UpdateCustomerInput): Promise<CommonPayload> {
+    return await this.customerService.updateCustomer( id, updateCustomerInput);
+  }
 }

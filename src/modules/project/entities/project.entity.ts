@@ -1,16 +1,17 @@
-import { Field } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { Customer } from 'src/modules/customer/entities/customer.entity';
 import { Jobsite } from 'src/modules/jobsite/entities/jobsite.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 
-@Entity()
+@ObjectType()
+@Entity('projects')
 export class Project {
   @PrimaryGeneratedColumn('increment', { name: 'id' })
   @Field(() => String)
   id: string;
 
-  @Column()
-  @Field(() => String)
+  @Column({ nullable: true })
+  @Field(() => String, {nullable: true})
   customerId: string;
 
   @ManyToOne(() => Customer, customer => customer.projects, { nullable: true })

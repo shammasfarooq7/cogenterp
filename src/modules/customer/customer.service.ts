@@ -1,13 +1,15 @@
-import { ConflictException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateCustomerInput } from './dto/create-customer.input';
 import { UpdateCustomerInput } from './dto/update-customer.input';
 import { CommonPayload } from 'src/users/dto/common.dto';
 import { Customer } from './entities/customer.entity';
-import { Repository } from 'typeorm';
+import { ILike, IsNull, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { RoleService } from 'src/users/role.service';
-import { UserRole } from '../userRoles/entity/userRole.entity';
+import { UserRole } from 'src/users/entities/role.entity';
+import { GetAllCustomersInput } from './dto/get-all-customers.input';
+import { GetAllCustomersPayload } from './dto/get-all-customers.dto';
 
 @Injectable()
 export class CustomerService {
@@ -51,8 +53,8 @@ export class CustomerService {
         user: newUser
       });
   
-      // await this.userRepo.update({ id: userId }, { onboardedCustomers: newCustomer })
-      // await this.userRepo.update({ id: newUser.id }, { customer: newCustomer })
+      await this.userRepo.update({ id: userId }, { onboardedCustomers: newCustomer })
+      await this.userRepo.update({ id: newUser.id }, { customer: newCustomer })
 
       return { message: "Customer Created Successfully!" };
 
@@ -61,19 +63,67 @@ export class CustomerService {
     }
   }
 
-  findAll() {
-    return `This action returns all customer`;
+  async getAllCustomers(getAllCustomersInput: GetAllCustomersInput): Promise<GetAllCustomersPayload> {
+    try {
+      const { limit = 20, page = 0, searchQuery } = getAllCustomersInput;
+
+      const whereClause = {
+        deletedAt: IsNull(),
+      };
+
+      const where = [
+        { ...(searchQuery && { email: ILike(`%${searchQuery}%`) }), ...whereClause },
+        { ...(searchQuery && { name: ILike(`%${searchQuery}%`) }), ...whereClause },
+
+      ];
+
+      const customers = await this.customerRepo.find({
+        where,
+        skip: page * limit,
+        take: limit
+      });
+
+      const count = await this.customerRepo.count({ where })
+      return {
+        count,
+        customers
+      }
+
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} customer`;
+  async getCustomer(id: string) {
+    const customer = await this.customerRepo.findOne(
+      {
+        where: { id, deletedAt: IsNull() },
+      }
+    )
+    if (!customer) throw new NotFoundException(`Customer with ${id} does not exist!`)
+    return customer
   }
 
-  update(id: number, updateCustomerInput: UpdateCustomerInput) {
-    return `This action updates a #${id} customer`;
+  async updateCustomer(id: string, updateCustomerInput: UpdateCustomerInput): Promise<CommonPayload> {
+  let customer = await this.customerRepo.findOneBy({ id });
+
+  if (!customer) {
+    throw new NotFoundException(`Customer with ID ${id} does not exist!`);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} customer`;
+  const { email } = updateCustomerInput;
+  const alreadyExists = await this.customerRepo.findOneBy({ email });
+
+  if (alreadyExists && alreadyExists.id !== customer.id) {
+    throw new ConflictException('Customer with this email already exists!');
   }
+
+  customer = await this.customerRepo.save({
+    ...customer,
+    ...updateCustomerInput,
+  });
+
+  return { message: 'Customer updated successfully!' };
+}
+
 }
