@@ -16,6 +16,9 @@ import { AzureBlobController } from './azure-blob/azure-blob.controller';
 import { ResourcesModule } from './modules/resources/resources.module';
 // import { AzureBlobModule } from './azure-blob/azure-blob.module';
 import { TicketsModule } from './modules/tickets/tickets.module';
+import { CustomerModule } from './modules/customer/customer.module';
+import { ProjectModule } from './modules/project/project.module';
+import { JobsiteModule } from './modules/jobsite/jobsite.module';
 const { entities, migrations, ...options } = dataSourceOptions;
 
 @Module({
@@ -34,6 +37,9 @@ const { entities, migrations, ...options } = dataSourceOptions;
     UserPaymentMethodsModule,
   ConfigModule.forRoot(),
   TicketsModule,
+  CustomerModule,
+  ProjectModule,
+  JobsiteModule,
     // AzureBlobModule
   ],
   controllers: [AzureBlobController],

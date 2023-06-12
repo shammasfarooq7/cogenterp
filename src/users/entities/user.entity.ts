@@ -5,6 +5,7 @@ import { Role } from './role.entity';
 import { UserPaymentMethod } from './../../modules/userPaymentMethods/entity/userPaymentMethod.entity';
 import { LoginTracker } from './loginTracker.entity'
 import { IdCardType, Resource, InterviewStatus, ResourceStatus, EngagementType } from './../../modules/resources/entity/resource.entity';
+import { Customer } from 'src/modules/customer/entities/customer.entity';
 
 
 registerEnumType(ResourceStatus, {
@@ -247,6 +248,11 @@ export class User {
   @Field(() => [Resource], { nullable: true })
   onboardedResources: () => Resource[];
 
+  @OneToMany(() => Customer, customer => customer.onboardedBy, { nullable: true })
+  @JoinColumn({ name: 'onboardedCustomers' })
+  @Field(() => [Customer], { nullable: true })
+  onboardedCustomers: () => Customer[];
+
   @Column("boolean", { default: false })
   @Field()
   isOnboarded: boolean;
@@ -278,6 +284,10 @@ export class User {
   @OneToOne(() => Resource, resource => resource.user, { nullable: true, onDelete: "CASCADE" })
   @JoinColumn({ name: 'resourceId' })
   resource: Resource;
+
+  @Field(() => Customer, { nullable: true })
+  @OneToOne(() => Customer, customer => customer.user, { nullable: true, onDelete: "CASCADE" })
+  customer: Customer;
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field(() => Date)
