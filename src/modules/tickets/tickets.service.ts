@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateTicketInput } from './dto/create-ticket.input';
 import { UpdateTicketInput } from './dto/update-ticket.input';
 import { TicketDetail } from './entities/ticketDetail.entity';
@@ -78,6 +78,7 @@ export class TicketsService {
 
     } catch (error) {
       await queryRunner.rollbackTransaction()
+      throw new InternalServerErrorException(error);
     }
     finally {
       await queryRunner.release()

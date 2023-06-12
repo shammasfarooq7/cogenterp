@@ -334,13 +334,13 @@ type LoginResponse {
   roles: [String!]
 }
 
-type CommonPayload {
-  message: String!
-}
-
 type GetAllUsersStatsPayload {
   users: [User!]!
   count: Float!
+}
+
+type CommonPayload {
+  message: String!
 }
 
 type GetAllResourcesStatsPayload {
@@ -372,11 +372,11 @@ type GetAllTicketsPayload {
 type Query {
   getAllUsers(getAllUsersInput: GetAllUsersInput!): GetAllUsersStatsPayload!
   getCurrentUser: User!
-  getNewRequestUsers(getNewRequestUsersInput: GetAllUsersInput!): GetAllUsersStatsPayload!
   getAllResources(getAllResourcesInput: GetAllResourcesInput!): GetAllResourcesStatsPayload!
   getResource(id: String = null): Resource!
   getRMSDashboardStats: RMSDashboardStatsPayload!
   getResourceDashboardStats: ResourceDashboardStatsPayload!
+  getNewRequestUsers(getNewRequestUsersInput: GetAllResourcesInput!): GetAllResourcesStatsPayload!
   getAllUserPaymentMethods: [UserPaymentMethod!]!
   findAll(getAllTicketsInput: GetAllTicketsInput!): GetAllTicketsPayload!
   findOne(id: String!): Ticket!
@@ -402,9 +402,9 @@ input GetAllTicketsInput {
 
 type Mutation {
   createuser(createUserInput: CreateUserInput!): User!
-  approveUserRequest(id: String!): CommonPayload!
   createResource(createResourceInput: CreateResourceInput!): CommonPayload!
   updateResource(id: String!, updateResourceInput: UpdateResourceInput!): CommonPayload!
+  approveUserRequest(id: String!): CommonPayload!
   signin(loginUserInput: LoginUserInput!): LoginResponse!
   signup(signUpUserInput: SignUpUserInput!): User!
   createTicket(createTicketInput: CreateTicketInput!): CommonPayload!

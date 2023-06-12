@@ -61,15 +61,15 @@ export class ResourcesResolver {
   //   return await this.usersService.deleteResource(id)
   // }
 
-  // @Roles(UserRole.ADMIN, UserRole.RMS)
-  // @Mutation(() => CommonPayload)
-  // async approveUserRequest(@Args('id') id: string): Promise<CommonPayload> {
-  //   return await this.usersService.approveUserRequest(id)
-  // }
+  @Roles(UserRole.ADMIN, UserRole.RMS)
+  @Mutation(() => CommonPayload)
+  async approveUserRequest(@Args('id') id: string): Promise<CommonPayload> {
+    return await this.resourcesService.approveUserRequest(id)
+  }
 
-  // // @Roles(UserRole.ADMIN, UserRole.RMS)
-  // @Query(() => GetAllUsersStatsPayload)
-  // async getNewRequestUsers(@Args('getNewRequestUsersInput') getNewRequestUsersInput: GetAllUsersInput): Promise<GetAllUsersStatsPayload> {
-  //   return await this.usersService.getNewRequestUsers(getNewRequestUsersInput);
-  // }
+  @Roles(UserRole.ADMIN, UserRole.RMS)
+  @Query(() => GetAllResourcesStatsPayload)
+  async getNewRequestUsers(@Args('getNewRequestUsersInput') getNewRequestUsersInput: GetAllResourcesInput): Promise<GetAllResourcesStatsPayload> {
+    return await this.resourcesService.getNewRequestUsers(getNewRequestUsersInput);
+  }
 }

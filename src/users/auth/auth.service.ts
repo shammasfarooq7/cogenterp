@@ -11,10 +11,12 @@ import { UserRole } from '../entities/role.entity';
 import { SignUpUserInput } from '../dto/sign-up-user.input';
 import { IPayload } from './interfaces/current-user.interface';
 import { LoginTracker } from '../entities/loginTracker.entity';
+import { Resource } from 'src/modules/resources/entity/resource.entity';
 
 @Injectable()
 export class AuthService {
   constructor(@InjectRepository(User) private userRepo: Repository<User>,
+    @InjectRepository(Resource) private resourceRepo: Repository<Resource>,
     private jwtService: JwtService,
     private readonly roleService: RoleService,
     @InjectRepository(LoginTracker) private loginTrackerRepo: Repository<LoginTracker>) { }
@@ -65,17 +67,25 @@ export class AuthService {
 
   async signup(signUpUserInput: SignUpUserInput) {
     try {
-      const user = await this.userRepo.findOneBy({ email: signUpUserInput.email })
+      const { email, password, mobileNumber } = signUpUserInput;
+      const user = await this.userRepo.findOneBy({ email })
       const roleType = UserRole.RESOURCE;
       const role = await this.roleService.findByType(roleType);
       if (user) {
         throw new ConflictException('User already exists');
       }
       const newUser = await this.userRepo.save({
-        ...signUpUserInput,
-        isARequest: true,
+        email,
+        password,
         roles: [role]
       });
+
+      await this.resourceRepo.save({
+        email,
+        mobileNumber,
+        isARequest: true,
+        user: newUser
+      })
 
       return newUser;
     } catch (exception) {

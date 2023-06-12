@@ -32,15 +32,4 @@ export class UsersResolver {
     return await this.usersService.create(createUserInput);
   }
 
-  @Roles(UserRole.ADMIN, UserRole.RMS)
-  @Mutation(() => CommonPayload)
-  async approveUserRequest(@Args('id') id: string): Promise<CommonPayload> {
-    return await this.usersService.approveUserRequest(id)
-  }
-
-  // @Roles(UserRole.ADMIN, UserRole.RMS)
-  @Query(() => GetAllUsersStatsPayload)
-  async getNewRequestUsers(@Args('getNewRequestUsersInput') getNewRequestUsersInput: GetAllUsersInput): Promise<GetAllUsersStatsPayload> {
-    return await this.usersService.getNewRequestUsers(getNewRequestUsersInput);
-  }
 }

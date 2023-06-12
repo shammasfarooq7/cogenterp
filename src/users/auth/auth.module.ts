@@ -11,12 +11,13 @@ import { User } from '../entities/user.entity';
 import { Role } from '../entities/role.entity';
 import { RoleService } from '../role.service';
 import { LoginTracker } from '../entities/loginTracker.entity';
+import { Resource } from 'src/modules/resources/entity/resource.entity';
 
 @Module({
   imports: [PassportModule, UsersModule, JwtModule.register({
     signOptions: { expiresIn: process.env.JWT_EXPIRY },
     secret: process.env.JWT_SECRET
-  }), TypeOrmModule.forFeature([User, Role, LoginTracker])],
+  }), TypeOrmModule.forFeature([User, Role, LoginTracker, Resource])],
   providers: [AuthService, AuthResolver, LocalStrategy, JwtStrategy, RoleService]
 })
 export class AuthModule { }

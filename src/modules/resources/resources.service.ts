@@ -107,7 +107,6 @@ export class ResourcesService {
       ...(resource?.isOnboarded ? { onboardedAt: new Date(), onboardedBy: currentUser } : {}),
       email, firstName, lastName, middleName,
       requestApproved: true,
-      roles: [role],
       user: newUser
     });
 
@@ -361,5 +360,46 @@ export class ResourcesService {
     }
 
   };
+
+  async approveUserRequest(id: string) {
+    const resource = await this.resourceRepo.findOne({ where: { id } });
+    if (!resource) throw new NotFoundException(`Resource does not exist!`);
+
+    await this.resourceRepo.save({ id: resource.id, requestApproved: true })
+
+    const mail = {
+      to: resource.email,
+      subject: 'Request.',
+      from: 'admin@cogentnetworks.com',
+      text: `Your Cogent account request is approved. Please login and update your data.`,
+    };
+
+    // await this.sendgridService.send(mail);
+
+    return { message: "Request Approved Successfully!" };
+  }
+
+
+  async getNewRequestUsers(getAllResourcesInput: GetAllResourcesInput): Promise<GetAllResourcesStatsPayload> {
+    try {
+      const { limit = 20, page = 0 } = getAllResourcesInput;
+
+      const where = {
+        deletedAt: IsNull(),
+        requestApproved: false,
+      };
+
+      const [resources, count] = await this.resourceRepo.findAndCount({
+        where,
+        relations: { userPaymentMethod: true, },
+        skip: page * limit,
+        take: limit
+      });
+
+      return { count, resources }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 
 }

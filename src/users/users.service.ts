@@ -126,46 +126,4 @@ export class UsersService {
     )
   };
 
-  async approveUserRequest(id: string) {
-    const user = await this.userRepo.findOne({ where: { id } });
-    if (!user) throw new NotFoundException(`User does not exist!`);
-
-    await this.userRepo.save({ id: user.id, requestApproved: true })
-
-    const mail = {
-      to: user.email,
-      subject: 'Request.',
-      from: 'admin@cogentnetworks.com',
-      text: `Your Cogent account request is approved. Please login and update your data.`,
-    };
-
-    // await this.sendgridService.send(mail);
-
-    return { message: "Request Approved Successfully!" };
-  }
-
-  async getNewRequestUsers(getAllUsersInput: GetAllUsersInput): Promise<GetAllUsersStatsPayload> {
-    try {
-      const { role, limit = 20, page = 0 } = getAllUsersInput;
-
-      const where = {
-        deletedAt: IsNull(),
-        requestApproved: false,
-        ...(role && { roles: { role } }),
-      };
-
-      const users = await this.userRepo.find({
-        where,
-        relations: { userPaymentMethod: true, roles: true },
-        skip: page * limit,
-        take: limit
-      });
-      const count = await this.userRepo.count({ where });
-
-      return { count, users }
-    } catch (error) {
-      throw new InternalServerErrorException(error);
-    }
-  }
-
 }
