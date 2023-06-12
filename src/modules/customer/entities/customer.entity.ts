@@ -158,7 +158,7 @@ export class Customer {
   @Field(() => String)
   certification: string;
 
-  @OneToMany(() => Project, project => project.customer,  { nullable: true })
+  @OneToMany(() => Project, project => project.customer,  { nullable: true, onDelete: "CASCADE" })
   projects: Project[];
 
   @ManyToOne(() => User, user => user.onboardedCustomers, { nullable: true })
