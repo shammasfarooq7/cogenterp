@@ -18,6 +18,9 @@ const roles = [
   {
     role: UserRole.SD,
   },
+  {
+    role: UserRole.CUSTOMER,
+  },
 ];
 
 export default class RolesSeeder implements Seeder {
