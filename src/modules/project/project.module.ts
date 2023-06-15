@@ -4,7 +4,7 @@ import { ProjectResolver } from './project.resolver';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Project } from './entities/project.entity';
 import { Customer } from '../customer/entities/customer.entity';
-import { User } from 'src/users/entities/user.entity';
+import { User } from '../../users/entities/user.entity';
 import { Role } from 'src/users/entities/role.entity';
 import { Jobsite } from '../jobsite/entities/jobsite.entity';
 

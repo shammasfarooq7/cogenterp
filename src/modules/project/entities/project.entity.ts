@@ -1,7 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Customer } from 'src/modules/customer/entities/customer.entity';
-import { Jobsite } from 'src/modules/jobsite/entities/jobsite.entity';
+import { Jobsite } from '../../jobsite/entities/jobsite.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Customer } from '../../customer/entities/customer.entity';
 
 @ObjectType()
 @Entity('projects')

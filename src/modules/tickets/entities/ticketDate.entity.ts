@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTabl
 import { ObjectType, Field } from '@nestjs/graphql';
 import { Ticket } from './ticket.entity';
 import { TimeSheet } from './timeSheet.entity';
-import { Resource } from 'src/modules/resources/entity/resource.entity';
+import { Resource } from './../../resources/entity/resource.entity';
 
 @Entity("ticket_dates")
 @ObjectType()
@@ -27,13 +27,12 @@ export class TicketDate {
   @Field(() => Ticket)
   ticket: Ticket;
 
-  @ManyToMany(() => Resource, resource => resource.ticketDates)
-  @JoinTable({ name: 'time_sheets' })
-  @Field(() => [Resource])
-  resources: Resource[];
+  // @ManyToMany(() => Resource, resource => resource.ticketDates)
+  // @JoinTable({ name: 'time_sheets' })
+  // @Field(() => [Resource])
+  // resources: Resource[];
 
   @ManyToMany(() => TimeSheet, timeSheet => timeSheet.ticketDate)
-  @JoinTable({ name: 'time_sheets' })
   @Field(() => [TimeSheet])
   timeSheets: TimeSheet[];
 

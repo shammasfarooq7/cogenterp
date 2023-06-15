@@ -4,7 +4,7 @@ import { CustomerResolver } from './customer.resolver';
 import { Customer } from './entities/customer.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RoleService } from 'src/users/role.service';
-import { User } from 'src/users/entities/user.entity';
+import { User } from './../../users/entities/user.entity';
 import { Role } from 'src/users/entities/role.entity';
 import { Project } from '../project/entities/project.entity';
 
@@ -15,4 +15,4 @@ import { Project } from '../project/entities/project.entity';
   providers: [CustomerResolver, CustomerService, TypeOrmModule, RoleService],
   exports: [CustomerService]
 })
-export class CustomerModule {}
+export class CustomerModule { }

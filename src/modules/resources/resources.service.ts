@@ -6,7 +6,7 @@ import { UserRole } from '../../users/entities/role.entity';
 import { CreateResourceInput } from '../../users/dto/create-resource-input';
 import { RoleService } from '../../users/role.service';
 import { CommonPayload } from '../../users/dto/common.dto';
-import { Resource } from 'src/modules/resources/entity/resource.entity';
+import { Resource } from './entity/resource.entity';
 import { UserPaymentMethod } from '../userPaymentMethods/entity/userPaymentMethod.entity';
 import { GetAllResourcesInput } from './dto/get-all-resources-input';
 import { GetAllResourcesStatsPayload } from './dto/get-all-resources.dto';
@@ -111,7 +111,8 @@ export class ResourcesService {
     });
 
     if (resource?.isOnboarded) {
-      await this.userRepo.update({ id: userId }, { onboardedResources: newResource })
+      currentUser.onboardedResources = [newResource]
+      await this.userRepo.save(currentUser);
     }
     await this.userRepo.update({ id: newUser.id }, { resource: newResource })
 
@@ -122,7 +123,6 @@ export class ResourcesService {
         accountNumber, accountTitle, accountType, bankAddress, bankName,
         beneficiaryAddress, beneficiaryFirstName, beneficiaryLastName,
         beneficiaryMiddleName, branchName, sortCode, swiftCode, iban,
-        user: newUser,
         resource: newResource
       })
 
@@ -189,13 +189,13 @@ export class ResourcesService {
         })
       }
       else {
-        await this.userPaymentMethodRepo.update({
-          userId: resource.id
-        }, {
+        resource.userPaymentMethod = [{
+          ...resource.userPaymentMethod?.[0],
           accountNumber, accountTitle, accountType, bankAddress, bankName,
           beneficiaryAddress, beneficiaryFirstName, beneficiaryLastName,
           beneficiaryMiddleName, branchName, sortCode, swiftCode, iban,
-        });
+        }]
+        await this.resourceRepo.save(resource);
       }
     }
 

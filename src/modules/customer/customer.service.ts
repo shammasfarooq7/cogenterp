@@ -5,7 +5,7 @@ import { CommonPayload } from 'src/users/dto/common.dto';
 import { Customer } from './entities/customer.entity';
 import { ILike, IsNull, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/users/entities/user.entity';
+import { User } from '../../users/entities/user.entity';
 import { RoleService } from 'src/users/role.service';
 import { UserRole } from 'src/users/entities/role.entity';
 import { GetAllCustomersInput } from './dto/get-all-customers.input';
@@ -49,11 +49,10 @@ export class CustomerService {
         onboardedAt: new Date(), 
         onboardedBy: currentUser,
         email,
-        roles: [role],
         user: newUser
       });
   
-      await this.userRepo.update({ id: userId }, { onboardedCustomers: newCustomer })
+      await this.userRepo.update({ id: userId }, { onboardedCustomers: [newCustomer] })
       await this.userRepo.update({ id: newUser.id }, { customer: newCustomer })
 
       return { message: "Customer Created Successfully!" };

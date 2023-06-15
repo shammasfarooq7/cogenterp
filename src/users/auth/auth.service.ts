@@ -1,6 +1,5 @@
 import { ConflictException, ForbiddenException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt';
@@ -11,7 +10,8 @@ import { UserRole } from '../entities/role.entity';
 import { SignUpUserInput } from '../dto/sign-up-user.input';
 import { IPayload } from './interfaces/current-user.interface';
 import { LoginTracker } from '../entities/loginTracker.entity';
-import { Resource } from 'src/modules/resources/entity/resource.entity';
+import { Resource } from './../../modules/resources/entity/resource.entity';
+import { User } from '../entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -38,10 +38,10 @@ export class AuthService {
     const user = await this.userRepo.findOne({
       where: { email: loginUserInput.email },
       relations: { roles: true, loginTracker: true },
-      select: { id: true, requestApproved: true, roles: { role: true }, }
+      select: { id: true, resource: { requestApproved: true }, roles: { role: true }, }
     })
 
-    if (user?.roles.find(role => role.role === UserRole.RESOURCE) && !user.requestApproved) {
+    if (user?.roles.find(role => role.role === UserRole.RESOURCE) && !user.resource.requestApproved) {
       throw new Error("Your Account is not approved yet. Kindly contact with support team.")
     }
 

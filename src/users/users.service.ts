@@ -43,7 +43,7 @@ export class UsersService {
 
       const whereClause = {
         deletedAt: IsNull(),
-        requestApproved: true,
+        // requestApproved: true,
         ...(role && { roles: { role } }),
       };
 
@@ -57,7 +57,7 @@ export class UsersService {
 
       const users = await this.userRepo.find({
         where,
-        relations: { userPaymentMethod: true, roles: true, },
+        relations: { roles: true, onboardedResources: true, resource: true },
         skip: page * limit,
         take: limit
       });
@@ -121,7 +121,7 @@ export class UsersService {
     return await this.userRepo.findOne(
       {
         where: { id, deletedAt: IsNull() },
-        relations: { roles: true, userPaymentMethod: true }
+        relations: { roles: true }
       }
     )
   };

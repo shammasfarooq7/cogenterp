@@ -1,7 +1,7 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { User } from "./../../../users/entities/user.entity";
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { Resource } from "src/modules/resources/entity/resource.entity";
+import { Resource } from "./../../resources/entity/resource.entity";
 
 @Entity({ name: 'user_payment_methods' })
 @ObjectType()
@@ -61,11 +61,6 @@ export class UserPaymentMethod {
     @Column({ nullable: true })
     @Field(() => String, { nullable: true })
     bankAddress: string;
-
-    @Field(() => User)
-    @ManyToOne(() => User, (user) => user.userPaymentMethod)
-    @JoinColumn({ name: "userId" })
-    user: User
 
     @Field(() => Resource,)
     @ManyToOne(() => Resource, (resource) => resource.userPaymentMethod)

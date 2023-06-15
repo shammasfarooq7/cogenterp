@@ -5,7 +5,7 @@ import { UserRole } from '../../users/entities/role.entity';
 import { CurrentUser } from '../../users/auth/decorators/current-user.decorator';
 import { ICurrentUser } from '../../users/auth/interfaces/current-user.interface';
 import { IContext } from '../../users/auth/interfaces/context.interface';
-import { Resource } from 'src/modules/resources/entity/resource.entity';
+import { Resource } from './entity/resource.entity';
 import { ResourcesService } from './resources.service';
 import { CreateResourceInput } from './dto/create-resource-input';
 import { GetAllResourcesStatsPayload } from './dto/get-all-resources.dto';

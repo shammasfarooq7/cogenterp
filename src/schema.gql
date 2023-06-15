@@ -2,21 +2,25 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Role {
+type UserPaymentMethod {
   id: String!
-  role: userRoles!
+  accountType: String!
+  accountTitle: String!
+  beneficiaryFirstName: String!
+  beneficiaryMiddleName: String
+  beneficiaryLastName: String!
+  beneficiaryAddress: String
+  sortCode: String
+  accountNumber: String!
+  iban: String!
+  swiftCode: String!
+  bankName: String!
+  branchName: String
+  bankAddress: String
+  resource: Resource!
+  userId: String
   createdAt: String!
   updatedAt: String!
-}
-
-"""The user role assigned"""
-enum userRoles {
-  RMS
-  SD
-  RESOURCE
-  FEOPS
-  ADMIN
-  CUSTOMER
 }
 
 type TicketAttachment {
@@ -131,6 +135,17 @@ enum TicketType {
   PTE
 }
 
+type TicketDate {
+  id: String!
+  date: DateTime!
+  scheduledTime: String!
+  ticketId: String!
+  ticket: Ticket!
+  timeSheets: [TimeSheet!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
 type TimeSheet {
   id: String!
   checkIn: String!
@@ -148,24 +163,12 @@ type TimeSheet {
   updatedAt: DateTime!
 }
 
-type TicketDate {
-  id: String!
-  date: DateTime!
-  scheduledTime: String!
-  ticketId: String!
-  ticket: Ticket!
-  resources: [Resource!]!
-  timeSheets: [TimeSheet!]!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
 type Resource {
   id: String!
   email: String!
   mobileNumber: String
   contactNumber: String
-  status: UserStatus
+  status: ResourceStatus
   idCardType: IdCardType
   interviewStatus: InterviewStatus
   vendorName: String
@@ -211,7 +214,6 @@ type Resource {
   isARequest: Boolean!
   requestApproved: Boolean!
   userPaymentMethod: [UserPaymentMethod!]
-  ticketDates: [TicketDate!]!
   timeSheets: [TimeSheet!]!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -220,7 +222,7 @@ type Resource {
 }
 
 """The user status"""
-enum UserStatus {
+enum ResourceStatus {
   DIRECT
   INDIRECT
 }
@@ -248,86 +250,99 @@ enum EngagementType {
   Remote
 }
 
-type UserPaymentMethod {
+type Jobsite {
   id: String!
-  accountType: String!
-  accountTitle: String!
-  beneficiaryFirstName: String!
-  beneficiaryMiddleName: String
-  beneficiaryLastName: String!
-  beneficiaryAddress: String
-  sortCode: String
-  accountNumber: String!
-  iban: String!
-  swiftCode: String!
-  bankName: String!
-  branchName: String
-  bankAddress: String
-  user: User!
-  resource: Resource!
-  userId: String
-  createdAt: String!
-  updatedAt: String!
+  projectId: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+type Project {
+  id: String!
+  customerId: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+type Customer {
+  id: String!
+  name: String!
+  vendorReference: String!
+  website: String!
+  establishYear: String!
+  employeesCount: String!
+  dispatchGroupEmail: String!
+  city: String!
+  employeeCountLinkedin: String!
+  phone: String!
+  country: String!
+  postCode: String!
+  linkedinUrl: String!
+  email: String!
+  stateProvince: String!
+  address: String!
+  annualRevenue: String!
+  revenueSoftware: String!
+  revenueConsultancy: String!
+  revenueSupport: String!
+  revenueLogistics: String!
+  revenueOther: String!
+  contactNumber: String!
+  addressLine1: String!
+  addressLine2: String!
+  emailId: String!
+  mobile: String!
+  whatsappNumber: String!
+  whatsappGroup: String!
+  whatsappLink: String!
+  cogentEmailId: String!
+  workPermitStatus: String!
+  primaryTechService: String!
+  fieldService: String!
+  keyCustomerSupport: String!
+  languageSupport: String!
+  countrySupported: String!
+  certification: String!
+  onboardedBy: User
+  onboardedAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
 }
 
 type User {
   id: String!
   email: String!
-  mobileNumber: String
-  contactNumber: String
-  status: UserStatus
-  idCardType: IdCardType
-  interviewStatus: InterviewStatus
-  vendorName: String
-  whatsappGroup: String
-  whatsappGroupLink: String
-  workPermitStatus: String
-  contractDocuments: Boolean
-  availability: String
-  engagementType: EngagementType
-  rpocName: String
-  rpocEmail: String
-  rpocContactNumber: String
   firstName: String
   lastName: String
   middleName: String
-  idCardNumber: String
-  taxNumber: String
-  languages: [String!]
-  skillSet: [String!]
-  availableTools: [String!]
-  nationality: String
-  region: String
-  country: String
-  state: String
-  city: String
-  postalCode: String
-  addressLine1: String
-  addressLine2: String
-  whatsappNumber: String
-  cogentEmail: String
-  descriptionColor: String
-  hourlyRate: String
-  halfDayRate: String
-  fullDayRate: String
-  monthlyRate: String
-  anyExtraRate: String
-  transport: String
-  mobility: String
-  resumeDocUrl: String
-  identityDocUrl: String
-  onboardedBy: User
   onboardedResources: [Resource!]
-  isOnboarded: Boolean!
-  isARequest: Boolean!
-  requestApproved: Boolean!
+  onboardedCustomers: [Customer!]
   roles: [Role!]!
-  userPaymentMethod: [UserPaymentMethod!]
   resource: Resource
+  customer: Customer
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
-  onboardedAt: DateTime
+}
+
+type Role {
+  id: String!
+  role: userRoles!
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The user role assigned"""
+enum userRoles {
+  RMS
+  SD
+  RESOURCE
+  FEOPS
+  ADMIN
+  CUSTOMER
 }
 
 type LoginResponse {
@@ -370,6 +385,11 @@ type GetAllTicketsPayload {
   count: Float!
 }
 
+type GetAllCustomersPayload {
+  customers: [Customer!]!
+  count: Float!
+}
+
 type Query {
   getAllUsers(getAllUsersInput: GetAllUsersInput!): GetAllUsersStatsPayload!
   getCurrentUser: User!
@@ -381,6 +401,10 @@ type Query {
   getAllUserPaymentMethods: [UserPaymentMethod!]!
   findAll(getAllTicketsInput: GetAllTicketsInput!): GetAllTicketsPayload!
   findOne(id: String!): Ticket!
+  getAllCustomer(getAllCustomerInput: GetAllCustomersInput!): GetAllCustomersPayload!
+  getCustomer(id: String = null): Customer!
+  project(id: Int!): Project!
+  jobsite(id: Int!): Jobsite!
 }
 
 input GetAllUsersInput {
@@ -401,6 +425,12 @@ input GetAllTicketsInput {
   limit: Float
 }
 
+input GetAllCustomersInput {
+  page: Float
+  limit: Float
+  searchQuery: String
+}
+
 type Mutation {
   createuser(createUserInput: CreateUserInput!): User!
   createResource(createResourceInput: CreateResourceInput!): CommonPayload!
@@ -410,6 +440,14 @@ type Mutation {
   signup(signUpUserInput: SignUpUserInput!): User!
   createTicket(createTicketInput: CreateTicketInput!): CommonPayload!
   deleteTicket(id: String!): CommonPayload!
+  createCustomer(createCustomerInput: CreateCustomerInput!): CommonPayload!
+  updateCustomer(id: String!, updateCustomerInput: UpdateCustomerInput!): CommonPayload!
+  createProject(createProjectInput: CreateProjectInput!): Project!
+  updateProject(updateProjectInput: UpdateProjectInput!): Project!
+  removeProject(id: Int!): Project!
+  createJobsite(createJobsiteInput: CreateJobsiteInput!): Jobsite!
+  updateJobsite(updateJobsiteInput: UpdateJobsiteInput!): Jobsite!
+  removeJobsite(id: Int!): Jobsite!
 }
 
 input CreateUserInput {
@@ -421,7 +459,7 @@ input CreateUserInput {
 input CreateResourceInput {
   email: String!
   phoneNumber: String = null
-  status: UserStatus!
+  status: ResourceStatus!
   vendorName: String
   engagementType: EngagementType!
   rpocName: String
@@ -483,7 +521,7 @@ input CreateResourceInput {
 input UpdateResourceInput {
   email: String!
   phoneNumber: String = null
-  status: UserStatus!
+  status: ResourceStatus!
   vendorName: String
   engagementType: EngagementType!
   rpocName: String
@@ -585,4 +623,106 @@ input CreateTicketInput {
   slaPriority: SlaPriority!
   serviceDocUrl: String
   ticketDates: [DateTime!]!
+}
+
+input CreateCustomerInput {
+  name: String!
+  vendorReference: String!
+  website: String!
+  establishYear: String!
+  employeesCount: String!
+  dispatchGroupEmail: String!
+  city: String!
+  employeeCountLinkedin: String!
+  phone: String!
+  country: String!
+  postCode: String!
+  linkedinUrl: String!
+  email: String!
+  stateProvince: String!
+  address: String!
+  annualRevenue: String!
+  revenueSoftware: String!
+  revenueConsultancy: String!
+  revenueSupport: String!
+  revenueLogistics: String!
+  revenueOther: String!
+  contactNumber: String!
+  addressLine1: String!
+  addressLine2: String!
+  emailId: String!
+  mobile: String!
+  whatsappNumber: String!
+  whatsappGroup: String!
+  whatsappLink: String!
+  cogentEmailId: String!
+  workPermitStatus: String!
+  primaryTechService: String!
+  fieldService: String!
+  keyCustomerSupport: String!
+  languageSupport: String!
+  countrySupported: String!
+  certification: String!
+}
+
+input UpdateCustomerInput {
+  name: String!
+  vendorReference: String!
+  website: String!
+  establishYear: String!
+  employeesCount: String!
+  dispatchGroupEmail: String!
+  city: String!
+  employeeCountLinkedin: String!
+  phone: String!
+  country: String!
+  postCode: String!
+  linkedinUrl: String!
+  email: String!
+  stateProvince: String!
+  address: String!
+  annualRevenue: String!
+  revenueSoftware: String!
+  revenueConsultancy: String!
+  revenueSupport: String!
+  revenueLogistics: String!
+  revenueOther: String!
+  contactNumber: String!
+  addressLine1: String!
+  addressLine2: String!
+  emailId: String!
+  mobile: String!
+  whatsappNumber: String!
+  whatsappGroup: String!
+  whatsappLink: String!
+  cogentEmailId: String!
+  workPermitStatus: String!
+  primaryTechService: String!
+  fieldService: String!
+  keyCustomerSupport: String!
+  languageSupport: String!
+  countrySupported: String!
+  certification: String!
+}
+
+input CreateProjectInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateProjectInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateJobsiteInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateJobsiteInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }

@@ -1,11 +1,9 @@
 import { IsNull, Connection, createConnection } from 'typeorm';
 // import { AppDataSource } from "../data-source"
 import { Role, UserRole } from '../users/entities/role.entity';
-import { UserPaymentMethod } from '../modules/userPaymentMethods/entity/userPaymentMethod.entity';
 import { dataSourceOptions } from '../data-source-options';
 import * as bcrypt from 'bcrypt';
-import { LoginTracker } from '../users/entities/loginTracker.entity';
-import { User } from 'src/users/entities/user.entity';
+import { User } from '../users/entities/user.entity';
 
 
 const userData = {
@@ -64,8 +62,7 @@ const userData = {
 const createRmsUser = async () => {
     const AppDataSource: Connection = await createConnection({
         ...dataSourceOptions,
-        entities: [User, Role, UserPaymentMethod, LoginTracker],
-
+        entities: ['src/**/**.entity.ts'],
     });
 
     const userRepo = AppDataSource.getRepository(User);
