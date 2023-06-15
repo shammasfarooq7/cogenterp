@@ -43,7 +43,8 @@ export class TimeSheet {
   @Field(() => String)
   resourceId: string;
 
-  @ManyToOne(() => Resource, resource => resource.timeSheets)
+  @ManyToOne(() => Resource, resource => resource.ticketDate)
+  @JoinColumn([{ name: 'resourceId', referencedColumnName: 'id' }])
   @Field(() => Resource)
   resource: Resource;
 
@@ -51,7 +52,8 @@ export class TimeSheet {
   @Field(() => String)
   ticketDateId: string;
 
-  @ManyToOne(() => TicketDate, ticketDate => ticketDate.timeSheets)
+  @ManyToOne(() => TicketDate, ticketDate => ticketDate.resource)
+  @JoinColumn([{ name: 'ticketDateId', referencedColumnName: 'id' }])
   @Field(() => TicketDate)
   ticketDate: TicketDate;
 
