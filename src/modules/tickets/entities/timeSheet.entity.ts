@@ -1,11 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, JoinColumn } from 'typeorm';
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { User } from '../../../users/entities/user.entity';
-import { TicketDate } from './ticketDate.entity';
 import { Resource } from './../../resources/entity/resource.entity';
+import { TicketDate } from './ticketDate.entity';
 
-@Entity("time_sheets")
 @ObjectType()
+@Entity("time_sheets")
 export class TimeSheet {
   @PrimaryGeneratedColumn('increment', { name: 'id' })
   @Field(() => String)
@@ -43,8 +42,7 @@ export class TimeSheet {
   @Field(() => String)
   resourceId: string;
 
-  @ManyToOne(() => Resource, resource => resource.ticketDate)
-  @JoinColumn([{ name: 'resourceId', referencedColumnName: 'id' }])
+  @ManyToOne(() => Resource, resource => resource.ticketDates)
   @Field(() => Resource)
   resource: Resource;
 
@@ -52,8 +50,7 @@ export class TimeSheet {
   @Field(() => String)
   ticketDateId: string;
 
-  @ManyToOne(() => TicketDate, ticketDate => ticketDate.resource)
-  @JoinColumn([{ name: 'ticketDateId', referencedColumnName: 'id' }])
+  @ManyToOne(() => TicketDate, ticketDate => ticketDate.resources)
   @Field(() => TicketDate)
   ticketDate: TicketDate;
 

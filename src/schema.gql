@@ -141,24 +141,7 @@ type TicketDate {
   scheduledTime: String!
   ticketId: String!
   ticket: Ticket!
-  timeSheets: [TimeSheet!]!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type TimeSheet {
-  id: String!
-  checkIn: String!
-  checkOut: String!
-  sdId: String!
-  sdCheckIn: String!
-  sdCheckOut: String!
-  feopsCheckIn: String!
-  feopsCheckOut: String!
-  resourceId: String!
-  resource: Resource!
-  ticketDateId: String!
-  ticketDate: TicketDate!
+  resources: [Resource!]!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -214,7 +197,7 @@ type Resource {
   isARequest: Boolean!
   requestApproved: Boolean!
   userPaymentMethod: [UserPaymentMethod!]
-  timeSheets: [TimeSheet!]!
+  ticketDates: [TicketDate!]!
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime

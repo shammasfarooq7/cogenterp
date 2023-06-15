@@ -6,12 +6,12 @@ import { AppDataSource } from 'src/data-source';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
 import { Ticket, TicketType } from './entities/ticket.entity';
-import { TicketDate } from './entities/ticketDate.entity';
 import { ICurrentUser } from 'src/users/auth/interfaces/current-user.interface';
 import { GetAllTicketsInput } from './dto/get-all-tickets-input';
 import { GetAllTicketsPayload } from './dto/get-all-tickets.dto';
 import { CommonPayload } from 'src/users/dto/common.dto';
 import { UserRole } from 'src/users/entities/role.entity';
+import { TicketDate } from './entities/ticketDate.entity';
 
 @Injectable()
 export class TicketsService {

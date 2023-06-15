@@ -17,7 +17,7 @@ export class Project {
   @ManyToOne(() => Customer, customer => customer.projects, { nullable: true })
   customer: Customer;
 
-  @OneToMany(() => Jobsite, jobsite => jobsite.project,  { nullable: true , onDelete: "CASCADE"})
+  @OneToMany(() => Jobsite, jobsite => jobsite.project,  { nullable: true })
   jobsites: Jobsite[];
 
   @CreateDateColumn({ type: 'timestamptz' })
