@@ -281,14 +281,10 @@ export class Resource {
   @OneToMany(() => UserPaymentMethod, (userPaymentMethod) => userPaymentMethod.resource, { nullable: true })
   userPaymentMethod: UserPaymentMethod[]
 
-  // @ManyToMany(() => TicketDate, ticketDate => ticketDate.resources)
-  // @JoinTable({ name: 'time_sheets' })
-  // @Field(() => [TicketDate])
-  // ticketDates: TicketDate[];
-
-  @ManyToMany(() => TimeSheet, timeSheet => timeSheet.resource)
-  @Field(() => [TimeSheet])
-  timeSheets: TimeSheet[];
+  @ManyToMany(() => TicketDate, ticketDate => ticketDate.resources, onDelete: 'CASCADE')
+//   @JoinTable({ name: 'time_sheets' })
+  @Field(() => [TicketDate])
+  ticketDates: TicketDate[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field(() => Date)
