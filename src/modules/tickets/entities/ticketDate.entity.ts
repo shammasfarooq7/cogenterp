@@ -27,14 +27,22 @@ export class TicketDate {
   @Field(() => Ticket)
   ticket: Ticket;
 
-  // @ManyToMany(() => Resource, resource => resource.ticketDates)
-  // @JoinTable({ name: 'time_sheets' })
-  // @Field(() => [Resource])
-  // resources: Resource[];
+  @ManyToMany(() => Resource, resource => resource.ticketDates, onDelete: 'CASCADE')
+  @JoinTable({ name: 'time_sheets' },
+    joinColumn: {
+      name: 'ticketDateId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'resourceId',
+      referencedColumnName: 'id',
+    },)
+  @Field(() => [Resource])
+  resources: Resource[];
 
-  @ManyToMany(() => TimeSheet, timeSheet => timeSheet.ticketDate)
-  @Field(() => [TimeSheet])
-  timeSheets: TimeSheet[];
+//   @ManyToMany(() => TimeSheet, timeSheet => timeSheet.ticketDate)
+//   @Field(() => [TimeSheet])
+//   timeSheets: TimeSheet[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field(() => Date)
