@@ -94,35 +94,44 @@ export class CustomerService {
   }
 
   async getCustomer(id: string) {
-    const customer = await this.customerRepo.findOne(
-      {
-        where: { id, deletedAt: IsNull() },
-      }
-    )
-    if (!customer) throw new NotFoundException(`Customer with ${id} does not exist!`)
-    return customer
+    try {
+      const customer = await this.customerRepo.findOne(
+        {
+          where: { id, deletedAt: IsNull() },
+        }
+      )
+      if (!customer) throw new NotFoundException(`Customer with ${id} does not exist!`)
+      return customer
+    } catch(error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   async updateCustomer(id: string, updateCustomerInput: UpdateCustomerInput): Promise<CommonPayload> {
-  let customer = await this.customerRepo.findOneBy({ id });
+    let customer = await this.customerRepo.findOneBy({ id });
 
-  if (!customer) {
-    throw new NotFoundException(`Customer with ID ${id} does not exist!`);
+    if (!customer) {
+      throw new NotFoundException(`Customer with ID ${id} does not exist!`);
+    }
+
+    const { email } = updateCustomerInput;
+    const alreadyExists = await this.customerRepo.findOneBy({ email });
+
+    if (alreadyExists && alreadyExists.id !== customer.id) {
+      throw new ConflictException('Customer with this email already exists!');
+    }
+
+    customer = await this.customerRepo.save({
+      ...customer,
+      ...updateCustomerInput,
+    });
+
+    return { message: 'Customer updated successfully!' };
   }
 
-  const { email } = updateCustomerInput;
-  const alreadyExists = await this.customerRepo.findOneBy({ email });
-
-  if (alreadyExists && alreadyExists.id !== customer.id) {
-    throw new ConflictException('Customer with this email already exists!');
-  }
-
-  customer = await this.customerRepo.save({
-    ...customer,
-    ...updateCustomerInput,
-  });
-
-  return { message: 'Customer updated successfully!' };
-}
+  async deleteCustomer(id: string): Promise<CommonPayload> {
+    await this.customerRepo.update({ id }, { deletedAt: new Date() })
+    return { message: "Customer Deleted Successfully!" };
+  };
 
 }

@@ -40,4 +40,10 @@ export class CustomerResolver {
   async updateCustomer(@Args('id') id: string, @Args('updateCustomerInput') updateCustomerInput: UpdateCustomerInput): Promise<CommonPayload> {
     return await this.customerService.updateCustomer( id, updateCustomerInput);
   }
+
+  @Roles(UserRole.ADMIN)
+  @Mutation(() => CommonPayload)
+  async deleteCustomer(@Args('id') id: string): Promise<CommonPayload> {
+    return await this.customerService.deleteCustomer(id)
+  }
 }

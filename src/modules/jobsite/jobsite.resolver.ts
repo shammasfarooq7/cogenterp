@@ -1,35 +1,43 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { JobsiteService } from './jobsite.service';
 import { Jobsite } from './entities/jobsite.entity';
 import { CreateJobsiteInput } from './dto/create-jobsite.input';
 import { UpdateJobsiteInput } from './dto/update-jobsite.input';
+import { Roles } from 'src/users/roles.decorator';
+import { UserRole } from 'src/users/entities/role.entity';
+import { CommonPayload } from 'src/users/dto/common.dto';
 
 @Resolver(() => Jobsite)
 export class JobsiteResolver {
   constructor(private readonly jobsiteService: JobsiteService) {}
 
-  @Mutation(() => Jobsite)
-  createJobsite(@Args('createJobsiteInput') createJobsiteInput: CreateJobsiteInput) {
-    return this.jobsiteService.create(createJobsiteInput);
+  @Roles(UserRole.ADMIN)
+  @Mutation(() => CommonPayload)
+  async createJobsite(@Args('createJobsiteInput') createJobsite: CreateJobsiteInput): Promise<CommonPayload> {
+    return await this.jobsiteService.createJobsite(createJobsite)
   }
 
-  @Query(() => [Jobsite], { name: 'jobsite' })
-  findAll() {
-    return this.jobsiteService.findAll();
+  @Roles(UserRole.ADMIN)
+  @Query(() => Jobsite)
+  async getJobsite(@Args('id') id: string): Promise<Jobsite> {
+    return await this.jobsiteService.getJobsite(id);
   }
 
-  @Query(() => Jobsite, { name: 'jobsite' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.jobsiteService.findOne(id);
+  @Roles(UserRole.ADMIN)
+  @Query(() => Jobsite)
+  async getJobsitesByProject(@Args('id') id: string): Promise<Jobsite[]> {
+    return await this.jobsiteService.getJobsitesByProject(id);
   }
 
-  @Mutation(() => Jobsite)
-  updateJobsite(@Args('updateJobsiteInput') updateJobsiteInput: UpdateJobsiteInput) {
-    return this.jobsiteService.update(updateJobsiteInput.id, updateJobsiteInput);
+  @Roles(UserRole.ADMIN)
+  @Mutation(() => CommonPayload)
+  async updateJobsite(@Args('id') id: string, @Args('updateJobsiteInput') updateJobsiteInput: UpdateJobsiteInput): Promise<CommonPayload> {
+    return await this.jobsiteService.updateJobsite( id, updateJobsiteInput);
   }
 
-  @Mutation(() => Jobsite)
-  removeJobsite(@Args('id', { type: () => Int }) id: number) {
-    return this.jobsiteService.remove(id);
+  @Roles(UserRole.ADMIN)
+  @Mutation(() => CommonPayload)
+  async deleteJobsite(@Args('id') id: string): Promise<CommonPayload> {
+    return await this.jobsiteService.deleteJobsite(id)
   }
 }
