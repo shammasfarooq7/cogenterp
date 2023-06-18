@@ -3,8 +3,8 @@ import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
 import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm';
 import { UserPaymentMethod } from './../../../modules/userPaymentMethods/entity/userPaymentMethod.entity';
 import { User } from '../../../users/entities/user.entity';
-import { TimeSheet } from '../../tickets/entities/timeSheet.entity';
 import { TicketDate } from 'src/modules/tickets/entities/ticketDate.entity';
+import { TimeSheet } from '../../tickets/entities/timeSheet.entity';
 
 
 export enum ResourceStatus {
@@ -281,10 +281,14 @@ export class Resource {
   @OneToMany(() => UserPaymentMethod, (userPaymentMethod) => userPaymentMethod.resource, { nullable: true })
   userPaymentMethod: UserPaymentMethod[]
 
-  @ManyToMany(() => TicketDate, ticketDate => ticketDate.resources)
-//   @JoinTable({ name: 'time_sheets' })
-  @Field(() => [TicketDate])
-  ticketDates: TicketDate[];
+  // @ManyToMany(() => TicketDate, (ticketDate) => ticketDate.resources, { nullable: true })
+  // @JoinTable({ name: 'time_sheets' })
+  // @Field(() => [TicketDate], { nullable: true })
+  // ticketDates: TicketDate[];
+
+  @OneToMany(() => TimeSheet, timeSheet => timeSheet.resource, { nullable: true })
+  @Field(() => [TimeSheet], { nullable: true })
+  timeSheets: TimeSheet[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field(() => Date)

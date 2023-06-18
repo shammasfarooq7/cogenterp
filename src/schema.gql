@@ -141,7 +141,24 @@ type TicketDate {
   scheduledTime: String!
   ticketId: String!
   ticket: Ticket!
-  resources: [Resource!]!
+  timeSheets: [TimeSheet!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type TimeSheet {
+  id: String!
+  checkIn: String!
+  checkOut: String!
+  sdId: String!
+  sdCheckIn: String!
+  sdCheckOut: String!
+  feopsCheckIn: String!
+  feopsCheckOut: String!
+  resourceId: String!
+  resource: Resource!
+  ticketDateId: String!
+  ticketDate: TicketDate!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -197,7 +214,7 @@ type Resource {
   isARequest: Boolean!
   requestApproved: Boolean!
   userPaymentMethod: [UserPaymentMethod!]
-  ticketDates: [TicketDate!]!
+  timeSheets: [TimeSheet!]
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
@@ -235,18 +252,272 @@ enum EngagementType {
 
 type Jobsite {
   id: String!
+  name: String!
+  country: String!
+  city: String!
+  state: String!
+  province: String!
+  postcode: String!
+  siteAddress: String!
+  pocName: String!
+  pocContactNumber: String!
+  pocEmailAdrress: String!
+  ppe1h: String!
+  ppe2h: String!
+  ppe3h: String!
+  ppe4h: String!
+  ppe5h: String!
+  ppe6h: String!
+  ppe7h: String!
+  ppe8h: String!
+  tandm30: String!
+  tandm1h: String!
+  afth: String!
+  wknd: String!
+  ph: String!
+  sat: Boolean!
+  sun: Boolean!
+  siteTiming: String!
+  timeZone: String!
+  dispatchAgreed: Float!
+  incrementTime: IncrementTimeForJob!
+  serviceType: ServiceTypeForJob!
+  supportType: SupportType!
+  serviceCatItem: ServiceCatItem!
+  agreedSla: AgreedSlaForJob!
+  coverage: CoverageForJob!
+  technologyType: TechnologyTypeForJob!
+  currency: Currency!
   projectId: String
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
 }
 
+"""IncrementTime"""
+enum IncrementTimeForJob {
+  FIFTEEN
+  THIRTY
+  SIXTY
+  hund20
+}
+
+"""ServiceType"""
+enum ServiceTypeForJob {
+  BREAKFIX
+  IMAC
+  CABLING
+  HandF
+  TRAINING
+  DSS
+}
+
+"""SupportType"""
+enum SupportType {
+  FTE_WBF
+  FTE_NBF
+  FSE
+  PTE_WBF
+  PTE_NBF
+}
+
+"""ServiceCatItem"""
+enum ServiceCatItem {
+  BREAKFIX
+  IMAC
+  CABLING
+  HandF
+  TRAINING
+  DSS
+}
+
+"""Agreed SLA"""
+enum AgreedSlaForJob {
+  SBD4H
+  SBD2H
+  SBD
+  NBD
+  twoBD
+  threeBD
+  fiveBD
+  tenBD
+}
+
+"""coverage"""
+enum CoverageForJob {
+  fiveD9H
+  t4X7AFTH
+  t4X7WKND
+  t4X7HLDY
+}
+
+"""technology type"""
+enum TechnologyTypeForJob {
+  EUC
+  NETWORK
+  LINUX
+  MAC
+}
+
+"""currency"""
+enum Currency {
+  USD
+  EUR
+  GBP
+}
+
 type Project {
   id: String!
+  startDate: DateTime!
+  endDate: DateTime!
+  status: Status!
+  projectNumber: String!
+  name: String!
+  clientPartnerName: String!
+  custSdmName: String!
+  custSdmEmail: String!
+  custSdmContNum: String!
+  cogSdmName: String!
+  cogSdmNum: String!
+  cogSdmCont: String!
+  cogSdEmail: String!
+  cogSdContNum: String!
+  agreedSla: AgreedSla!
+  coverage: Coverage!
+  technologyType: TechnologyTypeForProject!
+  serviceType: ServiceType!
+  supportModel: SupportModel!
+  talentLevel: TalentLevel!
+  cancelPolicy: String
+  dispatchAgreed: Float!
+  incrementTime: IncrementTime!
+  sow: String
+  sowDesc: SowDesc!
+  owJd: String
+  serviceDeliv: String
+  ssInst: String
+  asInst: String
+  toolsReq: String
+  namedWorker: Boolean!
+  assignedWorker: String
+  technicalSkill: String
+  behSkills: String
+  experienceReq: String
+  langReq: String
+  trainReq: String
+  trainDoc: String
+  reqTools: String
+  reqSoft: String
+  specReq: String
+
+  """Customer Level 1 Escalation Email"""
+  cl1ee: String
+
+  """Customer Level 1 Escalation Contact #"""
+  cl1ec: String
+
+  """Customer Level 2 Escalation Email"""
+  cl2ee: String
+
+  """Customer Level 2 Escalation Contact #"""
+  cl2ec: String
+
+  """Cogent Level 1 Escalation Email"""
+  cgl1ee: String
+
+  """Cogent Level 1 Escalation Contact#"""
+  cgl1ec: String
+
+  """Cogent Level 2 Escalation Email"""
+  cfl2ee: String
+
+  """Cogent Level 2 Escalation Contact#"""
+  cgl2ec: String
   customerId: String
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
+}
+
+"""status"""
+enum Status {
+  Planning
+  Signed
+  Approved
+  Live
+}
+
+"""Agreed SLA"""
+enum AgreedSla {
+  SBD4H
+  SBD2H
+  SBD
+  NBD
+  twoBD
+  threeBD
+  fiveBD
+  tenBD
+}
+
+"""coverage"""
+enum Coverage {
+  fiveD9H
+  t4X7AFTH
+  t4X7WKND
+  t4X7HLDY
+}
+
+"""technology type"""
+enum TechnologyTypeForProject {
+  EUC
+  NETWORK
+  LINUX
+  MAC
+}
+
+"""ServiceType"""
+enum ServiceType {
+  BREAKFIX
+  IMAC
+  CABLING
+  HandF
+  TRAINING
+  DSS
+}
+
+"""SupportModel"""
+enum SupportModel {
+  FTE_WBF
+  FTE_NBF
+  FSE
+  PTE_WBF
+  PTE_NBF
+}
+
+"""TalentLevel"""
+enum TalentLevel {
+  L0
+  L1
+  L2
+  L3
+}
+
+"""IncrementTime"""
+enum IncrementTime {
+  FIFTEEN
+  THIRTY
+  SIXTY
+  hund20
+}
+
+"""SowDesc"""
+enum SowDesc {
+  BREAKFIX
+  IMAC
+  CABLING
+  HandF
+  TRAINING
+  DSS
 }
 
 type Customer {
@@ -373,6 +644,11 @@ type GetAllCustomersPayload {
   count: Float!
 }
 
+type GetAllProjectsPayload {
+  projects: [Project!]!
+  count: Float!
+}
+
 type Query {
   getAllUsers(getAllUsersInput: GetAllUsersInput!): GetAllUsersStatsPayload!
   getCurrentUser: User!
@@ -386,8 +662,11 @@ type Query {
   findOne(id: String!): Ticket!
   getAllCustomer(getAllCustomerInput: GetAllCustomersInput!): GetAllCustomersPayload!
   getCustomer(id: String = null): Customer!
-  project(id: Int!): Project!
-  jobsite(id: Int!): Jobsite!
+  getAllProjects(getAllProjectsInput: GetAllProjectsInput!): GetAllProjectsPayload!
+  getProject(id: String!): Project!
+  getProjectByCustomer(id: String!): Project!
+  getJobsite(id: String!): Jobsite!
+  getJobsitesByProject(id: String!): Jobsite!
 }
 
 input GetAllUsersInput {
@@ -414,6 +693,12 @@ input GetAllCustomersInput {
   searchQuery: String
 }
 
+input GetAllProjectsInput {
+  page: Float
+  limit: Float
+  searchQuery: String
+}
+
 type Mutation {
   createuser(createUserInput: CreateUserInput!): User!
   createResource(createResourceInput: CreateResourceInput!): CommonPayload!
@@ -425,12 +710,13 @@ type Mutation {
   deleteTicket(id: String!): CommonPayload!
   createCustomer(createCustomerInput: CreateCustomerInput!): CommonPayload!
   updateCustomer(id: String!, updateCustomerInput: UpdateCustomerInput!): CommonPayload!
-  createProject(createProjectInput: CreateProjectInput!): Project!
-  updateProject(updateProjectInput: UpdateProjectInput!): Project!
-  removeProject(id: Int!): Project!
-  createJobsite(createJobsiteInput: CreateJobsiteInput!): Jobsite!
-  updateJobsite(updateJobsiteInput: UpdateJobsiteInput!): Jobsite!
-  removeJobsite(id: Int!): Jobsite!
+  deleteCustomer(id: String!): CommonPayload!
+  createProject(createProjectInput: CreateProjectInput!): CommonPayload!
+  updateProject(id: String!, updateProjectInput: UpdateProjectInput!): CommonPayload!
+  deleteProject(id: String!): CommonPayload!
+  createJobsite(createJobsiteInput: CreateJobsiteInput!): CommonPayload!
+  updateJobsite(id: String!, updateJobsiteInput: UpdateJobsiteInput!): CommonPayload!
+  deleteJobsite(id: String!): CommonPayload!
 }
 
 input CreateUserInput {
@@ -689,23 +975,113 @@ input UpdateCustomerInput {
 }
 
 input CreateProjectInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  startDate: DateTime!
+  endDate: DateTime!
+  customerId: String!
+  status: Status!
+  name: String!
+  clientPartnerName: String!
+  custSdmName: String!
+  custSdmEmail: String!
+  custSdmContNum: String!
+  cogSdmName: String!
+  cogSdmNum: String!
+  cogSdmCont: String!
+  cogSdEmail: String!
+  cogSdContNum: String!
+  agreedSla: AgreedSla!
+  coverage: Coverage!
+  technologyType: TechnologyTypeForProject!
+  serviceType: ServiceType!
+  supportModel: SupportModel!
+  talentLevel: TalentLevel!
+  cancelPolicy: String
+  dispatchAgreed: Float!
+  incrementTime: IncrementTime!
+  sow: String
+  sowDesc: SowDesc!
+  owJd: String
+  serviceDeliv: String
+  ssInst: String
+  asInst: String
+  toolsReq: String
+  namedWorker: Boolean!
+  assignedWorker: String
+  technicalSkill: String
+  behSkills: String
+  experienceReq: String
+  langReq: String
+  trainReq: String
+  trainDoc: String
+  reqTools: String
+  reqSoft: String
+  specReq: String
+  cl1ee: String
+  cl1ec: String
+  cl2ee: String
+  cl2ec: String
+  cgl1ee: String
+  cgl1ec: String
+  cfl2ee: String
+  cgl2ec: String
 }
 
 input UpdateProjectInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  startDate: DateTime!
+  endDate: DateTime!
+  customerId: String!
+  status: Status!
+  name: String!
+  clientPartnerName: String!
+  custSdmName: String!
+  custSdmEmail: String!
+  custSdmContNum: String!
+  cogSdmName: String!
+  cogSdmNum: String!
+  cogSdmCont: String!
+  cogSdEmail: String!
+  cogSdContNum: String!
+  agreedSla: AgreedSla!
+  coverage: Coverage!
+  technologyType: TechnologyTypeForProject!
+  serviceType: ServiceType!
+  supportModel: SupportModel!
+  talentLevel: TalentLevel!
+  cancelPolicy: String
+  dispatchAgreed: Float!
+  incrementTime: IncrementTime!
+  sow: String
+  sowDesc: SowDesc!
+  owJd: String
+  serviceDeliv: String
+  ssInst: String
+  asInst: String
+  toolsReq: String
+  namedWorker: Boolean!
+  assignedWorker: String
+  technicalSkill: String
+  behSkills: String
+  experienceReq: String
+  langReq: String
+  trainReq: String
+  trainDoc: String
+  reqTools: String
+  reqSoft: String
+  specReq: String
+  cl1ee: String
+  cl1ec: String
+  cl2ee: String
+  cl2ec: String
+  cgl1ee: String
+  cgl1ec: String
+  cfl2ee: String
+  cgl2ec: String
 }
 
 input CreateJobsiteInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  projectId: String!
 }
 
 input UpdateJobsiteInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  projectId: String!
 }

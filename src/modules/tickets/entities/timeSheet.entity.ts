@@ -42,7 +42,7 @@ export class TimeSheet {
   @Field(() => String)
   resourceId: string;
 
-  @ManyToOne(() => Resource, resource => resource.ticketDates)
+  @ManyToOne(() => Resource, resource => resource.timeSheets)
   @Field(() => Resource)
   resource: Resource;
 
@@ -50,7 +50,7 @@ export class TimeSheet {
   @Field(() => String)
   ticketDateId: string;
 
-  @ManyToOne(() => TicketDate, ticketDate => ticketDate.resources)
+  @ManyToOne(() => TicketDate, ticketDate => ticketDate.timeSheets)
   @Field(() => TicketDate)
   ticketDate: TicketDate;
 

@@ -117,7 +117,7 @@ export enum TechnologyType {
 }
 
 registerEnumType(TechnologyType, {
-  name: 'TechnologyType',
+  name: 'TechnologyTypeForProject',
   description: 'technology type',
 });
 @ObjectType()

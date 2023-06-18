@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn, JoinColumn, OneToMany } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { Resource } from './../../resources/entity/resource.entity';
 import { Ticket } from './ticket.entity';
+import { TimeSheet } from './timeSheet.entity';
 
 @ObjectType()
 @Entity("ticket_dates")
@@ -26,16 +27,14 @@ export class TicketDate {
   @Field(() => Ticket)
   ticket: Ticket;
 
-  @ManyToMany(() => Resource, resource => resource.ticketDates)
-  @JoinTable({
-    name: 'time_sheets'
-  })
-  @Field(() => [Resource])
-  resources: Resource[];
+  // @ManyToMany(() => Resource, (resource) => resource.ticketDates, { nullable: true })
+  // @JoinTable({ name: 'time_sheets' })
+  // @Field(() => [Resource], { nullable: true })
+  // resources: Resource[];
 
-//   @ManyToMany(() => TimeSheet, timeSheet => timeSheet.ticketDate)
-//   @Field(() => [TimeSheet])
-//   timeSheets: TimeSheet[];
+  @OneToMany(() => TimeSheet, timeSheet => timeSheet.ticketDate, { nullable: true })
+  @Field(() => [TimeSheet], { nullable: true })
+  timeSheets: TimeSheet[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field(() => Date)

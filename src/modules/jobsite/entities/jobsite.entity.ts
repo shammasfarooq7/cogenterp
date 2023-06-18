@@ -12,7 +12,7 @@ export enum IncrementTime {
 }
 
 registerEnumType(IncrementTime, {
-  name: 'IncrementTime',
+  name: 'IncrementTimeForJob',
   description: 'IncrementTime',
 });
 
@@ -40,7 +40,7 @@ export enum ServiceType {
 }
 
 registerEnumType(ServiceType, {
-  name: 'ServiceType',
+  name: 'ServiceTypeForJob',
   description: 'ServiceType',
 });
 
@@ -70,7 +70,7 @@ export enum AgreedSla {
 }
 
 registerEnumType(AgreedSla, {
-  name: 'AgreedSla',
+  name: 'AgreedSlaForJob',
   description: 'Agreed SLA',
 });
 
@@ -82,7 +82,7 @@ export enum Coverage {
 }
 
 registerEnumType(Coverage, {
-  name: 'Coverage',
+  name: 'CoverageForJob',
   description: 'coverage',
 });
 
@@ -94,7 +94,7 @@ export enum TechnologyType {
 }
 
 registerEnumType(TechnologyType, {
-  name: 'TechnologyType',
+  name: 'TechnologyTypeForJob',
   description: 'technology type',
 });
 
