@@ -2,9 +2,8 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateTicketInput } from './dto/create-ticket.input';
 import { UpdateTicketInput } from './dto/update-ticket.input';
 import { TicketDetail } from './entities/ticketDetail.entity';
-import { AppDataSource } from 'src/data-source';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Repository } from 'typeorm';
+import { IsNull, Repository, DataSource } from 'typeorm';
 import { Ticket, TicketType } from './entities/ticket.entity';
 import { ICurrentUser } from 'src/users/auth/interfaces/current-user.interface';
 import { GetAllTicketsInput } from './dto/get-all-tickets-input';
@@ -19,12 +18,14 @@ export class TicketsService {
     @InjectRepository(Ticket) private ticketRepo: Repository<Ticket>,
     @InjectRepository(TicketDetail) private ticketDetailRepo: Repository<TicketDetail>,
     @InjectRepository(TicketDate) private ticketDateRepo: Repository<TicketDate>,
+    private dataSource: DataSource
   ) { }
 
   async create(currentUser: ICurrentUser, createTicketInput: CreateTicketInput): Promise<CommonPayload> {
-    const queryRunner = AppDataSource.createQueryRunner();
 
+    const queryRunner = this.dataSource.createQueryRunner();
     try {
+      await queryRunner.connect();
       await queryRunner.startTransaction()
       const { ticketType, ticketDates, numberOfHoursReq, numberOfResource, ...TicketDetail } = createTicketInput;
 
