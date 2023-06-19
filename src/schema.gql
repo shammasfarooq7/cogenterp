@@ -871,6 +871,7 @@ input CreateTicketInput {
   provinceState: String!
   siteAddress: String!
   postCode: String!
+  scheduledTime: String!
   spocName: String!
   spocContactNumber: String!
   spocEmailAddress: String!
