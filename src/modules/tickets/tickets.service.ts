@@ -24,35 +24,43 @@ export class TicketsService {
   async create(currentUser: ICurrentUser, createTicketInput: CreateTicketInput): Promise<CommonPayload> {
 
     const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction()
     try {
-      await queryRunner.connect();
-      await queryRunner.startTransaction()
-      const { ticketType, ticketDates, numberOfHoursReq, numberOfResource, ...TicketDetail } = createTicketInput;
+      const { ticketType, ticketDates, numberOfHoursReq, numberOfResource, scheduledTime, ...detail } = createTicketInput;
 
       const isExternal = !currentUser.roles?.includes(UserRole.SD);
       // Create ticket detail
-      const ticketDetail = await this.ticketDetailRepo.save({
-        ...TicketDetail
-      })
+      const ticketDetail = await queryRunner.manager.save(TicketDetail, { ...detail });
+
+      // Common Function to create ticket
+      const createTicket = async () => {
+        const ticket = new Ticket();
+        ticket.ticketType = ticketType;
+        ticket.numberOfHoursReq = numberOfHoursReq;
+        ticket.numberOfResource = numberOfResource;
+        ticket.isExternal = isExternal;
+        ticket.ticketDetail = ticketDetail;
+        ticket.ticketReceivedTime = new Date();
+
+        await queryRunner.manager.save(ticket);
+        ticket.generateDerivedId();
+        return await queryRunner.manager.save(ticket);
+      }
 
       // For ticket type FSE,PTE
       if (ticketType === TicketType.PTE || ticketType === TicketType.FTE) {
         // Create one ticket
-        const ticket = await this.ticketRepo.save({
-          ticketType,
-          numberOfHoursReq,
-          numberOfResource,
-          isExternal,
-          ticketDetail
-        })
+        const ticket = await createTicket()
 
         // Create ticket dates against a ticket
 
         for (const date of ticketDates) {
-          await this.ticketDateRepo.save({
+          await queryRunner.manager.save(TicketDate, {
             date,
-            ticket
-          })
+            ticket,
+            scheduledTime
+          });
         }
 
       }
@@ -60,21 +68,18 @@ export class TicketsService {
       else {
         for (const date of ticketDates) {
 
-          const ticket = await this.ticketRepo.save({
-            ticketType,
-            numberOfHoursReq,
-            numberOfResource,
-            isExternal
-          })
+          const ticket = await createTicket();
 
-          await this.ticketDateRepo.save({
+          await queryRunner.manager.save(TicketDate, {
             date,
-            ticket
-          })
+            ticket,
+            scheduledTime
+          });
 
         }
       }
 
+      await queryRunner.commitTransaction();
       return { message: "Ticket Created Successfully!" };
 
     } catch (error) {

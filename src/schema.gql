@@ -658,8 +658,8 @@ type Query {
   getResourceDashboardStats: ResourceDashboardStatsPayload!
   getNewRequestUsers(getNewRequestUsersInput: GetAllResourcesInput!): GetAllResourcesStatsPayload!
   getAllUserPaymentMethods: [UserPaymentMethod!]!
-  findAll(getAllTicketsInput: GetAllTicketsInput!): GetAllTicketsPayload!
-  findOne(id: String!): Ticket!
+  getAllTickets(getAllTicketsInput: GetAllTicketsInput!): GetAllTicketsPayload!
+  getTicket(id: String!): Ticket!
   getAllCustomer(getAllCustomerInput: GetAllCustomersInput!): GetAllCustomersPayload!
   getCustomer(id: String = null): Customer!
   getAllProjects(getAllProjectsInput: GetAllProjectsInput!): GetAllProjectsPayload!

@@ -31,7 +31,7 @@ export class Ticket {
   // @Field(() => String)
   // customerName: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => String)
   cogentCaseNumber: string;
 
@@ -64,11 +64,11 @@ export class Ticket {
   @Field(() => String)
   numberOfResource: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => String)
   ticketDetailId: string;
 
-  @ManyToOne(() => TicketDetail, ticketDetail => ticketDetail.tickets)
+  @ManyToOne(() => TicketDetail, ticketDetail => ticketDetail.tickets, { nullable: true })
   @Field(() => TicketDetail)
   ticketDetail: TicketDetail;
 

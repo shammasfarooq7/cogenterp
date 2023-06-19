@@ -18,12 +18,12 @@ export class TicketsResolver {
   }
 
   @Query(() => GetAllTicketsPayload)
-  findAll(@Context() ctx: IContext, @Args('getAllTicketsInput') getAllTicketsInput: GetAllTicketsInput): Promise<GetAllTicketsPayload> {
+  getAllTickets(@Context() ctx: IContext, @Args('getAllTicketsInput') getAllTicketsInput: GetAllTicketsInput): Promise<GetAllTicketsPayload> {
     return this.ticketsService.findAll(getAllTicketsInput);
   }
 
   @Query(() => Ticket)
-  findOne(@Args('id') id: string): Promise<Ticket> {
+  getTicket(@Args('id') id: string): Promise<Ticket> {
     return this.ticketsService.findOne(id);
   }
 

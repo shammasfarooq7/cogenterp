@@ -36,6 +36,9 @@ export class CreateTicketInput {
   postCode: string;
 
   @Field(() => String)
+  scheduledTime: string
+
+  @Field(() => String)
   spocName: string;
 
   @Field(() => String)
@@ -91,6 +94,8 @@ export class CreateTicketInput {
 
   @Field(() => SlaPriority)
   slaPriority: SlaPriority;
+
+
 
   @Field({ nullable: true })
   serviceDocUrl?: string;
