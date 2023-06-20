@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn, JoinColumn, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn, JoinColumn, OneToMany, } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { Resource } from './../../resources/entity/resource.entity';
 import { Ticket } from './ticket.entity';
@@ -11,8 +11,14 @@ export class TicketDate {
   @Field(() => String)
   id: string;
 
-  @Column({ type: 'date' })
-  @Field()
+  @Column({
+    type: 'date',
+    transformer: {
+      from: (value: string) => new Date(value),
+      to: (value: Date) => value.toISOString().split('T')[0],
+    }
+  })
+  @Field(() => Date)
   date: Date;
 
   @Column({ type: 'time with time zone' })

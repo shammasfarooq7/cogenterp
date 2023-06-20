@@ -148,13 +148,13 @@ type TicketDate {
 
 type TimeSheet {
   id: String!
-  checkIn: String!
-  checkOut: String!
-  sdId: String!
-  sdCheckIn: String!
-  sdCheckOut: String!
-  feopsCheckIn: String!
-  feopsCheckOut: String!
+  checkIn: String
+  checkOut: String
+  sdId: String
+  sdCheckIn: String
+  sdCheckOut: String
+  feopsCheckIn: String
+  feopsCheckOut: String
   resourceId: String!
   resource: Resource!
   ticketDateId: String!
@@ -708,6 +708,7 @@ type Mutation {
   signup(signUpUserInput: SignUpUserInput!): User!
   createTicket(createTicketInput: CreateTicketInput!): CommonPayload!
   deleteTicket(id: String!): CommonPayload!
+  assignResourcesToTicket(assignResourcesToTicketInput: AssignResourcesToTicketInput!): CommonPayload!
   createCustomer(createCustomerInput: CreateCustomerInput!): CommonPayload!
   updateCustomer(id: String!, updateCustomerInput: UpdateCustomerInput!): CommonPayload!
   deleteCustomer(id: String!): CommonPayload!
@@ -893,6 +894,11 @@ input CreateTicketInput {
   slaPriority: SlaPriority!
   serviceDocUrl: String
   ticketDates: [DateTime!]!
+}
+
+input AssignResourcesToTicketInput {
+  ticketId: String!
+  resourceIds: [String!]!
 }
 
 input CreateCustomerInput {

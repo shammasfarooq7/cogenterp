@@ -3,7 +3,7 @@ import { CreateTicketInput } from './dto/create-ticket.input';
 import { UpdateTicketInput } from './dto/update-ticket.input';
 import { TicketDetail } from './entities/ticketDetail.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Repository, DataSource } from 'typeorm';
+import { IsNull, Repository, DataSource, In } from 'typeorm';
 import { Ticket, TicketType } from './entities/ticket.entity';
 import { ICurrentUser } from 'src/users/auth/interfaces/current-user.interface';
 import { GetAllTicketsInput } from './dto/get-all-tickets-input';
@@ -11,6 +11,9 @@ import { GetAllTicketsPayload } from './dto/get-all-tickets.dto';
 import { CommonPayload } from 'src/users/dto/common.dto';
 import { UserRole } from 'src/users/entities/role.entity';
 import { TicketDate } from './entities/ticketDate.entity';
+import { AssignResourcesToTicketInput } from './dto/assign-resources-to-ticket.input';
+import { Resource } from '../resources/entity/resource.entity';
+import { TimeSheet } from './entities/timeSheet.entity';
 
 @Injectable()
 export class TicketsService {
@@ -100,6 +103,7 @@ export class TicketsService {
       where: {
         deletedAt: IsNull()
       },
+      relations: { ticketDates: { timeSheets: { resource: true } }, ticketDetail: true, },
       skip: page * limit,
       take: limit
     })
@@ -133,5 +137,73 @@ export class TicketsService {
 
     return { message: "Ticket Deleted Successfully!" };
 
+  }
+
+  async assignResourcesToTicket(currentUser: ICurrentUser, assignResourcesToTicketInput: AssignResourcesToTicketInput): Promise<CommonPayload> {
+
+    const { resourceIds, ticketId } = assignResourcesToTicketInput;
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction()
+
+    try {
+      let page = 0;
+      const limit = 10;
+      let moreRecords = true;
+
+      // Find All Resources
+      const resources = await queryRunner.manager.find(Resource, {
+        where: {
+          id: In(resourceIds),
+          deletedAt: IsNull()
+        }
+      })
+
+      if (resources?.length) {
+        // Need to do this with pafination, because there can be many ticketDates like 50 plus
+        while (moreRecords) {
+          // Find Ticket Dates
+          const ticketDates = await queryRunner.manager.find(TicketDate, {
+            where: {
+              ticketId
+            },
+            skip: page * limit,
+            take: limit
+          })
+
+          // Create a timesheet against each ticketDate
+          for (const ticketDate of ticketDates) {
+            for (const resource of resources) {
+              await queryRunner.manager.save(TimeSheet, {
+                resource,
+                ticketDate
+              })
+            }
+          }
+
+          // Break loop if number of records are less than limit
+          if (ticketDates.length < limit) {
+            moreRecords = false;
+            break;
+          }
+          // Increment page by 1
+          page = page + 1
+        }
+      }
+
+      // Commit Transaction
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction()
+      throw new InternalServerErrorException(error);
+    }
+    finally {
+      await queryRunner.release()
+    }
+
+    return {
+      message: "Assigned Successfully"
+    }
   }
 }

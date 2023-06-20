@@ -9,6 +9,7 @@ import { GetAllTicketsInput } from './dto/get-all-tickets-input';
 import { CommonPayload } from 'src/users/dto/common.dto';
 import { UserRole } from '../../users/entities/role.entity';
 import { Roles } from '../../users/roles.decorator';
+import { AssignResourcesToTicketInput } from './dto/assign-resources-to-ticket.input';
 
 @Resolver(() => Ticket)
 export class TicketsResolver {
@@ -41,5 +42,11 @@ export class TicketsResolver {
   @Mutation(() => CommonPayload)
   deleteTicket(@Args('id') id: string): Promise<CommonPayload> {
     return this.ticketsService.delete(id);
+  }
+
+  @Roles(UserRole.FEOPS)
+  @Mutation(() => CommonPayload)
+  assignResourcesToTicket(@Context() ctx: IContext, @Args('assignResourcesToTicketInput') assignResourcesToTicketInput: AssignResourcesToTicketInput): Promise<CommonPayload> {
+    return this.ticketsService.assignResourcesToTicket(ctx.user, assignResourcesToTicketInput);
   }
 }
