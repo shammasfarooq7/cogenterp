@@ -7,21 +7,26 @@ import { IContext } from 'src/users/auth/interfaces/context.interface';
 import { GetAllTicketsPayload } from './dto/get-all-tickets.dto';
 import { GetAllTicketsInput } from './dto/get-all-tickets-input';
 import { CommonPayload } from 'src/users/dto/common.dto';
+import { UserRole } from '../../users/entities/role.entity';
+import { Roles } from '../../users/roles.decorator';
 
 @Resolver(() => Ticket)
 export class TicketsResolver {
   constructor(private readonly ticketsService: TicketsService) { }
 
+  @Roles(UserRole.SD, UserRole.CUSTOMER)
   @Mutation(() => CommonPayload)
   createTicket(@Context() ctx: IContext, @Args('createTicketInput') createTicketInput: CreateTicketInput): Promise<CommonPayload> {
     return this.ticketsService.create(ctx.user, createTicketInput);
   }
 
+  @Roles(UserRole.SD, UserRole.CUSTOMER)
   @Query(() => GetAllTicketsPayload)
   getAllTickets(@Context() ctx: IContext, @Args('getAllTicketsInput') getAllTicketsInput: GetAllTicketsInput): Promise<GetAllTicketsPayload> {
     return this.ticketsService.findAll(getAllTicketsInput);
   }
 
+  @Roles(UserRole.SD, UserRole.CUSTOMER)
   @Query(() => Ticket)
   getTicket(@Args('id') id: string): Promise<Ticket> {
     return this.ticketsService.findOne(id);
@@ -32,6 +37,7 @@ export class TicketsResolver {
   //   return this.ticketsService.update(updateTicketInput.id, updateTicketInput);
   // }
 
+  @Roles(UserRole.SD, UserRole.CUSTOMER)
   @Mutation(() => CommonPayload)
   deleteTicket(@Args('id') id: string): Promise<CommonPayload> {
     return this.ticketsService.delete(id);

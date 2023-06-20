@@ -48,7 +48,7 @@ export class TicketsService {
         return await queryRunner.manager.save(ticket);
       }
 
-      // For ticket type FSE,PTE
+      // For ticket type FTE,PTE
       if (ticketType === TicketType.PTE || ticketType === TicketType.FTE) {
         // Create one ticket
         const ticket = await createTicket()
