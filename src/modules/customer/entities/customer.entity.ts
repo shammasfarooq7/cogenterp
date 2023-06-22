@@ -2,6 +2,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { Project } from '../../project/entities/project.entity';
 import { User } from '../../../users/entities/user.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, OneToOne } from 'typeorm';
+import { Ticket } from 'src/modules/tickets/entities/ticket.entity';
 
 @ObjectType()
 @Entity('customers')
@@ -158,6 +159,10 @@ export class Customer {
   @Field(() => String)
   certification: string;
 
+  @Column()
+  @Field(() => String)
+  customerAbbr: string;
+
   @OneToMany(() => Project, project => project.customer,  { nullable: true, onDelete: "CASCADE" })
   projects: Project[];
 
@@ -169,6 +174,9 @@ export class Customer {
   @OneToOne(() => User, user => user.customer)
   @JoinColumn({ name: 'userId' })
   user: User;
+
+  @OneToMany(() => Ticket, ticket => ticket.customer,  { nullable: true, onDelete: "CASCADE" })
+  tickets: Ticket[];
 
   @Column({ nullable: true, type: 'timestamptz' })
   @Field(() => Date, { nullable: true })

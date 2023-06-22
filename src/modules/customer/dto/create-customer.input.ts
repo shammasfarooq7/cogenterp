@@ -112,4 +112,7 @@ export class CreateCustomerInput {
 
   @Field(() => String)
   certification: string;
+
+  @Field(() => String)
+  customerAbbr: string;
 }

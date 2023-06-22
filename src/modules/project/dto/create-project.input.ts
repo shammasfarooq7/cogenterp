@@ -150,4 +150,7 @@ export class CreateProjectInput {
 
   @Field(() => String, {nullable: true})
   cgl2ec: string;
+
+  @Field(() => String)
+  code: string;
 }

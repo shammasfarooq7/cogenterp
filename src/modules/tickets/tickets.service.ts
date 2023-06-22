@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateTicketInput } from './dto/create-ticket.input';
 import { UpdateTicketInput } from './dto/update-ticket.input';
 import { TicketDetail } from './entities/ticketDetail.entity';
@@ -14,13 +14,17 @@ import { TicketDate } from './entities/ticketDate.entity';
 import { AssignResourcesToTicketInput } from './dto/assign-resources-to-ticket.input';
 import { Resource } from '../resources/entity/resource.entity';
 import { TimeSheet } from './entities/timeSheet.entity';
+import { Customer } from '../customer/entities/customer.entity';
+import { Project } from '../project/entities/project.entity';
+import { Jobsite } from '../jobsite/entities/jobsite.entity';
 
 @Injectable()
 export class TicketsService {
   constructor(
     @InjectRepository(Ticket) private ticketRepo: Repository<Ticket>,
-    @InjectRepository(TicketDetail) private ticketDetailRepo: Repository<TicketDetail>,
-    @InjectRepository(TicketDate) private ticketDateRepo: Repository<TicketDate>,
+    @InjectRepository(Customer) private customerRepo: Repository<Customer>,
+    @InjectRepository(Project) private projectRepo: Repository<Project>,
+    @InjectRepository(Jobsite) private jobsiteRepo: Repository<Jobsite>,
     private dataSource: DataSource
   ) { }
 
@@ -30,9 +34,28 @@ export class TicketsService {
     await queryRunner.connect();
     await queryRunner.startTransaction()
     try {
-      const { ticketType, ticketDates, numberOfHoursReq, numberOfResource, scheduledTime, ...detail } = createTicketInput;
+      const { ticketType, customerId, projectId, jobSiteId, ticketDates, numberOfHoursReq, numberOfResource, scheduledTime, ...detail } = createTicketInput;
+
+      const customer = await this.customerRepo.findOneBy({id: customerId})
+
+      if (!customer) throw new NotFoundException(`Customer does not exist!`)
+
+      if(projectId){
+        const project = await this.projectRepo.findOneBy({id: projectId})
+
+        if (!project) throw new NotFoundException(`Project does not exist!`)
+      }
+
+      if(jobSiteId){
+        const jobSite = await this.jobsiteRepo.findOneBy({id: jobSiteId})
+
+        if (!jobSite) throw new NotFoundException(`Jobsite does not exist!`)
+      }
+
+      let count = await this.ticketRepo.createQueryBuilder('entity').where('entity.customerId = :customerId', { customerId }).getCount();
 
       const isExternal = !currentUser.roles?.includes(UserRole.SD);
+
       // Create ticket detail
       const ticketDetail = await queryRunner.manager.save(TicketDetail, { ...detail });
 
@@ -45,6 +68,12 @@ export class TicketsService {
         ticket.isExternal = isExternal;
         ticket.ticketDetail = ticketDetail;
         ticket.ticketReceivedTime = new Date();
+        ticket.customer = customer;
+        ticket.customerTicketNumber = `${customer.customerAbbr}${count++}`;
+        ticket.customerName = customer.name;
+        ticket.isAdhoc = Boolean(projectId);
+        ticket.projectId = projectId || null;
+        ticket.jobSiteId = jobSiteId || null;
 
         await queryRunner.manager.save(ticket);
         ticket.generateDerivedId();

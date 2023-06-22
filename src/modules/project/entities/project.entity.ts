@@ -363,6 +363,10 @@ export class Project {
   @Field(() => String, {nullable: true, description: 'Cogent Level 2 Escalation Contact#' })
   cgl2ec: string;
 
+  @Column()
+  @Field(() => String)
+  code: string;
+
   @Column({ nullable: true })
   @Field(() => String, {nullable: true})
   customerId: string;

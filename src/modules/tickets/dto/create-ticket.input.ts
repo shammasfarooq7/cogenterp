@@ -5,6 +5,15 @@ import { TicketType } from '../entities/ticket.entity';
 @InputType()
 export class CreateTicketInput {
 
+  @Field(() => String)
+  customerId: string;
+
+  @Field(() => String)
+  projectId: string;
+
+  @Field(() => String)
+  jobSiteId: string;
+
   @Field(() => TicketType)
   ticketType: TicketType;
 
@@ -94,8 +103,6 @@ export class CreateTicketInput {
 
   @Field(() => SlaPriority)
   slaPriority: SlaPriority;
-
-
 
   @Field({ nullable: true })
   serviceDocUrl?: string;

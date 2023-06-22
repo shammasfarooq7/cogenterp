@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, ManyToOne, Column, OneToMany, CreateDat
 import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
 import { TicketDetail } from './ticketDetail.entity';
 import { TicketDate } from './ticketDate.entity';
+import { Customer } from 'src/modules/customer/entities/customer.entity';
 
 
 export enum TicketType {
@@ -21,15 +22,13 @@ export class Ticket {
   @Field(() => String)
   id: string;
 
-  //need to change according to customer tickets
-  // @Column()
-  // @Field(() => String)
-  // customerTicketNumber: string;
+  @Column()
+  @Field(() => String)
+  customerTicketNumber: string;
 
-  // customer ID to get his name, when relation will be created.
-  // @Column()
-  // @Field(() => String)
-  // customerName: string;
+  @Column()
+  @Field(() => String)
+  customerName: string;
 
   @Column({ nullable: true })
   @Field(() => String)
@@ -75,6 +74,24 @@ export class Ticket {
   @OneToMany(() => TicketDate, ticketDate => ticketDate.ticket)
   @Field(() => [TicketDate])
   ticketDates: TicketDate[];
+
+  @Column()
+  @Field(() => String)
+  projectId: string;
+
+  @Column()
+  @Field(() => String)
+  jobSiteId: string;
+
+  @Column({ default: false })
+  isAdhoc: boolean;
+
+  @Column()
+  @Field(() => String)
+  customerId: string;
+
+  @ManyToOne(() => Customer, customer => customer.tickets)
+  customer: Customer;
 
   @Column({ nullable: false, type: 'timestamptz' })
   @Field(() => Date, { nullable: false })
