@@ -112,144 +112,6 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type Ticket {
-  id: String!
-  cogentCaseNumber: String!
-  cogentWorkOrderNumber: [String!]
-  ticketType: TicketType!
-  numberOfHoursReq: String!
-  numberOfResource: String!
-  ticketDetailId: String!
-  ticketDetail: TicketDetail!
-  ticketDates: [TicketDate!]!
-  ticketReceivedTime: DateTime!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  deletedAt: DateTime
-}
-
-"""The ticket type"""
-enum TicketType {
-  FSE
-  FTE
-  PTE
-}
-
-type TicketDate {
-  id: String!
-  date: DateTime!
-  scheduledTime: String!
-  ticketId: String!
-  ticket: Ticket!
-  timeSheets: [TimeSheet!]
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type TimeSheet {
-  id: String!
-  checkIn: String
-  checkOut: String
-  sdId: String
-  sdCheckIn: String
-  sdCheckOut: String
-  feopsCheckIn: String
-  feopsCheckOut: String
-  resourceId: String!
-  resource: Resource!
-  ticketDateId: String!
-  ticketDate: TicketDate!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type Resource {
-  id: String!
-  email: String!
-  mobileNumber: String
-  contactNumber: String
-  status: ResourceStatus
-  idCardType: IdCardType
-  interviewStatus: InterviewStatus
-  vendorName: String
-  whatsappGroup: String
-  whatsappGroupLink: String
-  workPermitStatus: String
-  contractDocuments: Boolean
-  availability: String
-  engagementType: EngagementType
-  rpocName: String
-  rpocEmail: String
-  rpocContactNumber: String
-  firstName: String
-  lastName: String
-  middleName: String
-  idCardNumber: String
-  taxNumber: String
-  languages: [String!]
-  skillSet: [String!]
-  availableTools: [String!]
-  nationality: String
-  region: String
-  country: String
-  state: String
-  city: String
-  postalCode: String
-  addressLine1: String
-  addressLine2: String
-  whatsappNumber: String
-  cogentEmail: String
-  descriptionColor: String
-  hourlyRate: String
-  halfDayRate: String
-  fullDayRate: String
-  monthlyRate: String
-  anyExtraRate: String
-  transport: String
-  mobility: String
-  resumeDocUrl: String
-  identityDocUrl: String
-  onboardedBy: User
-  isOnboarded: Boolean!
-  isARequest: Boolean!
-  requestApproved: Boolean!
-  userPaymentMethod: [UserPaymentMethod!]
-  timeSheets: [TimeSheet!]
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  deletedAt: DateTime
-  onboardedAt: DateTime
-}
-
-"""The user status"""
-enum ResourceStatus {
-  DIRECT
-  INDIRECT
-}
-
-"""The user id card type"""
-enum IdCardType {
-  DriverLicense
-  Passport
-  IdCard
-  ResidencePermit
-}
-
-"""The user interview status"""
-enum InterviewStatus {
-  Complete
-  Scheduled
-  NotScheduled
-}
-
-"""The user engagement type"""
-enum EngagementType {
-  FSE
-  FTE
-  PTE
-  Remote
-}
-
 type Jobsite {
   id: String!
   name: String!
@@ -433,6 +295,7 @@ type Project {
 
   """Cogent Level 2 Escalation Contact#"""
   cgl2ec: String
+  code: String!
   customerId: String
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -559,11 +422,155 @@ type Customer {
   languageSupport: String!
   countrySupported: String!
   certification: String!
+  customerAbbr: String!
   onboardedBy: User
   onboardedAt: DateTime
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
+}
+
+type Ticket {
+  id: String!
+  customerTicketNumber: String!
+  customerName: String!
+  cogentCaseNumber: String!
+  cogentWorkOrderNumber: [String!]
+  ticketType: TicketType!
+  numberOfHoursReq: String!
+  numberOfResource: String!
+  ticketDetailId: String!
+  ticketDetail: TicketDetail!
+  ticketDates: [TicketDate!]!
+  projectId: String!
+  jobSiteId: String!
+  customerId: String!
+  ticketReceivedTime: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+"""The ticket type"""
+enum TicketType {
+  FSE
+  FTE
+  PTE
+}
+
+type TicketDate {
+  id: String!
+  date: DateTime!
+  scheduledTime: String!
+  ticketId: String!
+  ticket: Ticket!
+  timeSheets: [TimeSheet!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type TimeSheet {
+  id: String!
+  checkIn: String
+  checkOut: String
+  sdId: String
+  sdCheckIn: String
+  sdCheckOut: String
+  feopsCheckIn: String
+  feopsCheckOut: String
+  resourceId: String!
+  resource: Resource!
+  ticketDateId: String!
+  ticketDate: TicketDate!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Resource {
+  id: String!
+  email: String!
+  mobileNumber: String
+  contactNumber: String
+  status: ResourceStatus
+  idCardType: IdCardType
+  interviewStatus: InterviewStatus
+  vendorName: String
+  whatsappGroup: String
+  whatsappGroupLink: String
+  workPermitStatus: String
+  contractDocuments: Boolean
+  availability: String
+  engagementType: EngagementType
+  rpocName: String
+  rpocEmail: String
+  rpocContactNumber: String
+  firstName: String
+  lastName: String
+  middleName: String
+  idCardNumber: String
+  taxNumber: String
+  languages: [String!]
+  skillSet: [String!]
+  availableTools: [String!]
+  nationality: String
+  region: String
+  country: String
+  state: String
+  city: String
+  postalCode: String
+  addressLine1: String
+  addressLine2: String
+  whatsappNumber: String
+  cogentEmail: String
+  descriptionColor: String
+  hourlyRate: String
+  halfDayRate: String
+  fullDayRate: String
+  monthlyRate: String
+  anyExtraRate: String
+  transport: String
+  mobility: String
+  resumeDocUrl: String
+  identityDocUrl: String
+  onboardedBy: User
+  isOnboarded: Boolean!
+  isARequest: Boolean!
+  requestApproved: Boolean!
+  userPaymentMethod: [UserPaymentMethod!]
+  timeSheets: [TimeSheet!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  onboardedAt: DateTime
+}
+
+"""The user status"""
+enum ResourceStatus {
+  DIRECT
+  INDIRECT
+}
+
+"""The user id card type"""
+enum IdCardType {
+  DriverLicense
+  Passport
+  IdCard
+  ResidencePermit
+}
+
+"""The user interview status"""
+enum InterviewStatus {
+  Complete
+  Scheduled
+  NotScheduled
+}
+
+"""The user engagement type"""
+enum EngagementType {
+  FSE
+  FTE
+  PTE
+  Remote
 }
 
 type User {
@@ -862,6 +869,9 @@ input SignUpUserInput {
 }
 
 input CreateTicketInput {
+  customerId: String!
+  projectId: String!
+  jobSiteId: String!
   ticketType: TicketType!
   numberOfHoursReq: String!
   numberOfResource: String!
@@ -939,6 +949,7 @@ input CreateCustomerInput {
   languageSupport: String!
   countrySupported: String!
   certification: String!
+  customerAbbr: String!
 }
 
 input UpdateCustomerInput {
@@ -979,6 +990,7 @@ input UpdateCustomerInput {
   languageSupport: String!
   countrySupported: String!
   certification: String!
+  customerAbbr: String!
 }
 
 input CreateProjectInput {
@@ -1031,6 +1043,7 @@ input CreateProjectInput {
   cgl1ec: String
   cfl2ee: String
   cgl2ec: String
+  code: String!
 }
 
 input UpdateProjectInput {
@@ -1083,6 +1096,7 @@ input UpdateProjectInput {
   cgl1ec: String
   cfl2ee: String
   cgl2ec: String
+  code: String!
 }
 
 input CreateJobsiteInput {
