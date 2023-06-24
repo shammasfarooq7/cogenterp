@@ -1,13 +1,13 @@
 import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateCustomerInput } from './dto/create-customer.input';
 import { UpdateCustomerInput } from './dto/update-customer.input';
-import { CommonPayload } from 'src/users/dto/common.dto';
+import { CommonPayload } from '../../users/dto/common.dto';
 import { Customer } from './entities/customer.entity';
 import { ILike, IsNull, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../users/entities/user.entity';
-import { RoleService } from 'src/users/role.service';
-import { UserRole } from 'src/users/entities/role.entity';
+import { RoleService } from '../../users/role.service';
+import { UserRole } from '../../users/entities/role.entity';
 import { GetAllCustomersInput } from './dto/get-all-customers.input';
 import { GetAllCustomersPayload } from './dto/get-all-customers.dto';
 

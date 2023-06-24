@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn, Column } from 'typeorm';
 import { ObjectType, Field, ID, registerEnumType } from '@nestjs/graphql';
-import { Ticket } from './ticket.entity';
+import { Ticket } from '../entities/ticket.entity';
 import { TicketAttachment } from './ticketAttachment.entity';
 
 

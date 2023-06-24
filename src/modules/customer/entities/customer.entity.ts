@@ -1,8 +1,8 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Project } from '../../project/entities/project.entity';
 import { User } from '../../../users/entities/user.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, OneToOne } from 'typeorm';
-import { Ticket } from 'src/modules/tickets/entities/ticket.entity';
+import { PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, OneToOne, Entity } from 'typeorm';
+import { Ticket } from '../../tickets/entities/ticket.entity';
 
 @ObjectType()
 @Entity('customers')

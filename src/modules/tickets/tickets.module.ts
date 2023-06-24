@@ -14,9 +14,9 @@ import { ProjectService } from '../project/project.service';
 import { Jobsite } from '../jobsite/entities/jobsite.entity';
 import { JobsiteService } from '../jobsite/jobsite.service';
 import { Project } from '../project/entities/project.entity';
-import { User } from 'src/users/entities/user.entity';
-import { Role } from 'src/users/entities/role.entity';
-import { RoleService } from 'src/users/role.service';
+import { User } from '../../users/entities/user.entity';
+import { Role } from '../../users/entities/role.entity';
+import { RoleService } from '../../users/role.service';
 
 @Module({
   imports: [

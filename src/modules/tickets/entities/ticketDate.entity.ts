@@ -1,7 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn, JoinColumn, OneToMany, } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
-import { Resource } from './../../resources/entity/resource.entity';
-import { Ticket } from './ticket.entity';
+import { Ticket } from '../entities/ticket.entity';
 import { TimeSheet } from './timeSheet.entity';
 
 @ObjectType()
