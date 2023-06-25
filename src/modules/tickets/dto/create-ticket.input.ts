@@ -30,21 +30,6 @@ export class CreateTicketInput {
   endClientName: string;
 
   @Field(() => String)
-  country: string;
-
-  @Field(() => String)
-  city: string;
-
-  @Field(() => String)
-  provinceState: string;
-
-  @Field(() => String)
-  siteAddress: string;
-
-  @Field(() => String)
-  postCode: string;
-
-  @Field(() => String)
   scheduledTime: string
 
   @Field(() => String)
@@ -109,4 +94,7 @@ export class CreateTicketInput {
 
   @Field(() => [Date])
   ticketDates: Date[]
+
+  // @Field(() => [String], {nullable: true})
+  // attachments?: string[]
 }

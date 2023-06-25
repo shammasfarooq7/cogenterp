@@ -84,26 +84,6 @@ export class TicketDetail {
 
   @Column()
   @Field(() => String)
-  country: string;
-
-  @Column()
-  @Field(() => String)
-  city: string;
-
-  @Column()
-  @Field(() => String)
-  provinceState: string;
-
-  @Column()
-  @Field(() => String)
-  siteAddress: string;
-
-  @Column()
-  @Field(() => String)
-  postCode: string;
-
-  @Column()
-  @Field(() => String)
   spocName: string;
 
   @Column()

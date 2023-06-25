@@ -34,11 +34,6 @@ type TicketDetail {
   id: String!
   accountName: String!
   endClientName: String!
-  country: String!
-  city: String!
-  provinceState: String!
-  siteAddress: String!
-  postCode: String!
   spocName: String!
   spocContactNumber: String!
   spocEmailAddress: String!
@@ -877,11 +872,6 @@ input CreateTicketInput {
   numberOfResource: String!
   accountName: String!
   endClientName: String!
-  country: String!
-  city: String!
-  provinceState: String!
-  siteAddress: String!
-  postCode: String!
   scheduledTime: String!
   spocName: String!
   spocContactNumber: String!
@@ -1100,9 +1090,81 @@ input UpdateProjectInput {
 }
 
 input CreateJobsiteInput {
+  name: String!
+  country: String!
+  city: String!
+  state: String!
+  province: String!
+  postcode: String!
+  siteAddress: String!
+  pocName: String!
+  pocContactNumber: String!
+  pocEmailAdrress: String!
+  ppe1h: String!
+  ppe2h: String!
+  ppe3h: String!
+  ppe4h: String!
+  ppe5h: String!
+  ppe6h: String!
+  ppe7h: String!
+  ppe8h: String!
+  tandm30: String!
+  tandm1h: String!
+  afth: String!
+  wknd: String!
+  ph: String!
+  sat: Boolean!
+  sun: Boolean!
+  siteTiming: String!
+  timeZone: String!
+  dispatchAgreed: Float!
+  incrementTime: IncrementTimeForJob!
+  serviceType: [ServiceTypeForJob!]!
+  supportType: [SupportType!]!
+  serviceCatItem: [ServiceCatItem!]!
+  agreedSla: [AgreedSlaForJob!]!
+  coverage: [CoverageForJob!]!
+  technologyType: [TechnologyTypeForJob!]!
+  currency: [Currency!]!
   projectId: String!
 }
 
 input UpdateJobsiteInput {
+  name: String!
+  country: String!
+  city: String!
+  state: String!
+  province: String!
+  postcode: String!
+  siteAddress: String!
+  pocName: String!
+  pocContactNumber: String!
+  pocEmailAdrress: String!
+  ppe1h: String!
+  ppe2h: String!
+  ppe3h: String!
+  ppe4h: String!
+  ppe5h: String!
+  ppe6h: String!
+  ppe7h: String!
+  ppe8h: String!
+  tandm30: String!
+  tandm1h: String!
+  afth: String!
+  wknd: String!
+  ph: String!
+  sat: Boolean!
+  sun: Boolean!
+  siteTiming: String!
+  timeZone: String!
+  dispatchAgreed: Float!
+  incrementTime: IncrementTimeForJob!
+  serviceType: [ServiceTypeForJob!]!
+  supportType: [SupportType!]!
+  serviceCatItem: [ServiceCatItem!]!
+  agreedSla: [AgreedSlaForJob!]!
+  coverage: [CoverageForJob!]!
+  technologyType: [TechnologyTypeForJob!]!
+  currency: [Currency!]!
   projectId: String!
 }
