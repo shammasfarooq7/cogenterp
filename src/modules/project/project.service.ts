@@ -20,10 +20,12 @@ export class ProjectService {
 
       if (!customer) throw new NotFoundException(`Customer does not exist!`)
 
-      await this.projectRepo.save({
+      const project = await this.projectRepo.save({
         ...createProjectInput,
         customer: customer
       })
+      project.generateDerivedId();
+      await this.projectRepo.save({})
 
       return { message: "Project Created Successfully!" };
     } catch(error){
