@@ -1,7 +1,11 @@
+import { UserRole } from '../../../users/entities/role.entity';
 import { InputType, Field } from '@nestjs/graphql';
 
 @InputType()
 export class GetAllCustomersInput {
+
+    @Field(() => UserRole, { nullable: true })
+    role: UserRole;
 
     @Field(() => Number, { nullable: true })
     page: number;

@@ -23,7 +23,7 @@ export class CustomerResolver {
     return await this.customerService.createCustomer(ctx?.user?.userId, createCustomer)
   }
 
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SD)
   @Query(() => GetAllCustomersPayload)
   async getAllCustomer(@CurrentUser() user: ICurrentUser, @Args('getAllCustomerInput') getAllCustomerInput: GetAllCustomersInput): Promise<GetAllCustomersPayload> {
     return await this.customerService.getAllCustomers(getAllCustomerInput);
