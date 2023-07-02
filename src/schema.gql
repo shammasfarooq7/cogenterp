@@ -690,12 +690,14 @@ input GetAllTicketsInput {
 }
 
 input GetAllCustomersInput {
+  role: userRoles
   page: Float
   limit: Float
   searchQuery: String
 }
 
 input GetAllProjectsInput {
+  role: userRoles
   page: Float
   limit: Float
   searchQuery: String

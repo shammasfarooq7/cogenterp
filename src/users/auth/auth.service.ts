@@ -1,6 +1,6 @@
 import { ConflictException, ForbiddenException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt';
 import { LoginResponse } from '../dto/login-response';
@@ -23,7 +23,7 @@ export class AuthService {
 
   async validateUser(email: string, pass: string) {
     try {
-      const user = await this.userRepo.findOneBy({ email: email.trim() });
+      const user = await this.userRepo.findOneBy({ email: email.trim(), deletedAt: IsNull() });
       if (user && bcrypt.compareSync(pass, user.password)) {
         const { password, ...result } = user;
         return result
@@ -41,8 +41,16 @@ export class AuthService {
       select: { id: true, resource: { requestApproved: true }, roles: { role: true }, }
     })
 
-    if (user?.roles.find(role => role.role === UserRole.RESOURCE) && !user.resource.requestApproved) {
-      throw new Error("Your Account is not approved yet. Kindly contact with support team.")
+    if (user?.roles.find(role => role.role === UserRole.RESOURCE)) {
+
+      const resource = await this.resourceRepo.findOne({
+        where: { email: loginUserInput.email },
+        select: { requestApproved: true }
+      })
+
+      if (!resource.requestApproved) {
+        throw new Error("Your Account is not approved yet. Kindly contact with support team.")
+      }
     }
 
     // Just For now, this line will be removed in future
@@ -80,12 +88,14 @@ export class AuthService {
         roles: [role]
       });
 
-      await this.resourceRepo.save({
+      const resource = await this.resourceRepo.save({
         email,
         mobileNumber,
         isARequest: true,
         user: newUser
       })
+
+      await this.userRepo.update({ id: newUser.id }, { resource })
 
       return newUser;
     } catch (exception) {

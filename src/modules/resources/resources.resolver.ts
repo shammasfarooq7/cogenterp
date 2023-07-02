@@ -27,7 +27,8 @@ export class ResourcesResolver {
   @Roles(UserRole.ADMIN, UserRole.RMS, UserRole.RESOURCE)
   @Query(() => Resource)
   async getResource(@Context() ctx: IContext, @Args('id', { nullable: true, defaultValue: null }) id: string | null): Promise<Resource> {
-    return await this.resourcesService.getResource(id || ctx?.user?.userId);
+    if (id) { return await this.resourcesService.getResource(id) }
+    return await this.resourcesService.getResourceFromUserId(ctx?.user?.userId);
   }
 
   @Roles(UserRole.ADMIN, UserRole.RMS)

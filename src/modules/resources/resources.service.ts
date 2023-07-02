@@ -70,6 +70,17 @@ export class ResourcesService {
     return resource
   };
 
+  async getResourceFromUserId(id: string) {
+    const resource = await this.resourceRepo.findOne(
+      {
+        where: { user: { id }, deletedAt: IsNull() },
+        relations: { userPaymentMethod: true, onboardedBy: true }
+      }
+    )
+    if (!resource) throw new NotFoundException(`Resource with user ${id} does not exist!`)
+    return resource
+  };
+
   async createResource(userId: string, createResourceInput: CreateResourceInput): Promise<CommonPayload> {
 
     const {
