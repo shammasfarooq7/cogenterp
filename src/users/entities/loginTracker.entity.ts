@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 
-@Entity('loginTracker')
+@Entity('login_tracker')
 @ObjectType()
 export class LoginTracker {
   @PrimaryGeneratedColumn('increment', { name: 'id' })

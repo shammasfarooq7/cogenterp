@@ -1,4 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
+import { UserRole } from '../entities/role.entity';
 
 @InputType()
 export class CreateUserInput {
@@ -8,4 +9,7 @@ export class CreateUserInput {
 
   @Field({ nullable: true, defaultValue: null })
   phoneNumber?: string;
+
+  @Field(() => UserRole)
+  role: UserRole
 }

@@ -1,0 +1,128 @@
+import { MigrationInterface, QueryRunner } from "typeorm";
+
+export class undefinedigration1687124221273 implements MigrationInterface {
+    name = 'undefinedigration1687124221273'
+
+    public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`ALTER TABLE "projects" ADD "startDate" TIMESTAMP WITH TIME ZONE NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "endDate" TIMESTAMP WITH TIME ZONE NOT NULL`);
+        await queryRunner.query(`CREATE TYPE "public"."projects_status_enum" AS ENUM('planning', 'signed', 'approved', 'live')`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "status" "public"."projects_status_enum" NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "projectNumber" character varying NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "name" character varying NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "clientPartnerName" character varying NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "custSdmName" character varying NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "custSdmEmail" character varying NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "custSdmContNum" character varying NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "cogSdmName" character varying NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "cogSdmNum" character varying NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "cogSdmCont" character varying NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "cogSdEmail" character varying NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "cogSdContNum" character varying NOT NULL`);
+        await queryRunner.query(`CREATE TYPE "public"."projects_agreedsla_enum" AS ENUM('SBD4H', 'SBD2H', 'SBD', 'NBD', '2BD', '3BD', '5BD', '10BD')`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "agreedSla" "public"."projects_agreedsla_enum" array NOT NULL`);
+        await queryRunner.query(`CREATE TYPE "public"."projects_coverage_enum" AS ENUM('5D9H', '24X7AFTH', '24X7WKND', '24X7HLDY')`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "coverage" "public"."projects_coverage_enum" array NOT NULL`);
+        await queryRunner.query(`CREATE TYPE "public"."projects_technologytype_enum" AS ENUM('EUC', 'NETWORK', 'LINUX', 'MAC')`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "technologyType" "public"."projects_technologytype_enum" array NOT NULL`);
+        await queryRunner.query(`CREATE TYPE "public"."projects_servicetype_enum" AS ENUM('BREAKFIX', 'IMAC', 'CABLING', 'H&F', 'TRAINING', 'DSS')`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "serviceType" "public"."projects_servicetype_enum" array NOT NULL`);
+        await queryRunner.query(`CREATE TYPE "public"."projects_supportmodel_enum" AS ENUM('FTE-WBF', 'FTE-NBF', 'FSE', 'PTE-WBF', 'PTE-NBF')`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "supportModel" "public"."projects_supportmodel_enum" array NOT NULL`);
+        await queryRunner.query(`CREATE TYPE "public"."projects_talentlevel_enum" AS ENUM('L0', 'L1', 'L2', 'L3')`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "talentLevel" "public"."projects_talentlevel_enum" array NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "cancelPolicy" character varying`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "dispatchAgreed" integer NOT NULL`);
+        await queryRunner.query(`CREATE TYPE "public"."projects_incrementtime_enum" AS ENUM('15', '30', '60', '120')`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "incrementTime" "public"."projects_incrementtime_enum" NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "sow" character varying`);
+        await queryRunner.query(`CREATE TYPE "public"."projects_sowdesc_enum" AS ENUM('BREAKFIX', 'IMAC', 'CABLING', 'H&F', 'TRAINING', 'DSS')`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "sowDesc" "public"."projects_sowdesc_enum" NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "owJd" character varying`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "serviceDeliv" character varying`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "ssInst" character varying`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "asInst" character varying`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "toolsReq" character varying`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "namedWorker" boolean NOT NULL DEFAULT false`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "assignedWorker" character varying`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "technicalSkill" character varying`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "behSkills" character varying`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "experienceReq" character varying`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "langReq" character varying`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "trainReq" character varying`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "trainDoc" character varying`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "reqTools" character varying`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "reqSoft" character varying`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "specReq" character varying`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "cl1ee" character varying`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "cl1ec" character varying`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "cl2ee" character varying`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "cl2ec" character varying`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "cgl1ee" character varying`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "cgl1ec" character varying`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "cfl2ee" character varying`);
+        await queryRunner.query(`ALTER TABLE "projects" ADD "cgl2ec" character varying`);
+    }
+
+    public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "cgl2ec"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "cfl2ee"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "cgl1ec"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "cgl1ee"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "cl2ec"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "cl2ee"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "cl1ec"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "cl1ee"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "specReq"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "reqSoft"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "reqTools"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "trainDoc"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "trainReq"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "langReq"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "experienceReq"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "behSkills"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "technicalSkill"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "assignedWorker"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "namedWorker"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "toolsReq"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "asInst"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "ssInst"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "serviceDeliv"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "owJd"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "sowDesc"`);
+        await queryRunner.query(`DROP TYPE "public"."projects_sowdesc_enum"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "sow"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "incrementTime"`);
+        await queryRunner.query(`DROP TYPE "public"."projects_incrementtime_enum"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "dispatchAgreed"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "cancelPolicy"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "talentLevel"`);
+        await queryRunner.query(`DROP TYPE "public"."projects_talentlevel_enum"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "supportModel"`);
+        await queryRunner.query(`DROP TYPE "public"."projects_supportmodel_enum"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "serviceType"`);
+        await queryRunner.query(`DROP TYPE "public"."projects_servicetype_enum"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "technologyType"`);
+        await queryRunner.query(`DROP TYPE "public"."projects_technologytype_enum"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "coverage"`);
+        await queryRunner.query(`DROP TYPE "public"."projects_coverage_enum"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "agreedSla"`);
+        await queryRunner.query(`DROP TYPE "public"."projects_agreedsla_enum"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "cogSdContNum"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "cogSdEmail"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "cogSdmCont"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "cogSdmNum"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "cogSdmName"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "custSdmContNum"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "custSdmEmail"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "custSdmName"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "clientPartnerName"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "name"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "projectNumber"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "status"`);
+        await queryRunner.query(`DROP TYPE "public"."projects_status_enum"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "endDate"`);
+        await queryRunner.query(`ALTER TABLE "projects" DROP COLUMN "startDate"`);
+    }
+
+}

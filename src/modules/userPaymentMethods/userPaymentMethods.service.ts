@@ -9,7 +9,7 @@ export class UserPaymentMethodsService {
 
     async getAllUserPaymentMethods(): Promise<UserPaymentMethod[]> {
         try {
-            return await this.userPaymentMethodRepo.find({ relations: { user: true } });
+            return await this.userPaymentMethodRepo.find({ relations: { resource: true } });
         } catch (error) {
             throw new InternalServerErrorException(error);
         }

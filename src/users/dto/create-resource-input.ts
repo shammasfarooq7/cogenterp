@@ -1,5 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { EngagementType, UserStatus, IdCardType, InterviewStatus } from '../entities/user.entity';
+import { IdCardType, InterviewStatus, EngagementType, ResourceStatus} from '../../modules/resources/entity/resource.entity';
 
 @InputType()
 export class CreateResourceInput {
@@ -10,8 +10,8 @@ export class CreateResourceInput {
     @Field({ nullable: true, defaultValue: null })
     phoneNumber: string;
 
-    @Field(() => UserStatus)
-    status: UserStatus;
+    @Field(() => ResourceStatus)
+    status: ResourceStatus;
 
     @Field({ nullable: true })
     vendorName: string;
