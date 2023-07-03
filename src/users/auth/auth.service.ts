@@ -88,7 +88,17 @@ export class AuthService {
         roles: [role]
       });
 
-      return {message: "User Created."};
+      const resource = await this.resourceRepo.save({
+        email,
+        isARequest: true,
+        user: newUser
+      })
+
+      await this.userRepo.update({ id: newUser.id }, { resource })
+
+      return {
+        message: "User Created."
+      }
     } catch (exception) {
       throw new InternalServerErrorException(exception);
     }
