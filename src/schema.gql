@@ -46,6 +46,13 @@ type TicketDetail {
   addInstruction: String!
   specialInstruction: String!
   hardwareSN: String!
+  projectCode: String!
+  siteName: String!
+  country: String!
+  city: String!
+  province: String!
+  postCode: String!
+  siteAddress: String!
   toolsRequested: [String!]
   technologyType: TechnologyType
   region: Region
@@ -432,6 +439,7 @@ type Ticket {
   cogentCaseNumber: String!
   cogentWorkOrderNumber: [String!]
   ticketType: TicketType!
+  status: TicketStatus!
   numberOfHoursReq: String!
   numberOfResource: String!
   ticketDetailId: String!
@@ -451,6 +459,20 @@ enum TicketType {
   FSE
   FTE
   PTE
+}
+
+enum TicketStatus {
+  OPEN
+  INPROGRESS
+  CANCELLED
+  SCHEDULED
+  CANCHAR
+  ONROUTE
+  ONSITE
+  WORKSTART
+  OFFSITE
+  COMPLETED
+  RESCHEDULED
 }
 
 type TicketDate {
@@ -662,6 +684,8 @@ type Query {
   getAllUserPaymentMethods: [UserPaymentMethod!]!
   getAllTickets(getAllTicketsInput: GetAllTicketsInput!): GetAllTicketsPayload!
   getTicket(id: String!): Ticket!
+  approveExternalTicket(id: String!): Ticket!
+  getAllExternalTickets: GetAllTicketsPayload!
   getAllCustomer(getAllCustomerInput: GetAllCustomersInput!): GetAllCustomersPayload!
   getCustomer(id: String = null): Customer!
   getAllProjects(getAllProjectsInput: GetAllProjectsInput!): GetAllProjectsPayload!
@@ -713,6 +737,7 @@ type Mutation {
   createTicket(createTicketInput: CreateTicketInput!): CommonPayload!
   deleteTicket(id: String!): CommonPayload!
   assignResourcesToTicket(assignResourcesToTicketInput: AssignResourcesToTicketInput!): CommonPayload!
+  changeStatus(changeStatus: ChangeStatusInput!): CommonPayload!
   createCustomer(createCustomerInput: CreateCustomerInput!): CommonPayload!
   updateCustomer(id: String!, updateCustomerInput: UpdateCustomerInput!): CommonPayload!
   deleteCustomer(id: String!): CommonPayload!
@@ -726,7 +751,9 @@ type Mutation {
 
 input CreateUserInput {
   email: String!
-  phoneNumber: String = null
+  firstName: String!
+  lastName: String!
+  middleName: String
   role: userRoles!
 }
 
@@ -862,7 +889,9 @@ input LoginUserInput {
 input SignUpUserInput {
   email: String!
   password: String!
-  mobileNumber: String = null
+  firstName: String!
+  lastName: String!
+  middleName: String
 }
 
 input CreateTicketInput {
@@ -896,11 +925,23 @@ input CreateTicketInput {
   slaPriority: SlaPriority!
   serviceDocUrl: String
   ticketDates: [DateTime!]!
+  projectCode: String!
+  siteName: String!
+  country: String!
+  city: String!
+  province: String!
+  postCode: String!
+  siteAddress: String!
 }
 
 input AssignResourcesToTicketInput {
   ticketId: String!
   resourceIds: [String!]!
+}
+
+input ChangeStatusInput {
+  ticketId: String!
+  ticketStatus: TicketStatus!
 }
 
 input CreateCustomerInput {

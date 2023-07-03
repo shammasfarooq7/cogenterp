@@ -273,7 +273,7 @@ export class TicketsService {
     const ticket = await this.ticketRepo.findOne({ where:{ id: changeStatusInput.ticketId } })
     if (!ticket) throw new NotFoundException(`Ticket does not exist!`)
 
-    await this.ticketRepo.update({id: ticket.id}, {status: changeStatusInput.status})
+    await this.ticketRepo.update({id: ticket.id}, {status: changeStatusInput.ticketStatus})
 
     return {
       message: "Status Changed."
