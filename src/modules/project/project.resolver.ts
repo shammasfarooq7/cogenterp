@@ -14,7 +14,7 @@ import { GetAllProjectsInput } from './dto/get-all-projects.input';
 
 @Resolver(() => Project)
 export class ProjectResolver {
-  constructor(private readonly projectService: ProjectService) {}
+  constructor(private readonly projectService: ProjectService) { }
 
   @Roles(UserRole.ADMIN)
   @Mutation(() => CommonPayload)
@@ -35,7 +35,7 @@ export class ProjectResolver {
   }
 
   @Roles(UserRole.ADMIN, UserRole.SD)
-  @Query(() => Project)
+  @Query(() => [Project])
   async getProjectByCustomer(@Args('id') id: string): Promise<Project[]> {
     return await this.projectService.getProjectsByCustomer(id);
   }
@@ -43,7 +43,7 @@ export class ProjectResolver {
   @Roles(UserRole.ADMIN)
   @Mutation(() => CommonPayload)
   async updateProject(@Args('id') id: string, @Args('updateProjectInput') updateProjectInput: UpdateProjectInput): Promise<CommonPayload> {
-    return await this.projectService.updateProject( id, updateProjectInput);
+    return await this.projectService.updateProject(id, updateProjectInput);
   }
 
   @Roles(UserRole.ADMIN)
