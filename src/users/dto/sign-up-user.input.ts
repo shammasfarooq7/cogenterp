@@ -9,6 +9,12 @@ export class SignUpUserInput {
   @Field(() => String)
   password: string;
 
-  @Field({ nullable: true, defaultValue: null })
-  mobileNumber?: string;
+  @Field()
+  firstName: string;
+
+  @Field()
+  lastName: string;
+
+  @Field({ nullable: true })
+  middleName: string;
 }

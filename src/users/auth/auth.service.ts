@@ -75,7 +75,7 @@ export class AuthService {
 
   async signup(signUpUserInput: SignUpUserInput) {
     try {
-      const { email, password, mobileNumber } = signUpUserInput;
+      const { email, password } = signUpUserInput;
       const user = await this.userRepo.findOneBy({ email })
       const roleType = UserRole.RESOURCE;
       const role = await this.roleService.findByType(roleType);
@@ -83,21 +83,12 @@ export class AuthService {
         throw new ConflictException('User already exists');
       }
       const newUser = await this.userRepo.save({
-        email,
+        ...signUpUserInput,
         password,
         roles: [role]
       });
 
-      const resource = await this.resourceRepo.save({
-        email,
-        mobileNumber,
-        isARequest: true,
-        user: newUser
-      })
-
-      await this.userRepo.update({ id: newUser.id }, { resource })
-
-      return newUser;
+      return {message: "User Created."};
     } catch (exception) {
       throw new InternalServerErrorException(exception);
     }

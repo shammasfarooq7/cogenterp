@@ -49,6 +49,7 @@ export class User {
 
   @OneToOne(() => LoginTracker, {
     onDelete: 'CASCADE',
+    nullable: true
   })
   @JoinColumn({ name: 'loginTrackerId' })
   loginTracker: LoginTracker;
