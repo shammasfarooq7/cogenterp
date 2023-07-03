@@ -20,7 +20,7 @@ export class AuthResolver {
 
   @Public()
   @Mutation(() => User)
-  async signup(@Args('signUpUserInput') signUpUserInput: SignUpUserInput): Promise<User> {
+  async signup(@Args('signUpUserInput') signUpUserInput: SignUpUserInput) {
     return await this.authService.signup(signUpUserInput);
   }
 }
