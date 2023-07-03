@@ -10,6 +10,7 @@ import { CommonPayload } from 'src/users/dto/common.dto';
 import { UserRole } from '../../users/entities/role.entity';
 import { Roles } from '../../users/roles.decorator';
 import { AssignResourcesToTicketInput } from './dto/assign-resources-to-ticket.input';
+import { ChangeStatusInput } from './dto/change-status.input';
 
 @Resolver(() => Ticket)
 export class TicketsResolver {
@@ -49,4 +50,23 @@ export class TicketsResolver {
   assignResourcesToTicket(@Context() ctx: IContext, @Args('assignResourcesToTicketInput') assignResourcesToTicketInput: AssignResourcesToTicketInput): Promise<CommonPayload> {
     return this.ticketsService.assignResourcesToTicket(ctx.user, assignResourcesToTicketInput);
   }
+
+  @Roles(UserRole.SD)
+  @Query(() => Ticket)
+  approveExternalTicket(@Args('id') id: string): Promise<CommonPayload>{
+    return this.ticketsService.approveExternalTicket(id);
+  }
+
+  @Roles(UserRole.SD)
+  @Query(() => GetAllTicketsPayload)
+  getAllExternalTickets(): Promise<GetAllTicketsPayload> {
+    return this.ticketsService.getAllExternalTickets();
+  }
+
+  @Roles(UserRole.FEOPS)
+  @Mutation(() => CommonPayload)
+  changeStatus(@Context() ctx: IContext, @Args('changeStatus') changeStatusInput: ChangeStatusInput): Promise<CommonPayload> {
+    return this.ticketsService.changeStatus(changeStatusInput);
+  }
+
 }

@@ -15,6 +15,24 @@ registerEnumType(TicketType, {
   name: 'TicketType',
   description: 'The ticket type',
 });
+
+export enum Status {
+  OPEN = "open",
+  INPROGRESS = "in-progess",
+  CANCELLED = "cancelled",
+  SCHEDULED = "scheduled",
+  CANCHAR = "cancelled but chargeable",
+  ONROUTE = "on-route",
+  ONSITE = "onsite",
+  WORKSTART = "work started",
+  OFFSITE = "offsite",
+  COMPLETED = "completed",
+  RESCHEDULED = "rescheduled"
+}
+
+registerEnumType(Status, {
+  name: 'Status',
+});
 @ObjectType()
 @Entity('tickets')
 export class Ticket {
@@ -51,9 +69,20 @@ export class Ticket {
   @Field((type) => TicketType, { nullable: false })
   ticketType: TicketType;
 
+  @Column({
+    type: 'enum',
+    enum: Status,
+    default: Status.OPEN
+  })
+  @Field((type) => Status, { defaultValue: Status.OPEN })
+  status: Status;
+
   //to check whether its SD or customer ticket. external for customer.
   @Column({ default: false })
   isExternal: boolean;
+
+  @Column({ default: false })
+  isApproved: boolean;
 
   @Column()
   @Field(() => String)

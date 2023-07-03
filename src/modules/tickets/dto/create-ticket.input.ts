@@ -95,6 +95,27 @@ export class CreateTicketInput {
   @Field(() => [Date])
   ticketDates: Date[]
 
+  @Field(() => String)
+  projectCode: string;
+
+  @Field(() => String)
+  siteName: string;
+
+  @Field(() => String)
+  country: string;
+
+  @Field(() => String)
+  city: string;
+
+  @Field(() => String)
+  province: string;
+
+  @Field(() => String)
+  postCode: string;
+
+  @Field(() => String)
+  siteAddress: string;
+
   // @Field(() => [String], {nullable: true})
   // attachments?: string[]
 }

@@ -7,10 +7,10 @@ export class CreateUserInput {
   @Field(() => String)
   email: string;
 
-  @Field()
+  @Field(() => String)
   firstName: string;
 
-  @Field()
+  @Field(() => String)
   lastName: string;
 
   @Field({ nullable: true })

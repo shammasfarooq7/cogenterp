@@ -130,6 +130,34 @@ export class TicketDetail {
   @Field(() => String)
   hardwareSN: string;
 
+  @Column()
+  @Field(() => String)
+  projectCode: string;
+
+  @Column()
+  @Field(() => String)
+  siteName: string;
+
+  @Column()
+  @Field(() => String)
+  country: string;
+
+  @Column()
+  @Field(() => String)
+  city: string;
+
+  @Column()
+  @Field(() => String)
+  province: string;
+
+  @Column()
+  @Field(() => String)
+  postCode: string;
+
+  @Column()
+  @Field(() => String)
+  siteAddress: string;
+
   @Column("text", { array: true, nullable: true })
   @Field(() => [String], { nullable: true })
   toolsRequested: string[];

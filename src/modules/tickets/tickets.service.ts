@@ -17,6 +17,7 @@ import { TimeSheet } from './entities/timeSheet.entity';
 import { Customer } from '../customer/entities/customer.entity';
 import { Project } from '../project/entities/project.entity';
 import { Jobsite } from '../jobsite/entities/jobsite.entity';
+import { ChangeStatusInput } from './dto/change-status.input';
 
 @Injectable()
 export class TicketsService {
@@ -172,6 +173,9 @@ export class TicketsService {
 
     const { resourceIds, ticketId } = assignResourcesToTicketInput;
 
+    const ticket = await this.ticketRepo.findOne({ where:{ id: ticketId } })
+    if (!ticket || ticket.isApproved === false) throw new NotFoundException(`Ticket doesn't exist or isn't approved.`)
+
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction()
@@ -233,6 +237,46 @@ export class TicketsService {
 
     return {
       message: "Assigned Successfully"
+    }
+  }
+
+  async getAllExternalTickets(): Promise<GetAllTicketsPayload>  {
+
+    const [tickets, count] = await this.ticketRepo.findAndCount({
+      where: {
+        isExternal: true,
+        deletedAt: IsNull()
+      },
+      relations: { ticketDates: { timeSheets: { resource: true } }, ticketDetail: true, },
+    })
+
+    return {
+      count,
+      tickets
+    }
+  }
+
+  async approveExternalTicket(id: string): Promise<CommonPayload> {
+
+    const ticket = await this.ticketRepo.findOneBy({ id })
+    if (!ticket) throw new NotFoundException(`Ticket does not exist!`)
+
+    await this.ticketRepo.update({id: ticket.id}, {isApproved: true})
+
+    return {
+      message: "Ticket Approved."
+    }
+  }
+
+  async changeStatus(changeStatusInput: ChangeStatusInput): Promise<CommonPayload> {
+
+    const ticket = await this.ticketRepo.findOne({ where:{ id: changeStatusInput.ticketId } })
+    if (!ticket) throw new NotFoundException(`Ticket does not exist!`)
+
+    await this.ticketRepo.update({id: ticket.id}, {status: changeStatusInput.status})
+
+    return {
+      message: "Status Changed."
     }
   }
 }
