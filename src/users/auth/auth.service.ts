@@ -96,9 +96,7 @@ export class AuthService {
 
       await this.userRepo.update({ id: newUser.id }, { resource })
 
-      return {
-        message: "User Created."
-      }
+      return newUser
     } catch (exception) {
       throw new InternalServerErrorException(exception);
     }
