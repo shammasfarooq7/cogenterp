@@ -690,7 +690,7 @@ type Query {
   getCustomer(id: String = null): Customer!
   getAllProjects(getAllProjectsInput: GetAllProjectsInput!): GetAllProjectsPayload!
   getProject(id: String!): Project!
-  getProjectByCustomer(id: String!): Project!
+  getProjectByCustomer(id: String!): [Project!]!
   getJobsite(id: String!): Jobsite!
   getJobsitesByProject(id: String!): Jobsite!
 }
