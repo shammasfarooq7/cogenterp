@@ -24,7 +24,7 @@ export class JobsiteResolver {
   }
 
   @Roles(UserRole.ADMIN, UserRole.SD)
-  @Query(() => Jobsite)
+  @Query(() => [Jobsite])
   async getJobsitesByProject(@Args('id') id: string): Promise<Jobsite[]> {
     return await this.jobsiteService.getJobsitesByProject(id);
   }
