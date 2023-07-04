@@ -75,6 +75,7 @@ export class TicketsService {
         ticket.isAdhoc = Boolean(projectId);
         ticket.projectId = projectId || null;
         ticket.jobSiteId = jobSiteId || null;
+        ticket.isApproved = Boolean(!isExternal);
 
         await queryRunner.manager.save(ticket);
         ticket.generateDerivedId();

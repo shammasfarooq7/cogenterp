@@ -1,10 +1,12 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { IdCardType, InterviewStatus, EngagementType, ResourceStatus} from '../../modules/resources/entity/resource.entity';
+import { IsEmail } from '@nestjs/class-validator';
 
 @InputType()
 export class CreateResourceInput {
 
     @Field(() => String)
+    @IsEmail()
     email: string;
 
     @Field({ nullable: true, defaultValue: null })
