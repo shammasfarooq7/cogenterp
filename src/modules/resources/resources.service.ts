@@ -13,6 +13,11 @@ import { GetAllResourcesStatsPayload } from './dto/get-all-resources.dto';
 import { UpdateResourceInput } from './dto/update-resource-input';
 import { RMSDashboardStatsPayload } from './dto/rms-dashboard-stats.dto';
 import { ResourceDashboardStatsPayload } from './dto/resource-dashboard-stats.dto';
+import { CheckinCheckout, TimeSheet } from '../tickets/entities/timeSheet.entity';
+import { TicketsService } from '../tickets/tickets.service';
+import { TicketDate } from '../tickets/entities/ticketDate.entity';
+import { CheckinCheckoutInput } from './dto/checkin-checkout.input';
+import { ICurrentUser } from '../../users/auth/interfaces/current-user.interface';
 
 @Injectable()
 export class ResourcesService {
@@ -20,7 +25,9 @@ export class ResourcesService {
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(Resource) private resourceRepo: Repository<Resource>,
     @InjectRepository(UserPaymentMethod) private userPaymentMethodRepo: Repository<UserPaymentMethod>,
+    @InjectRepository(TimeSheet) private timeSheetRepo: Repository<TimeSheet>,
     private readonly roleService: RoleService,
+    private readonly ticketService: TicketsService
   ) { }
 
 
@@ -409,6 +416,75 @@ export class ResourcesService {
 
       return { count, resources }
     } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getResourceTickets(resourceId: string): Promise<TicketDate[]>{
+    try{
+      const resource = await this.resourceRepo.findOne({
+        where: { id: resourceId },
+        relations: {timeSheets: true},
+      });
+
+      if (resource && resource.timeSheets){
+        let ticketDateIds = resource.timeSheets.map((timesheet: TimeSheet) => timesheet.ticketDateId);
+        ticketDateIds = Array.from(new Set(ticketDateIds));
+        const resourceTickets = await this.ticketService.getTicketByTicketDate(ticketDateIds)
+        return resourceTickets
+      }
+
+      return []
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async timeSheetCheckInOut(currentUser: ICurrentUser, checkinCheckoutInput: CheckinCheckoutInput): Promise<CommonPayload>{
+    try{
+      const timeSheet = await this.timeSheetRepo.findOne({
+        where: {
+          resourceId: checkinCheckoutInput.resourceId,
+          ticketDateId: checkinCheckoutInput.ticketDateId
+        }
+      })
+
+      if (currentUser.roles?.includes(UserRole.SD)){
+
+        if(checkinCheckoutInput.checkinOrCheckout === CheckinCheckout.CHECK_IN){
+          await this.timeSheetRepo.update({id: timeSheet.id}, {sdIdCheckIn: currentUser.userId, sdCheckIn: checkinCheckoutInput.time})
+        } else if (checkinCheckoutInput.checkinOrCheckout === CheckinCheckout.CHECK_OUT && timeSheet.sdCheckIn){
+          await this.timeSheetRepo.update({id: timeSheet.id}, {sdIdCheckOut: currentUser.userId, sdCheckOut: checkinCheckoutInput.time})
+        } else{
+          throw new InternalServerErrorException({message: "Provide check-in time first."});
+        }
+
+      } else if(currentUser.roles?.includes(UserRole.FEOPS)){
+
+        if(checkinCheckoutInput.checkinOrCheckout === CheckinCheckout.CHECK_IN){
+          await this.timeSheetRepo.update({id: timeSheet.id}, {feopsIdCheckIn: currentUser.userId, feopsCheckIn: checkinCheckoutInput.time})
+        } else if (checkinCheckoutInput.checkinOrCheckout === CheckinCheckout.CHECK_OUT && timeSheet.feopsCheckIn){
+          await this.timeSheetRepo.update({id: timeSheet.id}, {feopsIdCheckOut: currentUser.userId, feopsCheckOut: checkinCheckoutInput.time})
+        } else{
+          throw new InternalServerErrorException({message: "Provide check-in time first."});
+        }
+
+      } else{
+
+        if(checkinCheckoutInput.checkinOrCheckout === CheckinCheckout.CHECK_IN){
+          await this.timeSheetRepo.update({id: timeSheet.id}, { checkIn: checkinCheckoutInput.time})
+        } else if (checkinCheckoutInput.checkinOrCheckout === CheckinCheckout.CHECK_OUT && timeSheet.checkIn){
+          await this.timeSheetRepo.update({id: timeSheet.id}, { checkOut: checkinCheckoutInput.time})
+        } else{
+          throw new InternalServerErrorException({message: "Provide check-in time first."});
+        }
+
+      }
+      return{
+        message: "Time Updated."
+      }
+    }
+    catch (error) {
       throw new InternalServerErrorException(error);
     }
   }

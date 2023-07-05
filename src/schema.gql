@@ -490,11 +490,14 @@ type TimeSheet {
   id: String!
   checkIn: String
   checkOut: String
-  sdId: String
+  sdIdCheckIn: String
+  sdIdCheckOut: String
   sdCheckIn: String
   sdCheckOut: String
   feopsCheckIn: String
+  feopsIdCheckIn: String
   feopsCheckOut: String
+  feopsIdCheckOut: String
   resourceId: String!
   resource: Resource!
   ticketDateId: String!
@@ -681,18 +684,18 @@ type Query {
   getRMSDashboardStats: RMSDashboardStatsPayload!
   getResourceDashboardStats: ResourceDashboardStatsPayload!
   getNewRequestUsers(getNewRequestUsersInput: GetAllResourcesInput!): GetAllResourcesStatsPayload!
-  getAllUserPaymentMethods: [UserPaymentMethod!]!
+  getResourceTickets(id: String = null): [TicketDate!]!
   getAllTickets(getAllTicketsInput: GetAllTicketsInput!): GetAllTicketsPayload!
   getTicket(id: String!): Ticket!
-  approveExternalTicket(id: String!): Ticket!
   getAllExternalTickets: GetAllTicketsPayload!
+  getAllUserPaymentMethods: [UserPaymentMethod!]!
   getAllCustomer(getAllCustomerInput: GetAllCustomersInput!): GetAllCustomersPayload!
   getCustomer(id: String = null): Customer!
   getAllProjects(getAllProjectsInput: GetAllProjectsInput!): GetAllProjectsPayload!
   getProject(id: String!): Project!
   getProjectByCustomer(id: String!): [Project!]!
   getJobsite(id: String!): Jobsite!
-  getJobsitesByProject(id: String!): Jobsite!
+  getJobsitesByProject(id: String!): [Jobsite!]!
 }
 
 input GetAllUsersInput {
@@ -732,12 +735,14 @@ type Mutation {
   createResource(createResourceInput: CreateResourceInput!): CommonPayload!
   updateResource(id: String!, updateResourceInput: UpdateResourceInput!): CommonPayload!
   approveUserRequest(id: String!): CommonPayload!
-  signin(loginUserInput: LoginUserInput!): LoginResponse!
-  signup(signUpUserInput: SignUpUserInput!): User!
+  timeSheetCheckInOut(checkinCheckoutInput: CheckinCheckoutInput!): CommonPayload!
   createTicket(createTicketInput: CreateTicketInput!): CommonPayload!
   deleteTicket(id: String!): CommonPayload!
   assignResourcesToTicket(assignResourcesToTicketInput: AssignResourcesToTicketInput!): CommonPayload!
+  approveExternalTicket(id: String!): CommonPayload!
   changeStatus(changeStatus: ChangeStatusInput!): CommonPayload!
+  signin(loginUserInput: LoginUserInput!): LoginResponse!
+  signup(signUpUserInput: SignUpUserInput!): User!
   createCustomer(createCustomerInput: CreateCustomerInput!): CommonPayload!
   updateCustomer(id: String!, updateCustomerInput: UpdateCustomerInput!): CommonPayload!
   deleteCustomer(id: String!): CommonPayload!
@@ -881,18 +886,22 @@ input UpdateResourceInput {
   contractDocuments: Boolean
 }
 
-input LoginUserInput {
-  email: String!
-  password: String!
+input CheckinCheckoutInput {
+  resourceId: String!
+  ticketDateId: String!
+  checkinOrCheckout: CheckinCheckout!
+  time: Time!
 }
 
-input SignUpUserInput {
-  email: String!
-  password: String!
-  firstName: String!
-  lastName: String!
-  middleName: String
+enum CheckinCheckout {
+  CHECK_IN
+  CHECK_OUT
 }
+
+"""
+A time string at UTC, such as 10:15:30Z, compliant with the `full-time` format outlined in section 5.6 of the RFC 3339profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+"""
+scalar Time
 
 input CreateTicketInput {
   customerId: String!
@@ -942,6 +951,19 @@ input AssignResourcesToTicketInput {
 input ChangeStatusInput {
   ticketId: String!
   ticketStatus: TicketStatus!
+}
+
+input LoginUserInput {
+  email: String!
+  password: String!
+}
+
+input SignUpUserInput {
+  email: String!
+  password: String!
+  firstName: String!
+  lastName: String!
+  middleName: String
 }
 
 input CreateCustomerInput {

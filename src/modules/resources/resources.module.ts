@@ -14,10 +14,13 @@ import { UserSubscriber } from 'src/users/subscribers/user.subscriber';
 import { ResourcesService } from './resources.service';
 import { ResourcesResolver } from './resources.resolver';
 import { LoginTracker } from 'src/users/entities/loginTracker.entity';
+import { TicketsModule } from '../tickets/tickets.module';
+import { TimeSheet } from '../tickets/entities/timeSheet.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, UserPaymentMethod, Role, LoginTracker, Resource])
+    TypeOrmModule.forFeature([User, UserPaymentMethod, Role, LoginTracker, Resource, TimeSheet]),
+    TicketsModule
   ],
   providers: [ResourcesResolver, ResourcesService, UserSubscriber, TypeOrmModule, RoleService, AuthService,
     JwtService, SendgridService, AzureBlobService, ConfigService],

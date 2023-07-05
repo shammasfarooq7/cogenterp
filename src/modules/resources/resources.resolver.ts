@@ -13,6 +13,8 @@ import { GetAllResourcesInput } from './dto/get-all-resources-input';
 import { UpdateResourceInput } from './dto/update-resource-input';
 import { RMSDashboardStatsPayload } from './dto/rms-dashboard-stats.dto';
 import { ResourceDashboardStatsPayload } from './dto/resource-dashboard-stats.dto';
+import { TicketDate } from '../tickets/entities/ticketDate.entity';
+import { CheckinCheckoutInput } from './dto/checkin-checkout.input';
 
 @Resolver(() => Resource)
 export class ResourcesResolver {
@@ -72,5 +74,18 @@ export class ResourcesResolver {
   @Query(() => GetAllResourcesStatsPayload)
   async getNewRequestUsers(@Args('getNewRequestUsersInput') getNewRequestUsersInput: GetAllResourcesInput): Promise<GetAllResourcesStatsPayload> {
     return await this.resourcesService.getNewRequestUsers(getNewRequestUsersInput);
+  }
+
+  @Roles(UserRole.ADMIN, UserRole.RESOURCE)
+  @Query(() => [TicketDate])
+  async getResourceTickets(@Context() ctx: IContext, @Args('id', { nullable: true, defaultValue: null }) id: string | null): Promise<TicketDate[]>{
+    if (id) { return await this.resourcesService.getResourceTickets(id) }
+    return await this.resourcesService.getResourceTickets(ctx?.user?.userId);
+  }
+
+  @Roles(UserRole.RESOURCE, UserRole.FEOPS, UserRole.SD)
+  @Mutation(() => CommonPayload)
+  async timeSheetCheckInOut(@Context() ctx: IContext, @Args('checkinCheckoutInput') checkinCheckoutInput: CheckinCheckoutInput): Promise<CommonPayload>{
+    return await this.resourcesService.timeSheetCheckInOut(ctx?.user, checkinCheckoutInput)
   }
 }

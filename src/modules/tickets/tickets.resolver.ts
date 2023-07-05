@@ -52,7 +52,7 @@ export class TicketsResolver {
   }
 
   @Roles(UserRole.SD)
-  @Query(() => Ticket)
+  @Mutation(() => CommonPayload)
   approveExternalTicket(@Args('id') id: string): Promise<CommonPayload>{
     return this.ticketsService.approveExternalTicket(id);
   }
@@ -65,7 +65,7 @@ export class TicketsResolver {
 
   @Roles(UserRole.FEOPS)
   @Mutation(() => CommonPayload)
-  changeStatus(@Context() ctx: IContext, @Args('changeStatus') changeStatusInput: ChangeStatusInput): Promise<CommonPayload> {
+  changeStatus(@Args('changeStatus') changeStatusInput: ChangeStatusInput): Promise<CommonPayload> {
     return this.ticketsService.changeStatus(changeStatusInput);
   }
 

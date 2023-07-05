@@ -23,6 +23,7 @@ import { ChangeStatusInput } from './dto/change-status.input';
 export class TicketsService {
   constructor(
     @InjectRepository(Ticket) private ticketRepo: Repository<Ticket>,
+    @InjectRepository(TicketDate) private ticketDateRepo: Repository<TicketDate>,
     @InjectRepository(Customer) private customerRepo: Repository<Customer>,
     @InjectRepository(Project) private projectRepo: Repository<Project>,
     @InjectRepository(Jobsite) private jobsiteRepo: Repository<Jobsite>,
@@ -243,41 +244,70 @@ export class TicketsService {
 
   async getAllExternalTickets(): Promise<GetAllTicketsPayload>  {
 
-    const [tickets, count] = await this.ticketRepo.findAndCount({
-      where: {
-        isExternal: true,
-        deletedAt: IsNull()
-      },
-      relations: { ticketDates: { timeSheets: { resource: true } }, ticketDetail: true, },
-    })
+    try{
+      const [tickets, count] = await this.ticketRepo.findAndCount({
+        where: {
+          isExternal: true,
+          deletedAt: IsNull()
+        },
+        relations: { ticketDates: { timeSheets: { resource: true } }, ticketDetail: true, },
+      })
 
-    return {
-      count,
-      tickets
+      return {
+        count,
+        tickets
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
     }
   }
 
   async approveExternalTicket(id: string): Promise<CommonPayload> {
 
-    const ticket = await this.ticketRepo.findOneBy({ id })
-    if (!ticket) throw new NotFoundException(`Ticket does not exist!`)
+    try{
 
-    await this.ticketRepo.update({id: ticket.id}, {isApproved: true})
+      const ticket = await this.ticketRepo.findOneBy({ id })
+      if (!ticket) throw new NotFoundException(`Ticket does not exist!`)
 
-    return {
-      message: "Ticket Approved."
+      await this.ticketRepo.update({id: ticket.id}, {isApproved: true})
+
+      return {
+        message: "Ticket Approved."
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
     }
   }
 
   async changeStatus(changeStatusInput: ChangeStatusInput): Promise<CommonPayload> {
 
-    const ticket = await this.ticketRepo.findOne({ where:{ id: changeStatusInput.ticketId } })
-    if (!ticket) throw new NotFoundException(`Ticket does not exist!`)
+    try{
+      const ticket = await this.ticketRepo.findOne({ where:{ id: changeStatusInput.ticketId } })
+      if (!ticket) throw new NotFoundException(`Ticket does not exist!`)
 
-    await this.ticketRepo.update({id: ticket.id}, {status: changeStatusInput.ticketStatus})
+      await this.ticketRepo.update({id: ticket.id}, {status: changeStatusInput.ticketStatus})
 
-    return {
-      message: "Status Changed."
+      return {
+        message: "Status Changed."
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getTicketByTicketDate(ticketDateIds: string[]): Promise<TicketDate[]> {
+    try {
+      let ticketDates = await this.ticketDateRepo.find({
+        where: {
+          id: In(ticketDateIds),
+        },
+        relations: {
+          ticket: {ticketDetail: true},
+        },
+      });
+      return ticketDates;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
     }
   }
 }

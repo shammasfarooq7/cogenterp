@@ -1,8 +1,16 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, JoinColumn } from 'typeorm';
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { ObjectType, Field, ID, registerEnumType } from '@nestjs/graphql';
 import { Resource } from './../../resources/entity/resource.entity';
 import { TicketDate } from './ticketDate.entity';
 
+export enum CheckinCheckout {
+  CHECK_IN = 'checkin',
+  CHECK_OUT = 'checkout',
+}
+
+registerEnumType(CheckinCheckout, {
+  name: 'CheckinCheckout',
+});
 @ObjectType()
 @Entity("time_sheets")
 export class TimeSheet {
@@ -20,7 +28,11 @@ export class TimeSheet {
 
   @Column({ nullable: true })
   @Field(() => String, { nullable: true })
-  sdId: string;
+  sdIdCheckIn: string;
+
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  sdIdCheckOut: string;
 
   @Column({ nullable: true })
   @Field(() => String, { nullable: true })
@@ -36,7 +48,15 @@ export class TimeSheet {
 
   @Column({ nullable: true })
   @Field(() => String, { nullable: true })
+  feopsIdCheckIn: string;
+
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
   feopsCheckOut: string;
+
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  feopsIdCheckOut: string;
 
   @Column()
   @Field(() => String)
