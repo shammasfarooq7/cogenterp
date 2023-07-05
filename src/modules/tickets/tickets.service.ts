@@ -195,6 +195,8 @@ export class TicketsService {
         }
       })
 
+      let workOrderArray = []
+
       if (resources?.length) {
         // Need to do this with pafination, because there can be many ticketDates like 50 plus
         while (moreRecords) {
@@ -210,10 +212,11 @@ export class TicketsService {
           // Create a timesheet against each ticketDate
           for (const ticketDate of ticketDates) {
             for (const resource of resources) {
-              await queryRunner.manager.save(TimeSheet, {
+              let timeSheet = await queryRunner.manager.save(TimeSheet, {
                 resource,
                 ticketDate
               })
+              workOrderArray.push(timeSheet.id)
             }
           }
 
@@ -226,6 +229,7 @@ export class TicketsService {
           page = page + 1
         }
       }
+      await this.ticketRepo.update({ id: ticketId }, { cogentWorkOrderNumber: workOrderArray})
 
       // Commit Transaction
       await queryRunner.commitTransaction();

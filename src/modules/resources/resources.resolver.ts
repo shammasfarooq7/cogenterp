@@ -79,8 +79,12 @@ export class ResourcesResolver {
   @Roles(UserRole.ADMIN, UserRole.RESOURCE)
   @Query(() => [TicketDate])
   async getResourceTickets(@Context() ctx: IContext, @Args('id', { nullable: true, defaultValue: null }) id: string | null): Promise<TicketDate[]>{
-    if (id) { return await this.resourcesService.getResourceTickets(id) }
-    return await this.resourcesService.getResourceTickets(ctx?.user?.userId);
+    if (id){
+      return await this.resourcesService.getResourceTickets(id)
+    } else{
+      const resource = await this.resourcesService.getResourceFromUserId(ctx?.user?.userId)
+      return await this.resourcesService.getResourceTickets(resource.id);
+    }
   }
 
   @Roles(UserRole.RESOURCE, UserRole.FEOPS, UserRole.SD)
