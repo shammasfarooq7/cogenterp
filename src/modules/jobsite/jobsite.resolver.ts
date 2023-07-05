@@ -6,6 +6,7 @@ import { UpdateJobsiteInput } from './dto/update-jobsite.input';
 import { Roles } from 'src/users/roles.decorator';
 import { UserRole } from 'src/users/entities/role.entity';
 import { CommonPayload } from 'src/users/dto/common.dto';
+import { GetAllJobsitesInput } from './dto/get-all-jobsites.input';
 
 @Resolver(() => Jobsite)
 export class JobsiteResolver {
@@ -27,6 +28,12 @@ export class JobsiteResolver {
   @Query(() => [Jobsite])
   async getJobsitesByProject(@Args('id') id: string): Promise<Jobsite[]> {
     return await this.jobsiteService.getJobsitesByProject(id);
+  }
+
+  @Roles(UserRole.ADMIN)
+  @Query(() => [Jobsite])
+  async getAllJobsites(@Args('getAllJobsitesInput') getAllJobsitesInput: GetAllJobsitesInput): Promise<Jobsite[]> {
+    return await this.jobsiteService.getAllJobsites(getAllJobsitesInput);
   }
 
   @Roles(UserRole.ADMIN)

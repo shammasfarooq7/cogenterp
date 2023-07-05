@@ -3,9 +3,10 @@ import { CreateJobsiteInput } from './dto/create-jobsite.input';
 import { UpdateJobsiteInput } from './dto/update-jobsite.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Jobsite } from './entities/jobsite.entity';
-import { IsNull, Repository } from 'typeorm';
+import { ILike, IsNull, Repository } from 'typeorm';
 import { ProjectService } from '../project/project.service';
 import { CommonPayload } from 'src/users/dto/common.dto';
+import { GetAllJobsitesInput } from './dto/get-all-jobsites.input';
 
 @Injectable()
 export class JobsiteService {
@@ -58,23 +59,61 @@ export class JobsiteService {
   }
 
   async updateJobsite(id: string, updateJobsiteInput: UpdateJobsiteInput): Promise<CommonPayload> {
-    let jobsite = await this.jobsiteRepo.findOneBy({ id });
 
-    if (!jobsite) {
-      throw new NotFoundException(`Jobsite with ID ${id} does not exist!`);
+    try{
+      let jobsite = await this.jobsiteRepo.findOneBy({ id });
+
+      if (!jobsite) {
+        throw new NotFoundException(`Jobsite with ID ${id} does not exist!`);
+      }
+
+      jobsite = await this.jobsiteRepo.save({
+        ...jobsite,
+        ...updateJobsiteInput,
+      });
+
+      return { message: 'Jobsite updated successfully!' };
+    } catch(error) {
+      throw new InternalServerErrorException(error);
     }
-
-    jobsite = await this.jobsiteRepo.save({
-      ...jobsite,
-      ...updateJobsiteInput,
-    });
-
-    return { message: 'Jobsite updated successfully!' };
   }
 
   async deleteJobsite(id: string): Promise<CommonPayload> {
-    await this.jobsiteRepo.update({ id }, { deletedAt: new Date() })
-    return { message: "Jobsite Deleted Successfully!" };
+    try {
+      await this.jobsiteRepo.update({ id }, { deletedAt: new Date() })
+      return { message: "Jobsite Deleted Successfully!" };
+    } catch(error) {
+      throw new InternalServerErrorException(error);
+    }
   };
+
+  async getAllJobsites(getAllJobsitesInput: GetAllJobsitesInput): Promise<Jobsite[]>{
+    try{
+      const { limit = 20, page = 0, searchQuery } = getAllJobsitesInput;
+
+      const whereClause = {
+        deletedAt: IsNull(),
+      };
+
+      const where = [
+        { ...(searchQuery && { email: ILike(`%${searchQuery}%`) }), ...whereClause },
+        { ...(searchQuery && { firstName: ILike(`%${searchQuery}%`) }), ...whereClause },
+        { ...(searchQuery && { lastName: ILike(`%${searchQuery}%`) }), ...whereClause },
+        { ...(searchQuery && { country: ILike(`%${searchQuery}%`) }), ...whereClause },
+
+      ];
+
+      const jobsites = await this.jobsiteRepo.find({
+        where,
+        skip: page * limit,
+        take: limit
+      });
+
+      return jobsites
+
+    } catch(error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 
 }
