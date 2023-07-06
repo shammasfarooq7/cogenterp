@@ -73,7 +73,7 @@ export class TicketsService {
         ticket.customer = customer;
         ticket.customerTicketNumber = `${customer.customerAbbr}${count++}`;
         ticket.customerName = customer.name;
-        ticket.isAdhoc = Boolean(projectId);
+        ticket.isAdhoc = Boolean(!projectId);
         ticket.projectId = projectId || null;
         ticket.jobSiteId = jobSiteId || null;
         ticket.isApproved = Boolean(!isExternal);

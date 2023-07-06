@@ -104,12 +104,12 @@ export class Ticket {
   @Field(() => [TicketDate])
   ticketDates: TicketDate[];
 
-  @Column()
-  @Field(() => String)
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
   projectId: string;
 
-  @Column()
-  @Field(() => String)
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
   jobSiteId: string;
 
   @Column({ default: false })

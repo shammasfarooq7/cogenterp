@@ -10,7 +10,7 @@ import { GetAllJobsitesInput } from './dto/get-all-jobsites.input';
 
 @Resolver(() => Jobsite)
 export class JobsiteResolver {
-  constructor(private readonly jobsiteService: JobsiteService) {}
+  constructor(private readonly jobsiteService: JobsiteService) { }
 
   @Roles(UserRole.ADMIN)
   @Mutation(() => CommonPayload)
@@ -39,7 +39,7 @@ export class JobsiteResolver {
   @Roles(UserRole.ADMIN)
   @Mutation(() => CommonPayload)
   async updateJobsite(@Args('id') id: string, @Args('updateJobsiteInput') updateJobsiteInput: UpdateJobsiteInput): Promise<CommonPayload> {
-    return await this.jobsiteService.updateJobsite( id, updateJobsiteInput);
+    return await this.jobsiteService.updateJobsite(id, updateJobsiteInput);
   }
 
   @Roles(UserRole.ADMIN)

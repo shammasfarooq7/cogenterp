@@ -445,8 +445,8 @@ type Ticket {
   ticketDetailId: String!
   ticketDetail: TicketDetail!
   ticketDates: [TicketDate!]!
-  projectId: String!
-  jobSiteId: String!
+  projectId: String
+  jobSiteId: String
   customerId: String!
   ticketReceivedTime: DateTime!
   createdAt: DateTime!
@@ -696,6 +696,7 @@ type Query {
   getProjectByCustomer(id: String!): [Project!]!
   getJobsite(id: String!): Jobsite!
   getJobsitesByProject(id: String!): [Jobsite!]!
+  getAllJobsites(getAllJobsitesInput: GetAllJobsitesInput!): [Jobsite!]!
 }
 
 input GetAllUsersInput {
@@ -725,6 +726,12 @@ input GetAllCustomersInput {
 
 input GetAllProjectsInput {
   role: userRoles
+  page: Float
+  limit: Float
+  searchQuery: String
+}
+
+input GetAllJobsitesInput {
   page: Float
   limit: Float
   searchQuery: String
@@ -905,8 +912,8 @@ scalar Time
 
 input CreateTicketInput {
   customerId: String!
-  projectId: String!
-  jobSiteId: String!
+  projectId: String
+  jobSiteId: String
   ticketType: TicketType!
   numberOfHoursReq: String!
   numberOfResource: String!

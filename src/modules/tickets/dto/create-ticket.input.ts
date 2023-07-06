@@ -8,10 +8,10 @@ export class CreateTicketInput {
   @Field(() => String)
   customerId: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   projectId: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   jobSiteId: string;
 
   @Field(() => TicketType)
