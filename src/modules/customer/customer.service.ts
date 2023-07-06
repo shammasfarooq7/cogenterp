@@ -17,9 +17,9 @@ export class CustomerService {
     @InjectRepository(Customer) private customerRepo: Repository<Customer>,
     @InjectRepository(User) private userRepo: Repository<User>,
     private readonly roleService: RoleService,
-  ){}
+  ) { }
   async createCustomer(userId: string, createCustomerInput: CreateCustomerInput): Promise<CommonPayload> {
-    try{
+    try {
       const { email, ...customer } = createCustomerInput;
 
       const alreadyExists = await this.userRepo.findOne({
@@ -27,17 +27,17 @@ export class CustomerService {
           { email },
         ]
       });
-  
+
       if (alreadyExists) {
         throw new ConflictException('Customer already exists');
       };
-  
+
       const currentUser = await this.userRepo.findOne({ where: { id: userId } })
-  
+
       const roleType = UserRole.CUSTOMER;
       const role = await this.roleService.findByType(roleType);
       const pass = email;
-  
+
       const newUser = await this.userRepo.save({
         email,
         password: pass,
@@ -46,18 +46,22 @@ export class CustomerService {
 
       const newCustomer = await this.customerRepo.save({
         ...customer,
-        onboardedAt: new Date(), 
+        onboardedAt: new Date(),
         onboardedBy: currentUser,
         email,
         user: newUser
       });
-  
-      await this.userRepo.update({ id: userId }, { onboardedCustomers: [newCustomer] })
-      await this.userRepo.update({ id: newUser.id }, { customer: newCustomer })
+
+      // await this.userRepo.update({ id: userId }, { onboardedCustomers: [newCustomer] })
+      // await this.userRepo.update({ id: newUser.id }, { customer: newCustomer })
+      currentUser.onboardedCustomers = [newCustomer]
+      await this.userRepo.save(currentUser);
+      newUser.customer=newCustomer
+      await this.userRepo.save(newUser);
 
       return { message: "Customer Created Successfully!" };
 
-    }catch(error){
+    } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
@@ -102,7 +106,7 @@ export class CustomerService {
       )
       if (!customer) throw new NotFoundException(`Customer with ${id} does not exist!`)
       return customer
-    } catch(error) {
+    } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
