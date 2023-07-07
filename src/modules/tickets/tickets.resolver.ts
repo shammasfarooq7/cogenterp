@@ -28,7 +28,7 @@ export class TicketsResolver {
     return this.ticketsService.findAll(getAllTicketsInput);
   }
 
-  @Roles(UserRole.SD, UserRole.CUSTOMER)
+  @Roles(UserRole.SD, UserRole.CUSTOMER, UserRole.ADMIN)
   @Query(() => Ticket)
   getTicket(@Args('id') id: string): Promise<Ticket> {
     return this.ticketsService.findOne(id);
