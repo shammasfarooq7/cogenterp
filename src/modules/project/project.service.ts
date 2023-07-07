@@ -12,7 +12,7 @@ import { CustomerService } from '../customer/customer.service';
 @Injectable()
 export class ProjectService {
   constructor(@InjectRepository(Project) private projectRepo: Repository<Project>,
-    private readonly customerService: CustomerService){}
+    private readonly customerService: CustomerService) { }
 
   async createProject(createProjectInput: CreateProjectInput) {
     try {
@@ -20,20 +20,22 @@ export class ProjectService {
 
       if (!customer) throw new NotFoundException(`Customer does not exist!`)
 
-      const project = await this.projectRepo.save({
-        ...createProjectInput,
-        customer: customer
-      })
+      const project = new Project()
+      for (const input in createProjectInput) {
+        project[input] = createProjectInput[input]
+      }
+      project.customer = customer
+      await this.projectRepo.save(project)
       project.generateDerivedId();
-      await this.projectRepo.save({})
+      await this.projectRepo.save(project)
 
       return { message: "Project Created Successfully!" };
-    } catch(error){
+    } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
 
-  async getAllProjects(getAllProjectsInput: GetAllProjectsInput): Promise<GetAllProjectsPayload>  {
+  async getAllProjects(getAllProjectsInput: GetAllProjectsInput): Promise<GetAllProjectsPayload> {
     try {
       const { limit = 20, page = 0, searchQuery } = getAllProjectsInput;
 
@@ -73,7 +75,7 @@ export class ProjectService {
       )
       if (!project) throw new NotFoundException(`Project with ${id} does not exist!`)
       return project
-    } catch(error) {
+    } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
@@ -87,7 +89,7 @@ export class ProjectService {
       )
       if (!projects) throw new NotFoundException(`Customer has no Projects.`)
       return projects
-    } catch(error) {
+    } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
