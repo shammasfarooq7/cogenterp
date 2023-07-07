@@ -676,6 +676,11 @@ type GetAllProjectsPayload {
   count: Float!
 }
 
+type GetAllJobsitesPayload {
+  jobsites: [Jobsite!]!
+  count: Float!
+}
+
 type Query {
   getAllUsers(getAllUsersInput: GetAllUsersInput!): GetAllUsersStatsPayload!
   getCurrentUser: User!
@@ -696,7 +701,7 @@ type Query {
   getProjectByCustomer(id: String!): [Project!]!
   getJobsite(id: String!): Jobsite!
   getJobsitesByProject(id: String!): [Jobsite!]!
-  getAllJobsites(getAllJobsitesInput: GetAllJobsitesInput!): [Jobsite!]!
+  getAllJobsites(getAllJobsitesInput: GetAllJobsitesInput!): [GetAllJobsitesPayload!]!
 }
 
 input GetAllUsersInput {
@@ -1070,12 +1075,12 @@ input CreateProjectInput {
   cogSdmCont: String!
   cogSdEmail: String!
   cogSdContNum: String!
-  agreedSla: AgreedSla!
-  coverage: Coverage!
-  technologyType: TechnologyTypeForProject!
-  serviceType: ServiceType!
-  supportModel: SupportModel!
-  talentLevel: TalentLevel!
+  agreedSla: [AgreedSla!]!
+  coverage: [Coverage!]!
+  technologyType: [TechnologyTypeForProject!]!
+  serviceType: [ServiceType!]!
+  supportModel: [SupportModel!]!
+  talentLevel: [TalentLevel!]!
   cancelPolicy: String
   dispatchAgreed: Float!
   incrementTime: IncrementTime!
@@ -1123,12 +1128,12 @@ input UpdateProjectInput {
   cogSdmCont: String!
   cogSdEmail: String!
   cogSdContNum: String!
-  agreedSla: AgreedSla!
-  coverage: Coverage!
-  technologyType: TechnologyTypeForProject!
-  serviceType: ServiceType!
-  supportModel: SupportModel!
-  talentLevel: TalentLevel!
+  agreedSla: [AgreedSla!]!
+  coverage: [Coverage!]!
+  technologyType: [TechnologyTypeForProject!]!
+  serviceType: [ServiceType!]!
+  supportModel: [SupportModel!]!
+  talentLevel: [TalentLevel!]!
   cancelPolicy: String
   dispatchAgreed: Float!
   incrementTime: IncrementTime!
