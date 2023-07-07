@@ -22,7 +22,7 @@ export class TicketsResolver {
     return this.ticketsService.create(ctx.user, createTicketInput);
   }
 
-  @Roles(UserRole.SD, UserRole.CUSTOMER)
+  @Roles(UserRole.SD, UserRole.CUSTOMER, UserRole.ADMIN)
   @Query(() => GetAllTicketsPayload)
   getAllTickets(@Context() ctx: IContext, @Args('getAllTicketsInput') getAllTicketsInput: GetAllTicketsInput): Promise<GetAllTicketsPayload> {
     return this.ticketsService.findAll(getAllTicketsInput);
@@ -53,7 +53,7 @@ export class TicketsResolver {
 
   @Roles(UserRole.SD)
   @Mutation(() => CommonPayload)
-  approveExternalTicket(@Args('id') id: string): Promise<CommonPayload>{
+  approveExternalTicket(@Args('id') id: string): Promise<CommonPayload> {
     return this.ticketsService.approveExternalTicket(id);
   }
 
