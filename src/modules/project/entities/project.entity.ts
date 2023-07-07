@@ -142,7 +142,7 @@ export class Project {
   @Field((type) => Status)
   status: Status;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => String)
   projectNumber: string;
 
@@ -240,7 +240,7 @@ export class Project {
   talentLevel: TalentLevel[];
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true})
+  @Field(() => String, { nullable: true })
   cancelPolicy: string;
 
   @Column()
@@ -257,7 +257,7 @@ export class Project {
   incrementTime: IncrementTime;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true})
+  @Field(() => String, { nullable: true })
   sow: string;
 
   @Column({
@@ -268,23 +268,23 @@ export class Project {
   sowDesc: SowDesc;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true})
+  @Field(() => String, { nullable: true })
   owJd: string;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true})
+  @Field(() => String, { nullable: true })
   serviceDeliv: string;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true})
+  @Field(() => String, { nullable: true })
   ssInst: string;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true})
+  @Field(() => String, { nullable: true })
   asInst: string;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true})
+  @Field(() => String, { nullable: true })
   toolsReq: string;
 
   @Column({ type: 'boolean', default: false })
@@ -292,75 +292,75 @@ export class Project {
   namedWorker: boolean;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true})
+  @Field(() => String, { nullable: true })
   assignedWorker: string;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true})
+  @Field(() => String, { nullable: true })
   technicalSkill: string;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true})
+  @Field(() => String, { nullable: true })
   behSkills: string;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true})
+  @Field(() => String, { nullable: true })
   experienceReq: string;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true})
+  @Field(() => String, { nullable: true })
   langReq: string;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true})
+  @Field(() => String, { nullable: true })
   trainReq: string;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true})
+  @Field(() => String, { nullable: true })
   trainDoc: string;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true})
+  @Field(() => String, { nullable: true })
   reqTools: string;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true})
+  @Field(() => String, { nullable: true })
   reqSoft: string;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true})
+  @Field(() => String, { nullable: true })
   specReq: string;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true, description: 'Customer Level 1 Escalation Email' })
+  @Field(() => String, { nullable: true, description: 'Customer Level 1 Escalation Email' })
   cl1ee: string;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true, description: 'Customer Level 1 Escalation Contact #' })
+  @Field(() => String, { nullable: true, description: 'Customer Level 1 Escalation Contact #' })
   cl1ec: string;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true, description: 'Customer Level 2 Escalation Email' })
+  @Field(() => String, { nullable: true, description: 'Customer Level 2 Escalation Email' })
   cl2ee: string;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true, description: 'Customer Level 2 Escalation Contact #' })
+  @Field(() => String, { nullable: true, description: 'Customer Level 2 Escalation Contact #' })
   cl2ec: string;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true, description: 'Cogent Level 1 Escalation Email' })
+  @Field(() => String, { nullable: true, description: 'Cogent Level 1 Escalation Email' })
   cgl1ee: string;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true, description: 'Cogent Level 1 Escalation Contact#' })
+  @Field(() => String, { nullable: true, description: 'Cogent Level 1 Escalation Contact#' })
   cgl1ec: string;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true, description: 'Cogent Level 2 Escalation Email' })
+  @Field(() => String, { nullable: true, description: 'Cogent Level 2 Escalation Email' })
   cfl2ee: string;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true, description: 'Cogent Level 2 Escalation Contact#' })
+  @Field(() => String, { nullable: true, description: 'Cogent Level 2 Escalation Contact#' })
   cgl2ec: string;
 
   @Column()
@@ -368,13 +368,13 @@ export class Project {
   code: string;
 
   @Column({ nullable: true })
-  @Field(() => String, {nullable: true})
+  @Field(() => String, { nullable: true })
   customerId: string;
 
   @ManyToOne(() => Customer, customer => customer.projects, { nullable: true })
   customer: Customer;
 
-  @OneToMany(() => Jobsite, jobsite => jobsite.project,  { nullable: true })
+  @OneToMany(() => Jobsite, jobsite => jobsite.project, { nullable: true })
   jobsites: Jobsite[];
 
   @CreateDateColumn({ type: 'timestamptz' })
