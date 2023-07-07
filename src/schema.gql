@@ -701,7 +701,7 @@ type Query {
   getProjectByCustomer(id: String!): [Project!]!
   getJobsite(id: String!): Jobsite!
   getJobsitesByProject(id: String!): [Jobsite!]!
-  getAllJobsites(getAllJobsitesInput: GetAllJobsitesInput!): [GetAllJobsitesPayload!]!
+  getAllJobsites(getAllJobsitesInput: GetAllJobsitesInput!): GetAllJobsitesPayload!
 }
 
 input GetAllUsersInput {

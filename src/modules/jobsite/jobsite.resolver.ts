@@ -32,7 +32,7 @@ export class JobsiteResolver {
   }
 
   @Roles(UserRole.ADMIN)
-  @Query(() => [GetAllJobsitesPayload])
+  @Query(() => GetAllJobsitesPayload)
   async getAllJobsites(@Args('getAllJobsitesInput') getAllJobsitesInput: GetAllJobsitesInput): Promise<GetAllJobsitesPayload> {
     return await this.jobsiteService.getAllJobsites(getAllJobsitesInput);
   }
