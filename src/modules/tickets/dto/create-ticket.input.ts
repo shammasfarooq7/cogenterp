@@ -116,6 +116,6 @@ export class CreateTicketInput {
   @Field(() => String)
   siteAddress: string;
 
-  // @Field(() => [String], {nullable: true})
-  // attachments?: string[]
+  @Field(() => [String], {nullable: true})
+  attachments?: string[]
 }

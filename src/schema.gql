@@ -953,6 +953,7 @@ input CreateTicketInput {
   province: String!
   postCode: String!
   siteAddress: String!
+  attachments: [String!]
 }
 
 input AssignResourcesToTicketInput {

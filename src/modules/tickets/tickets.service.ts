@@ -18,12 +18,14 @@ import { Customer } from '../customer/entities/customer.entity';
 import { Project } from '../project/entities/project.entity';
 import { Jobsite } from '../jobsite/entities/jobsite.entity';
 import { ChangeStatusInput } from './dto/change-status.input';
+import { TicketAttachment } from './entities/ticketAttachment.entity';
 
 @Injectable()
 export class TicketsService {
   constructor(
     @InjectRepository(Ticket) private ticketRepo: Repository<Ticket>,
     @InjectRepository(TicketDate) private ticketDateRepo: Repository<TicketDate>,
+    @InjectRepository(TicketAttachment) private ticketAttachmentRepo: Repository<TicketAttachment>,
     @InjectRepository(Customer) private customerRepo: Repository<Customer>,
     @InjectRepository(Project) private projectRepo: Repository<Project>,
     @InjectRepository(Jobsite) private jobsiteRepo: Repository<Jobsite>,
@@ -36,20 +38,20 @@ export class TicketsService {
     await queryRunner.connect();
     await queryRunner.startTransaction()
     try {
-      const { ticketType, customerId, projectId, jobSiteId, ticketDates, numberOfHoursReq, numberOfResource, scheduledTime, ...detail } = createTicketInput;
+      const { ticketType, customerId, projectId, jobSiteId, ticketDates, numberOfHoursReq, numberOfResource, scheduledTime, attachments, ...detail } = createTicketInput;
 
-      const customer = await this.customerRepo.findOneBy({id: customerId})
+      const customer = await this.customerRepo.findOneBy({ id: customerId })
 
       if (!customer) throw new NotFoundException(`Customer does not exist!`)
 
-      if(projectId){
-        const project = await this.projectRepo.findOneBy({id: projectId})
+      if (projectId) {
+        const project = await this.projectRepo.findOneBy({ id: projectId })
 
         if (!project) throw new NotFoundException(`Project does not exist!`)
       }
 
-      if(jobSiteId){
-        const jobSite = await this.jobsiteRepo.findOneBy({id: jobSiteId})
+      if (jobSiteId) {
+        const jobSite = await this.jobsiteRepo.findOneBy({ id: jobSiteId })
 
         if (!jobSite) throw new NotFoundException(`Jobsite does not exist!`)
       }
@@ -60,6 +62,18 @@ export class TicketsService {
 
       // Create ticket detail
       const ticketDetail = await queryRunner.manager.save(TicketDetail, { ...detail });
+
+      // Add Attachments
+      if (attachments.length) {
+        for (const attachmentUrl of attachments) {
+          await queryRunner.manager.save(TicketAttachment,
+            {
+              url: attachmentUrl,
+              ticketDetail
+            }
+          );
+        }
+      }
 
       // Common Function to create ticket
       const createTicket = async () => {
@@ -175,7 +189,7 @@ export class TicketsService {
 
     const { resourceIds, ticketId } = assignResourcesToTicketInput;
 
-    const ticket = await this.ticketRepo.findOne({ where:{ id: ticketId } })
+    const ticket = await this.ticketRepo.findOne({ where: { id: ticketId } })
     if (!ticket || ticket.isApproved === false) throw new NotFoundException(`Ticket doesn't exist or isn't approved.`)
 
     const queryRunner = this.dataSource.createQueryRunner();
@@ -229,7 +243,7 @@ export class TicketsService {
           page = page + 1
         }
       }
-      await this.ticketRepo.update({ id: ticketId }, { cogentWorkOrderNumber: workOrderArray})
+      await this.ticketRepo.update({ id: ticketId }, { cogentWorkOrderNumber: workOrderArray })
 
       // Commit Transaction
       await queryRunner.commitTransaction();
@@ -246,9 +260,9 @@ export class TicketsService {
     }
   }
 
-  async getAllExternalTickets(): Promise<GetAllTicketsPayload>  {
+  async getAllExternalTickets(): Promise<GetAllTicketsPayload> {
 
-    try{
+    try {
       const [tickets, count] = await this.ticketRepo.findAndCount({
         where: {
           isExternal: true,
@@ -268,12 +282,12 @@ export class TicketsService {
 
   async approveExternalTicket(id: string): Promise<CommonPayload> {
 
-    try{
+    try {
 
       const ticket = await this.ticketRepo.findOneBy({ id })
       if (!ticket) throw new NotFoundException(`Ticket does not exist!`)
 
-      await this.ticketRepo.update({id: ticket.id}, {isApproved: true})
+      await this.ticketRepo.update({ id: ticket.id }, { isApproved: true })
 
       return {
         message: "Ticket Approved."
@@ -285,11 +299,11 @@ export class TicketsService {
 
   async changeStatus(changeStatusInput: ChangeStatusInput): Promise<CommonPayload> {
 
-    try{
-      const ticket = await this.ticketRepo.findOne({ where:{ id: changeStatusInput.ticketId } })
+    try {
+      const ticket = await this.ticketRepo.findOne({ where: { id: changeStatusInput.ticketId } })
       if (!ticket) throw new NotFoundException(`Ticket does not exist!`)
 
-      await this.ticketRepo.update({id: ticket.id}, {status: changeStatusInput.ticketStatus})
+      await this.ticketRepo.update({ id: ticket.id }, { status: changeStatusInput.ticketStatus })
 
       return {
         message: "Status Changed."
@@ -306,7 +320,7 @@ export class TicketsService {
           id: In(ticketDateIds),
         },
         relations: {
-          ticket: {ticketDetail: true},
+          ticket: { ticketDetail: true },
         },
       });
       return ticketDates;
