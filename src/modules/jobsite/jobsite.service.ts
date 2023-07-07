@@ -7,6 +7,7 @@ import { ILike, IsNull, Repository } from 'typeorm';
 import { ProjectService } from '../project/project.service';
 import { CommonPayload } from 'src/users/dto/common.dto';
 import { GetAllJobsitesInput } from './dto/get-all-jobsites.input';
+import { GetAllJobsitesPayload } from './dto/get-all-jobsites.dto';
 
 @Injectable()
 export class JobsiteService {
@@ -87,7 +88,7 @@ export class JobsiteService {
     }
   };
 
-  async getAllJobsites(getAllJobsitesInput: GetAllJobsitesInput): Promise<Jobsite[]>{
+  async getAllJobsites(getAllJobsitesInput: GetAllJobsitesInput): Promise<GetAllJobsitesPayload>{
     try{
       const { limit = 20, page = 0, searchQuery } = getAllJobsitesInput;
 
@@ -109,7 +110,14 @@ export class JobsiteService {
         take: limit
       });
 
-      return jobsites
+      const count = await this.jobsiteRepo.count({
+        where
+      })
+
+      return {
+        jobsites,
+        count
+      }
 
     } catch(error) {
       throw new InternalServerErrorException(error);

@@ -7,6 +7,7 @@ import { Roles } from 'src/users/roles.decorator';
 import { UserRole } from 'src/users/entities/role.entity';
 import { CommonPayload } from 'src/users/dto/common.dto';
 import { GetAllJobsitesInput } from './dto/get-all-jobsites.input';
+import { GetAllJobsitesPayload } from './dto/get-all-jobsites.dto';
 
 @Resolver(() => Jobsite)
 export class JobsiteResolver {
@@ -32,7 +33,7 @@ export class JobsiteResolver {
 
   @Roles(UserRole.ADMIN)
   @Query(() => [Jobsite])
-  async getAllJobsites(@Args('getAllJobsitesInput') getAllJobsitesInput: GetAllJobsitesInput): Promise<Jobsite[]> {
+  async getAllJobsites(@Args('getAllJobsitesInput') getAllJobsitesInput: GetAllJobsitesInput): Promise<GetAllJobsitesPayload> {
     return await this.jobsiteService.getAllJobsites(getAllJobsitesInput);
   }
 
