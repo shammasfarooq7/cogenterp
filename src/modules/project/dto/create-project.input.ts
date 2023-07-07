@@ -46,22 +46,22 @@ export class CreateProjectInput {
   @Field(() => String)
   cogSdContNum: string;
 
-  @Field(() => AgreedSla)
+  @Field(() => [AgreedSla])
   agreedSla: AgreedSla[];
 
-  @Field(() => Coverage)
+  @Field(() => [Coverage])
   coverage: Coverage[];
 
-  @Field(() => TechnologyType)
+  @Field(() => [TechnologyType])
   technologyType: TechnologyType[];
 
-  @Field(() => ServiceType)
+  @Field(() => [ServiceType])
   serviceType: ServiceType[];
 
-  @Field(() => SupportModel)
+  @Field(() => [SupportModel])
   supportModel: SupportModel[];
 
-  @Field(() => TalentLevel)
+  @Field(() => [TalentLevel])
   talentLevel: TalentLevel[];
 
   @Field(() => String, {nullable: true})

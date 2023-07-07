@@ -56,7 +56,7 @@ export class CustomerService {
       // await this.userRepo.update({ id: newUser.id }, { customer: newCustomer })
       currentUser.onboardedCustomers = [newCustomer]
       await this.userRepo.save(currentUser);
-      newUser.customer=newCustomer
+      newUser.customer = newCustomer
       await this.userRepo.save(newUser);
 
       return { message: "Customer Created Successfully!" };

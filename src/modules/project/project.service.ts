@@ -55,8 +55,8 @@ export class ProjectService {
 
       const count = await this.projectRepo.count({ where })
       return {
-        count,
-        projects
+        projects,
+        count
       }
 
     } catch (error) {
