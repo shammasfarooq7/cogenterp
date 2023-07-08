@@ -214,8 +214,8 @@ export class TicketDetail {
   @OneToMany(() => Ticket, ticket => ticket.ticketDetail)
   tickets: Ticket[];
 
-  @Field(() => [TicketAttachment])
-  @OneToMany(() => TicketAttachment, ticketAttachment => ticketAttachment.ticketDetail)
+  @Field(() => [TicketAttachment], { nullable: true })
+  @OneToMany(() => TicketAttachment, ticketAttachment => ticketAttachment.ticketDetail, { nullable: true, cascade: true })
   attachments: TicketAttachment[];
 
   @CreateDateColumn({ type: 'timestamptz' })

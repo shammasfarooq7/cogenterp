@@ -149,7 +149,7 @@ export class TicketsService {
       where: {
         deletedAt: IsNull()
       },
-      relations: { ticketDates: { timeSheets: { resource: true } }, ticketDetail: true, },
+      relations: { ticketDates: { timeSheets: { resource: true } }, ticketDetail: { attachments: true }, },
       skip: page * limit,
       take: limit
     })

@@ -62,7 +62,7 @@ type TicketDetail {
   slaPriority: SlaPriority!
   serviceDocUrl: String
   tickets: [Ticket!]!
-  attachments: [TicketAttachment!]!
+  attachments: [TicketAttachment!]
   createdAt: DateTime!
   updatedAt: DateTime!
 }
