@@ -8,6 +8,7 @@ import { Project } from './entities/project.entity';
 import { ILike, IsNull, Repository } from 'typeorm';
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CustomerService } from '../customer/customer.service';
+import { ICurrentUser } from '../../users/auth/interfaces/current-user.interface';
 
 @Injectable()
 export class ProjectService {
@@ -35,7 +36,7 @@ export class ProjectService {
     }
   }
 
-  async getAllProjects(getAllProjectsInput: GetAllProjectsInput): Promise<GetAllProjectsPayload> {
+  async getAllProjects(currentUser: ICurrentUser, getAllProjectsInput: GetAllProjectsInput): Promise<GetAllProjectsPayload> {
     try {
       const { limit = 20, page = 0, searchQuery } = getAllProjectsInput;
 

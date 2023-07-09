@@ -668,6 +668,11 @@ type GetAllTicketsPayload {
   count: Float!
 }
 
+type GetTodayTicketsPayload {
+  ticketDates: [TicketDate!]!
+  count: Float!
+}
+
 type GetAllCustomersPayload {
   customers: [Customer!]!
   count: Float!
@@ -693,7 +698,7 @@ type Query {
   getNewRequestUsers(getNewRequestUsersInput: GetAllResourcesInput!): GetAllResourcesStatsPayload!
   getResourceTickets(id: String = null): [TicketDate!]!
   getAllTickets(getAllTicketsInput: GetAllTicketsInput!): GetAllTicketsPayload!
-  getTodayTicket: [TicketDate!]!
+  getTodayTicket(getTodayTicketsInput: GetTodayTicketsInput!): GetTodayTicketsPayload!
   getTicket(id: String!): Ticket!
   getAllUserPaymentMethods: [UserPaymentMethod!]!
   getAllCustomer(getAllCustomerInput: GetAllCustomersInput!): GetAllCustomersPayload!
@@ -724,6 +729,13 @@ input GetAllTicketsInput {
   limit: Float
   searchQuery: String
   external: Boolean
+  customerId: String
+}
+
+input GetTodayTicketsInput {
+  page: Float
+  limit: Float
+  searchQuery: String
 }
 
 input GetAllCustomersInput {

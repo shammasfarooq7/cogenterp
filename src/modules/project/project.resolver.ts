@@ -24,8 +24,8 @@ export class ProjectResolver {
 
   @Roles(UserRole.ADMIN)
   @Query(() => GetAllProjectsPayload)
-  async getAllProjects(@Args('getAllProjectsInput') getAllProjectsInput: GetAllProjectsInput): Promise<GetAllProjectsPayload> {
-    return await this.projectService.getAllProjects(getAllProjectsInput);
+  async getAllProjects(@Context() ctx: IContext, @Args('getAllProjectsInput') getAllProjectsInput: GetAllProjectsInput): Promise<GetAllProjectsPayload> {
+    return await this.projectService.getAllProjects(ctx.user, getAllProjectsInput);
   }
 
   @Roles(UserRole.ADMIN)

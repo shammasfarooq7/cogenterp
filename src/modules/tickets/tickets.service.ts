@@ -19,6 +19,9 @@ import { Project } from '../project/entities/project.entity';
 import { Jobsite } from '../jobsite/entities/jobsite.entity';
 import { ChangeStatusInput } from './dto/change-status.input';
 import { TicketAttachment } from './entities/ticketAttachment.entity';
+import { GetTodayTicketsInput } from './dto/get-today-tickets-input';
+import { GetTodayTicketsPayload } from './dto/get-today-tickets.dto';
+import { User } from '../../users/entities/user.entity';
 
 @Injectable()
 export class TicketsService {
@@ -29,6 +32,7 @@ export class TicketsService {
     @InjectRepository(Customer) private customerRepo: Repository<Customer>,
     @InjectRepository(Project) private projectRepo: Repository<Project>,
     @InjectRepository(Jobsite) private jobsiteRepo: Repository<Jobsite>,
+    @InjectRepository(User) private userRepo: Repository<User>,
     private dataSource: DataSource
   ) { }
 
@@ -141,12 +145,30 @@ export class TicketsService {
 
   }
 
-  async findAll(getAllTicketsInput: GetAllTicketsInput): Promise<GetAllTicketsPayload> {
-    const { limit = 20, page = 0, searchQuery, external} = getAllTicketsInput;
+  async findAll(currentUser: ICurrentUser, getAllTicketsInput: GetAllTicketsInput): Promise<GetAllTicketsPayload> {
+    const { limit = 20, page = 0, searchQuery, external, customerId } = getAllTicketsInput;
+
+    // Check if loggedIn user is customer, if yes, then only return its tickets
+    // If no then check if customerId is passed in params, if yes then fetch records for that cusotmer
+    const isCurrentUserCustomer = currentUser.roles.includes(UserRole.CUSTOMER);
+    let filterCustomerId = customerId;
+    if (isCurrentUserCustomer) {
+      const user = await this.userRepo.findOne({
+        where: {
+          id: currentUser.userId
+        },
+        relations: { customer: true },
+        select: { id: true, customer: { id: true } }
+      })
+      if (user) {
+        filterCustomerId = user.customer.id
+      }
+    }
 
     const whereClause = {
       deletedAt: IsNull(),
-      isExternal: external ? true : null
+      isExternal: external ? true : null,
+      ...(filterCustomerId && { customerId: filterCustomerId })
     };
 
     const where = [
@@ -175,7 +197,7 @@ export class TicketsService {
         id,
         deletedAt: IsNull()
       },
-      relations: { ticketDates: true, ticketDetail: { attachments: true }},
+      relations: { ticketDates: true, ticketDetail: { attachments: true } },
     })
 
     return ticket
@@ -318,20 +340,37 @@ export class TicketsService {
     }
   }
 
-  async getTodayTicket(): Promise<TicketDate[]> {
+  async getTodayTicket(getTodayTicketsInput: GetTodayTicketsInput): Promise<GetTodayTicketsPayload> {
+    const { page = 0, limit = 20, searchQuery = "" } = getTodayTicketsInput;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
 
-    const ticketDates = await this.ticketDateRepo.find({
-      where: {
-        // date: Between(today, tomorrow),
+    const whereClause = {
+      ticket: {
+        deletedAt: IsNull()
       },
+      date: Between(today, tomorrow),
+    };
+
+    const where = [
+      { ...whereClause, ...(searchQuery && { ticket: { customerTicketNumber: ILike(`%${searchQuery}%`), ...whereClause.ticket } }) },
+      { ...whereClause, ...(searchQuery && { ticket: { customerName: ILike(`%${searchQuery}%`), ...whereClause.ticket } }) },
+      { ...whereClause, ...(searchQuery && { ticket: { cogentCaseNumber: ILike(`%${searchQuery}%`), ...whereClause.ticket } }) },
+    ];
+
+    const [ticketDates, count] = await this.ticketDateRepo.findAndCount({
+      where,
       relations: { ticket: { ticketDetail: { attachments: true } } },
+      skip: page * limit,
+      take: limit
     });
 
-    return ticketDates;
+    return {
+      count,
+      ticketDates
+    };
   }
 }

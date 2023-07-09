@@ -1,7 +1,7 @@
 import { InputType, Field } from '@nestjs/graphql';
 
 @InputType()
-export class GetAllTicketsInput {
+export class GetTodayTicketsInput {
 
     @Field(() => Number, { nullable: true })
     page: number;
@@ -11,10 +11,4 @@ export class GetAllTicketsInput {
 
     @Field(() => String, { nullable: true })
     searchQuery: string;
-
-    @Field(() => Boolean, { nullable: true })
-    external: string;
-
-    @Field(() => String, { nullable: true })
-    customerId: string;
 }
