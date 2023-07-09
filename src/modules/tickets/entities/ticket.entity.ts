@@ -78,9 +78,11 @@ export class Ticket {
   status: TicketStatus;
 
   //to check whether its SD or customer ticket. external for customer.
+  @Field(() => Boolean)
   @Column({ default: false })
   isExternal: boolean;
 
+  @Field(() => Boolean)
   @Column({ default: false })
   isApproved: boolean;
 

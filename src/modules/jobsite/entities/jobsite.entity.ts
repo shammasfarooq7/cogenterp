@@ -216,7 +216,7 @@ export class Jobsite {
   @Field()
   sun: boolean;
 
-  @Column()
+  @Column({nullable: true})
   @Field(() => String)
   siteTiming: string;
 

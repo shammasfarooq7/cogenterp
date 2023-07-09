@@ -440,6 +440,8 @@ type Ticket {
   cogentWorkOrderNumber: [String!]
   ticketType: TicketType!
   status: TicketStatus!
+  isExternal: Boolean!
+  isApproved: Boolean!
   numberOfHoursReq: String!
   numberOfResource: String!
   ticketDetailId: String!
@@ -692,7 +694,6 @@ type Query {
   getResourceTickets(id: String = null): [TicketDate!]!
   getAllTickets(getAllTicketsInput: GetAllTicketsInput!): GetAllTicketsPayload!
   getTicket(id: String!): Ticket!
-  getAllExternalTickets: GetAllTicketsPayload!
   getAllUserPaymentMethods: [UserPaymentMethod!]!
   getAllCustomer(getAllCustomerInput: GetAllCustomersInput!): GetAllCustomersPayload!
   getCustomer(id: String = null): Customer!
@@ -720,6 +721,8 @@ input GetAllResourcesInput {
 input GetAllTicketsInput {
   page: Float
   limit: Float
+  searchQuery: String
+  external: Boolean
 }
 
 input GetAllCustomersInput {

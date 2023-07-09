@@ -9,4 +9,10 @@ export class GetAllTicketsInput {
     @Field(() => Number, { nullable: true })
     limit: number;
 
+    @Field(() => String, { nullable: true })
+    searchQuery: string;
+
+    @Field(() => Boolean, { nullable: true })
+    external: boolean;
+
 }

@@ -3,7 +3,7 @@ import { CreateTicketInput } from './dto/create-ticket.input';
 import { UpdateTicketInput } from './dto/update-ticket.input';
 import { TicketDetail } from './entities/ticketDetail.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Repository, DataSource, In } from 'typeorm';
+import { IsNull, Repository, DataSource, In, ILike } from 'typeorm';
 import { Ticket, TicketType } from './entities/ticket.entity';
 import { ICurrentUser } from 'src/users/auth/interfaces/current-user.interface';
 import { GetAllTicketsInput } from './dto/get-all-tickets-input';
@@ -142,23 +142,31 @@ export class TicketsService {
   }
 
   async findAll(getAllTicketsInput: GetAllTicketsInput): Promise<GetAllTicketsPayload> {
-
-    const { limit = 20, page = 0 } = getAllTicketsInput;
-
+    const { limit = 20, page = 0, searchQuery, external} = getAllTicketsInput;
+  
+    const whereClause = {
+      deletedAt: IsNull(),
+      isExternal: Boolean(external)
+    };
+  
+    const where = [
+      { ...(searchQuery && { customerTicketNumber: ILike(`%${searchQuery}%`) }), ...whereClause },
+      { ...(searchQuery && { customerName: ILike(`%${searchQuery}%`) }), ...whereClause },
+      { ...(searchQuery && { cogentCaseNumber: ILike(`%${searchQuery}%`) }), ...whereClause },
+    ];
+  
     const [tickets, count] = await this.ticketRepo.findAndCount({
-      where: {
-        deletedAt: IsNull()
-      },
-      relations: { ticketDates: { timeSheets: { resource: true } }, ticketDetail: { attachments: true }, },
+      where,
+      relations: { ticketDates: { timeSheets: { resource: true } }, ticketDetail: { attachments: true } },
       skip: page * limit,
-      take: limit
-    })
-
+      take: limit,
+    });
+  
     return {
       count,
-      tickets
-    }
-  }
+      tickets,
+    };
+  }  
 
   async findOne(id: string): Promise<Ticket> {
 
@@ -166,10 +174,11 @@ export class TicketsService {
       where: {
         id,
         deletedAt: IsNull()
-      }
+      },
+      relations: { ticketDates: { timeSheets: { resource: true } }, ticketDetail: { attachments: true }},
     })
 
-    return ticket;
+    return ticket
   }
 
   update(id: number, updateTicketInput: UpdateTicketInput) {
@@ -257,26 +266,6 @@ export class TicketsService {
 
     return {
       message: "Assigned Successfully"
-    }
-  }
-
-  async getAllExternalTickets(): Promise<GetAllTicketsPayload> {
-
-    try {
-      const [tickets, count] = await this.ticketRepo.findAndCount({
-        where: {
-          isExternal: true,
-          deletedAt: IsNull()
-        },
-        relations: { ticketDates: { timeSheets: { resource: true } }, ticketDetail: true, },
-      })
-
-      return {
-        count,
-        tickets
-      }
-    } catch (error) {
-      throw new InternalServerErrorException(error);
     }
   }
 
