@@ -3,7 +3,7 @@ import { CreateTicketInput } from './dto/create-ticket.input';
 import { UpdateTicketInput } from './dto/update-ticket.input';
 import { TicketDetail } from './entities/ticketDetail.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Repository, DataSource, In, ILike } from 'typeorm';
+import { IsNull, Repository, DataSource, In, ILike, Between } from 'typeorm';
 import { Ticket, TicketType } from './entities/ticket.entity';
 import { ICurrentUser } from 'src/users/auth/interfaces/current-user.interface';
 import { GetAllTicketsInput } from './dto/get-all-tickets-input';
@@ -143,30 +143,30 @@ export class TicketsService {
 
   async findAll(getAllTicketsInput: GetAllTicketsInput): Promise<GetAllTicketsPayload> {
     const { limit = 20, page = 0, searchQuery, external} = getAllTicketsInput;
-  
+
     const whereClause = {
       deletedAt: IsNull(),
-      isExternal: Boolean(external)
+      isExternal: external ? true : null
     };
-  
+
     const where = [
       { ...(searchQuery && { customerTicketNumber: ILike(`%${searchQuery}%`) }), ...whereClause },
       { ...(searchQuery && { customerName: ILike(`%${searchQuery}%`) }), ...whereClause },
       { ...(searchQuery && { cogentCaseNumber: ILike(`%${searchQuery}%`) }), ...whereClause },
     ];
-  
+
     const [tickets, count] = await this.ticketRepo.findAndCount({
       where,
-      relations: { ticketDates: { timeSheets: { resource: true } }, ticketDetail: { attachments: true } },
+      relations: { ticketDates: true, ticketDetail: { attachments: true } },
       skip: page * limit,
       take: limit,
     });
-  
+
     return {
       count,
       tickets,
     };
-  }  
+  }
 
   async findOne(id: string): Promise<Ticket> {
 
@@ -175,7 +175,7 @@ export class TicketsService {
         id,
         deletedAt: IsNull()
       },
-      relations: { ticketDates: { timeSheets: { resource: true } }, ticketDetail: { attachments: true }},
+      relations: { ticketDates: true, ticketDetail: { attachments: true }},
     })
 
     return ticket
@@ -316,5 +316,22 @@ export class TicketsService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  async getTodayTicket(): Promise<TicketDate[]> {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const ticketDates = await this.ticketDateRepo.find({
+      where: {
+        // date: Between(today, tomorrow),
+      },
+      relations: { ticket: { ticketDetail: { attachments: true } } },
+    });
+
+    return ticketDates;
   }
 }

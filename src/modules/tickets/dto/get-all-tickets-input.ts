@@ -13,6 +13,6 @@ export class GetAllTicketsInput {
     searchQuery: string;
 
     @Field(() => Boolean, { nullable: true })
-    external: boolean;
+    external: string;
 
 }

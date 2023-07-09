@@ -11,6 +11,7 @@ import { UserRole } from '../../users/entities/role.entity';
 import { Roles } from '../../users/roles.decorator';
 import { AssignResourcesToTicketInput } from './dto/assign-resources-to-ticket.input';
 import { ChangeStatusInput } from './dto/change-status.input';
+import { TicketDate } from './entities/ticketDate.entity';
 
 @Resolver(() => Ticket)
 export class TicketsResolver {
@@ -26,6 +27,12 @@ export class TicketsResolver {
   @Query(() => GetAllTicketsPayload)
   getAllTickets(@Context() ctx: IContext, @Args('getAllTicketsInput') getAllTicketsInput: GetAllTicketsInput): Promise<GetAllTicketsPayload> {
     return this.ticketsService.findAll(getAllTicketsInput);
+  }
+
+  @Roles(UserRole.SD, UserRole.CUSTOMER, UserRole.ADMIN)
+  @Query(() => [TicketDate])
+  async getTodayTicket(): Promise<TicketDate[]> {
+    return await this.ticketsService.getTodayTicket();
   }
 
   @Roles(UserRole.SD, UserRole.CUSTOMER, UserRole.ADMIN)

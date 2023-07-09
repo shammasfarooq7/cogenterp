@@ -693,6 +693,7 @@ type Query {
   getNewRequestUsers(getNewRequestUsersInput: GetAllResourcesInput!): GetAllResourcesStatsPayload!
   getResourceTickets(id: String = null): [TicketDate!]!
   getAllTickets(getAllTicketsInput: GetAllTicketsInput!): GetAllTicketsPayload!
+  getTodayTicket: [TicketDate!]!
   getTicket(id: String!): Ticket!
   getAllUserPaymentMethods: [UserPaymentMethod!]!
   getAllCustomer(getAllCustomerInput: GetAllCustomersInput!): GetAllCustomersPayload!

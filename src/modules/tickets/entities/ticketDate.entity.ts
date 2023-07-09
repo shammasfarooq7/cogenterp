@@ -10,13 +10,7 @@ export class TicketDate {
   @Field(() => String)
   id: string;
 
-  @Column({
-    type: 'date',
-    transformer: {
-      from: (value: string) => new Date(value),
-      to: (value: Date) => value.toISOString().split('T')[0],
-    }
-  })
+  @Column({type: 'timestamptz'})
   @Field(() => Date)
   date: Date;
 
