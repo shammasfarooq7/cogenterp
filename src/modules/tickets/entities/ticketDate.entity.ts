@@ -42,4 +42,8 @@ export class TicketDate {
   @UpdateDateColumn({ type: 'timestamptz' })
   @Field(() => Date)
   updatedAt: Date;
+
+  @Column({ nullable: true, type: 'timestamptz' })
+  @Field(() => Date, { nullable: true })
+  deletedAt: Date;
 }

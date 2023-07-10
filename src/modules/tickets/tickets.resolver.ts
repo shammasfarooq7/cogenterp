@@ -43,15 +43,16 @@ export class TicketsResolver {
     return this.ticketsService.findOne(id);
   }
 
-  // @Mutation(() => Ticket)
-  // updateTicket(@Args('updateTicketInput') updateTicketInput: UpdateTicketInput) {
-  //   return this.ticketsService.update(updateTicketInput.id, updateTicketInput);
-  // }
+  @Roles(UserRole.SD, UserRole.FEOPS)
+  @Mutation(() => Ticket)
+  updateTicket(@Args('updateTicketInput') updateTicketInput: UpdateTicketInput) {
+    return this.ticketsService.updateTicket(updateTicketInput.id, updateTicketInput);
+  }
 
-  @Roles(UserRole.SD, UserRole.CUSTOMER)
+  @Roles(UserRole.SD, UserRole.ADMIN)
   @Mutation(() => CommonPayload)
   deleteTicket(@Args('id') id: string): Promise<CommonPayload> {
-    return this.ticketsService.delete(id);
+    return this.ticketsService.deleteTicket(id);
   }
 
   @Roles(UserRole.FEOPS)

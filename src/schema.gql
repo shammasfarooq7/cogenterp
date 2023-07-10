@@ -486,6 +486,7 @@ type TicketDate {
   timeSheets: [TimeSheet!]
   createdAt: DateTime!
   updatedAt: DateTime!
+  deletedAt: DateTime
 }
 
 type TimeSheet {
@@ -506,6 +507,7 @@ type TimeSheet {
   ticketDate: TicketDate!
   createdAt: DateTime!
   updatedAt: DateTime!
+  deletedAt: DateTime
 }
 
 type Resource {
@@ -765,6 +767,7 @@ type Mutation {
   approveUserRequest(id: String!): CommonPayload!
   timeSheetCheckInOut(checkinCheckoutInput: CheckinCheckoutInput!): CommonPayload!
   createTicket(createTicketInput: CreateTicketInput!): CommonPayload!
+  updateTicket(updateTicketInput: UpdateTicketInput!): Ticket!
   deleteTicket(id: String!): CommonPayload!
   assignResourcesToTicket(assignResourcesToTicketInput: AssignResourcesToTicketInput!): CommonPayload!
   approveExternalTicket(id: String!): CommonPayload!
@@ -970,6 +973,36 @@ input CreateTicketInput {
   postCode: String!
   siteAddress: String!
   attachments: [String!]
+}
+
+input UpdateTicketInput {
+  numberOfHoursReq: String!
+  numberOfResource: String!
+  accountName: String!
+  endClientName: String!
+  scheduledTime: String!
+  spocName: String!
+  spocContactNumber: String!
+  spocEmailAddress: String!
+  siteAccessInstruction: String!
+  customerCaseNumber: String!
+  jobSummary: String!
+  caseDetails: String!
+  scopeOfWork: String!
+  instructions: String!
+  addInstruction: String!
+  specialInstruction: String!
+  hardwareSN: String!
+  toolsRequested: [String!]
+  technologyType: TechnologyType
+  serviceType: [String!]
+  serviceLevel: ServiceLevel!
+  servicePriority: ServicePriority!
+  slaPriority: SlaPriority!
+  serviceDocUrl: String
+  ticketDates: [DateTime!]!
+  attachments: [String!]
+  id: String!
 }
 
 input AssignResourcesToTicketInput {
