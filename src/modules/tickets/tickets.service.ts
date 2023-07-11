@@ -244,7 +244,8 @@ export class TicketsService {
     try {
       const ticket = await this.ticketRepo.findOne({
         where: { id, deletedAt: IsNull() },
-        relations: { ticketDates: { timeSheets: true }, ticketDetail: true }
+        relations: { ticketDates: true },
+        select: { ticketDates: { id: true }, id: true, deletedAt: true }
       });
 
       if (!ticket) {
@@ -265,9 +266,7 @@ export class TicketsService {
         for (const ticketDate of ticket.ticketDates) {
           await this.ticketDateRepo.update(ticketDate.id, { deletedAt: new Date() });
 
-          for (const timeSheet of ticketDate.timeSheets) {
-            await this.timeSheetRepo.update(timeSheet.id, { deletedAt: new Date() });
-          }
+          await this.timeSheetRepo.update({ ticketDateId: ticketDate.id }, { deletedAt: new Date() });
         }
 
         return { message: "Ticket Deleted Successfully!" };
