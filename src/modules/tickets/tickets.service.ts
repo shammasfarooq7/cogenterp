@@ -148,7 +148,7 @@ export class TicketsService {
 
   async findAll(currentUser: ICurrentUser, getAllTicketsInput: GetAllTicketsInput): Promise<GetAllTicketsPayload> {
     try{
-      const { limit = 20, page = 0, searchQuery, external, customerId } = getAllTicketsInput;
+      const { limit = 20, page = 0, searchQuery, external, customerId, approved } = getAllTicketsInput;
 
       // Check if loggedIn user is customer, if yes, then only return its tickets
       // If no then check if customerId is passed in params, if yes then fetch records for that cusotmer
@@ -171,6 +171,7 @@ export class TicketsService {
       const whereClause = {
         deletedAt: IsNull(),
         isExternal: external ? true : null,
+        isApproved: approved ? false : true,
         ...(filterCustomerId && { customerId: filterCustomerId })
       };
 

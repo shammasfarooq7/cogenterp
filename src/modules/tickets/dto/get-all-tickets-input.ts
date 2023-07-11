@@ -17,4 +17,7 @@ export class GetAllTicketsInput {
 
     @Field(() => String, { nullable: true })
     customerId: string;
+
+    @Field(() => Boolean, { nullable: true })
+    approved: string;
 }
