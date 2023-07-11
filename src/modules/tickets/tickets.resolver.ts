@@ -32,8 +32,8 @@ export class TicketsResolver {
   }
 
   @Roles(UserRole.SD, UserRole.CUSTOMER, UserRole.ADMIN)
-  @Query(() => GetTodayTicketsPayload)
-  async getTodayTicket(@Args('getTodayTicketsInput') getTodayTicketsInput: GetTodayTicketsInput): Promise<GetTodayTicketsPayload> {
+  @Query(() => GetAllTicketsPayload)
+  async getTodayTicket(@Args('getTodayTicketsInput') getTodayTicketsInput: GetTodayTicketsInput): Promise<GetAllTicketsPayload> {
     return await this.ticketsService.getTodayTicket(getTodayTicketsInput);
   }
 
