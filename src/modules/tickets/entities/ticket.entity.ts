@@ -115,6 +115,7 @@ export class Ticket {
   jobSiteId: string;
 
   @Column({ default: false })
+  @Field(() => Boolean)
   isAdhoc: boolean;
 
   @Column()
@@ -122,6 +123,7 @@ export class Ticket {
   customerId: string;
 
   @ManyToOne(() => Customer, customer => customer.tickets)
+  @Field(() => Customer)
   customer: Customer;
 
   @Column({ nullable: false, type: 'timestamptz' })

@@ -147,7 +147,7 @@ export class TicketsService {
   }
 
   async findAll(currentUser: ICurrentUser, getAllTicketsInput: GetAllTicketsInput): Promise<GetAllTicketsPayload> {
-    try{
+    try {
       const { limit = 20, page = 0, searchQuery, external, customerId } = getAllTicketsInput;
 
       // Check if loggedIn user is customer, if yes, then only return its tickets
@@ -191,13 +191,13 @@ export class TicketsService {
         count,
         tickets,
       };
-    } catch(error) {
+    } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
 
   async findOne(id: string): Promise<Ticket> {
-    try{
+    try {
       const ticket = await this.ticketRepo.findOne({
         where: {
           id,
@@ -207,34 +207,34 @@ export class TicketsService {
       })
 
       return ticket
-    } catch(error) {
+    } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
 
   async updateTicket(id: string, updateTicketInput: UpdateTicketInput) {
-    try{
+    try {
       const ticket = await this.ticketRepo.findOne({
-        where: { id, deletedAt: IsNull()},
+        where: { id, deletedAt: IsNull() },
         relations: { ticketDates: true }
       });
 
       if (!ticket) throw new NotFoundException(`Ticket does not exist!`)
-    
+
       const firstTicketDate = ticket.ticketDates[0];
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
-    
+
       const timeDifference = firstTicketDate.date.getTime() - yesterday.getTime();
       const hoursDifference = timeDifference / (1000 * 60 * 60);
-    
+
       if (hoursDifference > 24) {
         // write update ticket code here.
         return { message: "Ticket Updated Successfully!" };
       } else {
         throw new Error("Update Ticket is only possible before 24 hours.");
       }
-    } catch(error) {
+    } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
@@ -242,33 +242,33 @@ export class TicketsService {
   async deleteTicket(id: string): Promise<CommonPayload> {
     try {
       const ticket = await this.ticketRepo.findOne({
-        where: { id, deletedAt: IsNull()},
+        where: { id, deletedAt: IsNull() },
         relations: { ticketDates: { timeSheets: true }, ticketDetail: true }
       });
-  
+
       if (!ticket) {
         throw new NotFoundException(`Ticket does not exist!`);
       }
-  
+
       const firstTicketDate = ticket.ticketDates[0];
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
-  
+
       const timeDifference = firstTicketDate.date.getTime() - yesterday.getTime();
       const hoursDifference = timeDifference / (1000 * 60 * 60);
-  
+
       if (hoursDifference > 24) {
         ticket.deletedAt = new Date();
         await this.ticketRepo.save(ticket);
-  
+
         for (const ticketDate of ticket.ticketDates) {
           await this.ticketDateRepo.update(ticketDate.id, { deletedAt: new Date() });
-  
+
           for (const timeSheet of ticketDate.timeSheets) {
             await this.timeSheetRepo.update(timeSheet.id, { deletedAt: new Date() });
           }
         }
-  
+
         return { message: "Ticket Deleted Successfully!" };
       } else {
         throw new Error("Delete Ticket is only possible before 24 hours.");
@@ -277,8 +277,8 @@ export class TicketsService {
       throw new InternalServerErrorException(error);
     }
   }
-  
-  
+
+
 
   async assignResourcesToTicket(currentUser: ICurrentUser, assignResourcesToTicketInput: AssignResourcesToTicketInput): Promise<CommonPayload> {
 
@@ -358,7 +358,7 @@ export class TicketsService {
   async approveExternalTicket(id: string): Promise<CommonPayload> {
 
     try {
-      const ticket = await this.ticketRepo.findOne({ where: {id: id, deletedAt: IsNull()} })
+      const ticket = await this.ticketRepo.findOne({ where: { id: id, deletedAt: IsNull() } })
       if (!ticket) throw new NotFoundException(`Ticket does not exist!`)
 
       await this.ticketRepo.update({ id: ticket.id }, { isApproved: true })
@@ -404,8 +404,8 @@ export class TicketsService {
     }
   }
 
-  async getTodayTicket(getTodayTicketsInput: GetTodayTicketsInput): Promise<GetTodayTicketsPayload> {
-    try{
+  async getTodayTicket(getTodayTicketsInput: GetTodayTicketsInput): Promise<GetAllTicketsPayload> {
+    try {
       const { page = 0, limit = 20, searchQuery = "" } = getTodayTicketsInput;
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -413,31 +413,50 @@ export class TicketsService {
       const tomorrow = new Date(today);
       tomorrow.setDate(today.getDate() + 1);
 
+      // const whereClause = {
+      //   ticket: {
+      //     deletedAt: IsNull()
+      //   },
+      //   date: Between(today, tomorrow),
+      // };
+
+      // const where = [
+      //   { ...whereClause, ...(searchQuery && { ticket: { customerTicketNumber: ILike(`%${searchQuery}%`), ...whereClause.ticket } }) },
+      //   { ...whereClause, ...(searchQuery && { ticket: { customerName: ILike(`%${searchQuery}%`), ...whereClause.ticket } }) },
+      //   { ...whereClause, ...(searchQuery && { ticket: { cogentCaseNumber: ILike(`%${searchQuery}%`), ...whereClause.ticket } }) },
+      // ];
+
+      // const [ticketDates, count] = await this.ticketDateRepo.findAndCount({
+      //   where,
+      //   relations: { ticket: { ticketDetail: { attachments: true } } },
+      //   skip: page * limit,
+      //   take: limit
+      // });
+
       const whereClause = {
-        ticket: {
-          deletedAt: IsNull()
+        ticketDates: {
+          date: Between(today, tomorrow),
         },
-        date: Between(today, tomorrow),
+        deletedAt: IsNull()
       };
 
       const where = [
-        { ...whereClause, ...(searchQuery && { ticket: { customerTicketNumber: ILike(`%${searchQuery}%`), ...whereClause.ticket } }) },
-        { ...whereClause, ...(searchQuery && { ticket: { customerName: ILike(`%${searchQuery}%`), ...whereClause.ticket } }) },
-        { ...whereClause, ...(searchQuery && { ticket: { cogentCaseNumber: ILike(`%${searchQuery}%`), ...whereClause.ticket } }) },
-      ];
+        { ...(searchQuery && { customerTicketNumber: ILike(`%${searchQuery}%`) }), ...whereClause },
+        { ...(searchQuery && { customerName: ILike(`%${searchQuery}%`) }), ...whereClause },
+        { ...(searchQuery && { cogentCaseNumber: ILike(`%${searchQuery}%`) }), ...whereClause },]
 
-      const [ticketDates, count] = await this.ticketDateRepo.findAndCount({
-        where,
-        relations: { ticket: { ticketDetail: { attachments: true } } },
+      const [tickets, count] = await this.ticketRepo.findAndCount({
+        where: where,
+        relations: { ticketDates: true, ticketDetail: { attachments: true } },
         skip: page * limit,
         take: limit
       });
 
       return {
         count,
-        ticketDates
+        tickets
       };
-    } catch(error) {
+    } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
