@@ -704,7 +704,7 @@ type Query {
   getCustomer(id: String = null): Customer!
   getAllProjects(getAllProjectsInput: GetAllProjectsInput!): GetAllProjectsPayload!
   getProject(id: String!): Project!
-  getProjectByCustomer(id: String!): [Project!]!
+  getProjectByCustomer(id: String!, getProjectsByCustomerInput: GetProjectsByCustomerInput!): [Project!]!
   getJobsite(id: String!): Jobsite!
   getJobsitesByProject(id: String!): [Jobsite!]!
   getAllJobsites(getAllJobsitesInput: GetAllJobsitesInput!): GetAllJobsitesPayload!
@@ -750,6 +750,12 @@ input GetAllProjectsInput {
   page: Float
   limit: Float
   searchQuery: String
+}
+
+input GetProjectsByCustomerInput {
+  projectId: String
+  page: Float
+  limit: Float
 }
 
 input GetAllJobsitesInput {
