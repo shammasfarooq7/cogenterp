@@ -449,7 +449,9 @@ type Ticket {
   ticketDates: [TicketDate!]!
   projectId: String
   jobSiteId: String
+  isAdhoc: Boolean!
   customerId: String!
+  customer: Customer!
   ticketReceivedTime: DateTime!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -670,11 +672,6 @@ type GetAllTicketsPayload {
   count: Float!
 }
 
-type GetTodayTicketsPayload {
-  ticketDates: [TicketDate!]!
-  count: Float!
-}
-
 type GetAllCustomersPayload {
   customers: [Customer!]!
   count: Float!
@@ -700,7 +697,7 @@ type Query {
   getNewRequestUsers(getNewRequestUsersInput: GetAllResourcesInput!): GetAllResourcesStatsPayload!
   getResourceTickets(id: String = null): [TicketDate!]!
   getAllTickets(getAllTicketsInput: GetAllTicketsInput!): GetAllTicketsPayload!
-  getTodayTicket(getTodayTicketsInput: GetTodayTicketsInput!): GetTodayTicketsPayload!
+  getTodayTicket(getTodayTicketsInput: GetTodayTicketsInput!): GetAllTicketsPayload!
   getTicket(id: String!): Ticket!
   getAllUserPaymentMethods: [UserPaymentMethod!]!
   getAllCustomer(getAllCustomerInput: GetAllCustomersInput!): GetAllCustomersPayload!
@@ -732,6 +729,7 @@ input GetAllTicketsInput {
   searchQuery: String
   external: Boolean
   customerId: String
+  approved: Boolean
 }
 
 input GetTodayTicketsInput {

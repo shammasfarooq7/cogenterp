@@ -67,7 +67,7 @@ export class TicketsResolver {
     return this.ticketsService.approveExternalTicket(id);
   }
 
-  @Roles(UserRole.FEOPS)
+  @Roles(UserRole.FEOPS, UserRole.SD)
   @Mutation(() => CommonPayload)
   changeStatus(@Args('changeStatus') changeStatusInput: ChangeStatusInput): Promise<CommonPayload> {
     return this.ticketsService.changeStatus(changeStatusInput);
