@@ -5,10 +5,11 @@ import { CommonPayload } from 'src/users/dto/common.dto';
 import { GetAllProjectsPayload } from './dto/get-all-projects.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Project } from './entities/project.entity';
-import { ILike, IsNull, Repository } from 'typeorm';
+import { ILike, IsNull, Repository, Not } from 'typeorm';
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CustomerService } from '../customer/customer.service';
 import { ICurrentUser } from '../../users/auth/interfaces/current-user.interface';
+import { GetProjectsByCustomerInput } from './dto/get-projects-by-customer.input';
 
 @Injectable()
 export class ProjectService {
@@ -81,15 +82,30 @@ export class ProjectService {
     }
   }
 
-  async getProjectsByCustomer(id: string) {
+  async getProjectsByCustomer(id: string, getProjectsByCustomerInput: GetProjectsByCustomerInput) {
     try {
+
+      const { limit = 20, page = 0, projectId } = getProjectsByCustomerInput;
+
+      let selectedProject: Project | null = null;
+
+      if (projectId && page === 0) {
+        selectedProject = await this.projectRepo.findOne(
+          {
+            where: { customerId: id, id: projectId, deletedAt: IsNull() },
+          }
+        )
+      }
+
       const projects = await this.projectRepo.find(
         {
-          where: { customerId: id, deletedAt: IsNull() },
+          where: { customerId: id, deletedAt: IsNull(), ...(selectedProject && { id: Not(projectId) }) },
+          skip: page * limit,
+          take: selectedProject ? limit - 1 : limit
         }
       )
       if (!projects) throw new NotFoundException(`Customer has no Projects.`)
-      return projects
+      return selectedProject ? [selectedProject, ...projects] : projects
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

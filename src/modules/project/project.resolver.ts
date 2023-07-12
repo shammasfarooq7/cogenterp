@@ -11,6 +11,7 @@ import { CurrentUser } from 'src/users/auth/decorators/current-user.decorator';
 import { ICurrentUser } from 'src/users/auth/interfaces/current-user.interface';
 import { GetAllProjectsPayload } from './dto/get-all-projects.dto';
 import { GetAllProjectsInput } from './dto/get-all-projects.input';
+import { GetProjectsByCustomerInput } from './dto/get-projects-by-customer.input';
 
 @Resolver(() => Project)
 export class ProjectResolver {
@@ -36,8 +37,8 @@ export class ProjectResolver {
 
   @Roles(UserRole.ADMIN, UserRole.SD)
   @Query(() => [Project])
-  async getProjectByCustomer(@Args('id') id: string): Promise<Project[]> {
-    return await this.projectService.getProjectsByCustomer(id);
+  async getProjectByCustomer(@Args('id') id: string, @Args('getProjectsByCustomerInput') getProjectsByCustomerInput: GetProjectsByCustomerInput): Promise<Project[]> {
+    return await this.projectService.getProjectsByCustomer(id, getProjectsByCustomerInput);
   }
 
   @Roles(UserRole.ADMIN)
