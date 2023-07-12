@@ -22,7 +22,7 @@ export class ProjectResolver {
     return await this.projectService.createProject(createProject)
   }
 
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.CUSTOMER)
   @Query(() => GetAllProjectsPayload)
   async getAllProjects(@Context() ctx: IContext, @Args('getAllProjectsInput') getAllProjectsInput: GetAllProjectsInput): Promise<GetAllProjectsPayload> {
     return await this.projectService.getAllProjects(ctx.user, getAllProjectsInput);
