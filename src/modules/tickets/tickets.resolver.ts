@@ -33,8 +33,8 @@ export class TicketsResolver {
 
   @Roles(UserRole.SD, UserRole.CUSTOMER, UserRole.ADMIN)
   @Query(() => GetAllTicketsPayload)
-  async getTodayTicket(@Args('getTodayTicketsInput') getTodayTicketsInput: GetTodayTicketsInput): Promise<GetAllTicketsPayload> {
-    return await this.ticketsService.getTodayTicket(getTodayTicketsInput);
+  async getTodayTicket(@Context() ctx: IContext, @Args('getTodayTicketsInput') getTodayTicketsInput: GetTodayTicketsInput): Promise<GetAllTicketsPayload> {
+    return await this.ticketsService.getTodayTicket(ctx.user, getTodayTicketsInput);
   }
 
   @Roles(UserRole.SD, UserRole.CUSTOMER, UserRole.ADMIN)

@@ -736,6 +736,7 @@ input GetTodayTicketsInput {
   page: Float
   limit: Float
   searchQuery: String
+  customerId: String
 }
 
 input GetAllCustomersInput {

@@ -147,7 +147,7 @@ export class TicketsService {
   }
 
   async findAll(currentUser: ICurrentUser, getAllTicketsInput: GetAllTicketsInput): Promise<GetAllTicketsPayload> {
-    try{
+    try {
       const { limit = 20, page = 0, searchQuery, external, customerId, approved } = getAllTicketsInput;
 
       // Check if loggedIn user is customer, if yes, then only return its tickets
@@ -404,9 +404,28 @@ export class TicketsService {
     }
   }
 
-  async getTodayTicket(getTodayTicketsInput: GetTodayTicketsInput): Promise<GetAllTicketsPayload> {
+  async getTodayTicket(currentUser: ICurrentUser, getTodayTicketsInput: GetTodayTicketsInput): Promise<GetAllTicketsPayload> {
     try {
-      const { page = 0, limit = 20, searchQuery = "" } = getTodayTicketsInput;
+      const { page = 0, limit = 20, searchQuery = "", customerId } = getTodayTicketsInput;
+
+      // Check if loggedIn user is customer, if yes, then only return its tickets
+      // If no then check if customerId is passed in params, if yes then fetch records for that cusotmer
+      const isCurrentUserCustomer = currentUser.roles.includes(UserRole.CUSTOMER);
+      let filterCustomerId = customerId;
+      if (isCurrentUserCustomer) {
+        const user = await this.userRepo.findOne({
+          where: {
+            id: currentUser.userId,
+            deletedAt: IsNull()
+          },
+          relations: { customer: true },
+          select: { id: true, customer: { id: true } }
+        })
+        if (user) {
+          filterCustomerId = user.customer.id
+        }
+      }
+
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
@@ -437,7 +456,8 @@ export class TicketsService {
         ticketDates: {
           date: Between(today, tomorrow),
         },
-        deletedAt: IsNull()
+        deletedAt: IsNull(),
+        ...(filterCustomerId && { customerId: filterCustomerId })
       };
 
       const where = [
