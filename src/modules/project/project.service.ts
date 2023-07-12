@@ -10,10 +10,13 @@ import { Injectable, InternalServerErrorException, NotFoundException } from '@ne
 import { CustomerService } from '../customer/customer.service';
 import { ICurrentUser } from '../../users/auth/interfaces/current-user.interface';
 import { GetProjectsByCustomerInput } from './dto/get-projects-by-customer.input';
+import { UserRole } from '../../users/entities/role.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Injectable()
 export class ProjectService {
   constructor(@InjectRepository(Project) private projectRepo: Repository<Project>,
+    @InjectRepository(User) private userRepo: Repository<User>,
     private readonly customerService: CustomerService) { }
 
   async createProject(createProjectInput: CreateProjectInput) {
@@ -39,10 +42,29 @@ export class ProjectService {
 
   async getAllProjects(currentUser: ICurrentUser, getAllProjectsInput: GetAllProjectsInput): Promise<GetAllProjectsPayload> {
     try {
-      const { limit = 20, page = 0, searchQuery } = getAllProjectsInput;
+      const { limit = 20, page = 0, searchQuery, customerId } = getAllProjectsInput;
+
+      // Check if loggedIn user is customer, if yes, then only return its tickets
+      // If no then check if customerId is passed in params, if yes then fetch records for that cusotmer
+      const isCurrentUserCustomer = currentUser.roles.includes(UserRole.CUSTOMER);
+      let filterCustomerId = customerId;
+      if (isCurrentUserCustomer) {
+        const user = await this.userRepo.findOne({
+          where: {
+            id: currentUser.userId,
+            deletedAt: IsNull()
+          },
+          relations: { customer: true },
+          select: { id: true, customer: { id: true } }
+        })
+        if (user) {
+          filterCustomerId = user.customer.id
+        }
+      }
 
       const whereClause = {
         deletedAt: IsNull(),
+        ...(filterCustomerId && { customerId: filterCustomerId })
       };
 
       const where = [

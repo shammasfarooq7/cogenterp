@@ -678,7 +678,7 @@ type GetAllCustomersPayload {
 }
 
 type GetAllProjectsPayload {
-  projects: [Project!]!
+  projects: [Project!]
   count: Float!
 }
 
@@ -750,6 +750,7 @@ input GetAllProjectsInput {
   page: Float
   limit: Float
   searchQuery: String
+  customerId: String
 }
 
 input GetProjectsByCustomerInput {

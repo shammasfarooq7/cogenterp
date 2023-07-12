@@ -15,4 +15,7 @@ export class GetAllProjectsInput {
 
     @Field(() => String, { nullable: true })
     searchQuery: string;
+
+    @Field(() => String, { nullable: true })
+    customerId: string;
 }

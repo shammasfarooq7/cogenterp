@@ -3,7 +3,7 @@ import { Project } from '../entities/project.entity';
 
 @ObjectType()
 export class GetAllProjectsPayload {
-    @Field(()=>[Project])
+    @Field(() => [Project], { nullable: true })
     projects: Project[];
 
     @Field()
