@@ -668,7 +668,7 @@ type ResourceDashboardStatsPayload {
 }
 
 type GetAllTicketsPayload {
-  tickets: [Ticket!]!
+  tickets: [Ticket!]
   count: Float!
 }
 
