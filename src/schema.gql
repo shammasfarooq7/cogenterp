@@ -704,6 +704,7 @@ type Query {
   getAllTickets(getAllTicketsInput: GetAllTicketsInput!): GetAllTicketsPayload!
   getTodayTicket(getTodayTicketsInput: GetTodayTicketsInput!): GetAllTicketsPayload!
   getTicket(id: String!): Ticket!
+  ticketTimeSheetData(ticketId: String!): [TimeSheet!]!
   getAllUserPaymentMethods: [UserPaymentMethod!]!
   getAllCustomer(getAllCustomerInput: GetAllCustomersInput!): GetAllCustomersPayload!
   getCustomer(id: String = null): Customer!

@@ -3,7 +3,7 @@ import { CreateTicketInput } from './dto/create-ticket.input';
 import { UpdateTicketInput } from './dto/update-ticket.input';
 import { TicketDetail } from './entities/ticketDetail.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Repository, DataSource, In, ILike, Between, MoreThan } from 'typeorm';
+import { IsNull, Repository, DataSource, In, ILike, Between, MoreThan, Not } from 'typeorm';
 import { Ticket, TicketType } from './entities/ticket.entity';
 import { ICurrentUser } from 'src/users/auth/interfaces/current-user.interface';
 import { GetAllTicketsInput } from './dto/get-all-tickets-input';
@@ -497,6 +497,28 @@ export class TicketsService {
         count,
         tickets
       };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async ticketTimeSheetData(ticketId: string): Promise<TimeSheet[]> {
+
+    try{
+      const ticket = await this.ticketRepo.findOne({
+        where: {id: ticketId, deletedAt: IsNull()},
+      });
+
+      if(!ticket && ticket.cogentWorkOrderNumber.length == 0) throw new NotFoundException("No data found.")
+
+      const timeSheets = await this.timeSheetRepo.find({
+        where: {
+          id: In(ticket?.cogentWorkOrderNumber),
+          deletedAt: IsNull()
+        },
+        relations: {ticketDate: true, resource: true}
+      })
+    return timeSheets
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

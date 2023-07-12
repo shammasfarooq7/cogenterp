@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
 import { TicketsService } from './tickets.service';
 import { Ticket } from './entities/ticket.entity';
 import { CreateTicketInput } from './dto/create-ticket.input';
@@ -11,9 +11,8 @@ import { UserRole } from '../../users/entities/role.entity';
 import { Roles } from '../../users/roles.decorator';
 import { AssignResourcesToTicketInput } from './dto/assign-resources-to-ticket.input';
 import { ChangeStatusInput } from './dto/change-status.input';
-import { TicketDate } from './entities/ticketDate.entity';
 import { GetTodayTicketsInput } from './dto/get-today-tickets-input';
-import { GetTodayTicketsPayload } from './dto/get-today-tickets.dto';
+import { TimeSheet } from './entities/timeSheet.entity';
 
 @Resolver(() => Ticket)
 export class TicketsResolver {
@@ -71,6 +70,12 @@ export class TicketsResolver {
   @Mutation(() => CommonPayload)
   changeStatus(@Args('changeStatus') changeStatusInput: ChangeStatusInput): Promise<CommonPayload> {
     return this.ticketsService.changeStatus(changeStatusInput);
+  }
+
+  @Roles(UserRole.FEOPS, UserRole.SD)
+  @Query(() => [TimeSheet])
+  ticketTimeSheetData(@Args('ticketId') ticketId: string): Promise<TimeSheet[]> {
+    return this.ticketsService.ticketTimeSheetData(ticketId);
   }
 
 }
