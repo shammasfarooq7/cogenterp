@@ -15,6 +15,8 @@ import { RMSDashboardStatsPayload } from './dto/rms-dashboard-stats.dto';
 import { ResourceDashboardStatsPayload } from './dto/resource-dashboard-stats.dto';
 import { TicketDate } from '../tickets/entities/ticketDate.entity';
 import { CheckinCheckoutInput } from './dto/checkin-checkout.input';
+import { GetResourceTicketInput } from './dto/get-resource-ticket.input';
+import { GetResourceTicketPayload } from './dto/get-resource-ticket.dto';
 
 @Resolver(() => Resource)
 export class ResourcesResolver {
@@ -77,14 +79,9 @@ export class ResourcesResolver {
   }
 
   @Roles(UserRole.ADMIN, UserRole.RESOURCE)
-  @Query(() => [TicketDate])
-  async getResourceTickets(@Context() ctx: IContext, @Args('id', { nullable: true, defaultValue: null }) id: string | null): Promise<TicketDate[]>{
-    if (id){
-      return await this.resourcesService.getResourceTickets(id)
-    } else{
-      const resource = await this.resourcesService.getResourceFromUserId(ctx?.user?.userId)
-      return await this.resourcesService.getResourceTickets(resource.id);
-    }
+  @Query(() => GetResourceTicketPayload)
+  async getResourceTickets(@Context() ctx: IContext, @Args('getResourceTicketInput') getResourceTicketInput: GetResourceTicketInput): Promise<GetResourceTicketPayload>{
+    return await this.resourcesService.getResourceTickets(ctx, getResourceTicketInput);
   }
 
   @Roles(UserRole.RESOURCE, UserRole.FEOPS, UserRole.SD)

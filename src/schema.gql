@@ -667,6 +667,11 @@ type ResourceDashboardStatsPayload {
   onboardedStats: Stats!
 }
 
+type GetResourceTicketPayload {
+  ticketDates: [TicketDate!]!
+  count: Float!
+}
+
 type GetAllTicketsPayload {
   tickets: [Ticket!]
   count: Float!
@@ -695,7 +700,7 @@ type Query {
   getRMSDashboardStats: RMSDashboardStatsPayload!
   getResourceDashboardStats: ResourceDashboardStatsPayload!
   getNewRequestUsers(getNewRequestUsersInput: GetAllResourcesInput!): GetAllResourcesStatsPayload!
-  getResourceTickets(id: String = null): [TicketDate!]!
+  getResourceTickets(getResourceTicketInput: GetResourceTicketInput!): GetResourceTicketPayload!
   getAllTickets(getAllTicketsInput: GetAllTicketsInput!): GetAllTicketsPayload!
   getTodayTicket(getTodayTicketsInput: GetTodayTicketsInput!): GetAllTicketsPayload!
   getTicket(id: String!): Ticket!
@@ -721,6 +726,14 @@ input GetAllResourcesInput {
   page: Float
   limit: Float
   searchQuery: String
+}
+
+input GetResourceTicketInput {
+  resourceId: String
+  today: Boolean
+  future: Boolean
+  page: Float
+  limit: Float
 }
 
 input GetAllTicketsInput {

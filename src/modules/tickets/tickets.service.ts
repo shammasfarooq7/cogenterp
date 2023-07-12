@@ -3,7 +3,7 @@ import { CreateTicketInput } from './dto/create-ticket.input';
 import { UpdateTicketInput } from './dto/update-ticket.input';
 import { TicketDetail } from './entities/ticketDetail.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Repository, DataSource, In, ILike, Between } from 'typeorm';
+import { IsNull, Repository, DataSource, In, ILike, Between, MoreThan } from 'typeorm';
 import { Ticket, TicketType } from './entities/ticket.entity';
 import { ICurrentUser } from 'src/users/auth/interfaces/current-user.interface';
 import { GetAllTicketsInput } from './dto/get-all-tickets-input';
@@ -22,6 +22,7 @@ import { TicketAttachment } from './entities/ticketAttachment.entity';
 import { GetTodayTicketsInput } from './dto/get-today-tickets-input';
 import { GetTodayTicketsPayload } from './dto/get-today-tickets.dto';
 import { User } from '../../users/entities/user.entity';
+import { GetResourceTicketPayload } from '../resources/dto/get-resource-ticket.dto';
 
 @Injectable()
 export class TicketsService {
@@ -387,22 +388,42 @@ export class TicketsService {
     }
   }
 
-  async getTicketByTicketDate(ticketDateIds: string[]): Promise<TicketDate[]> {
+  async getTicketByTicketDate(limit: number, page: number, today: boolean, future: boolean, ticketDateIds: string[]): Promise<GetResourceTicketPayload> {
     try {
-      let ticketDates = await this.ticketDateRepo.find({
-        where: {
-          id: In(ticketDateIds),
-          deletedAt: IsNull()
-        },
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+
+      const tomorrow = new Date(now);
+      tomorrow.setDate(now.getDate() + 1);
+
+      const whereClause = {
+        id: In(ticketDateIds),
+        deletedAt: IsNull(),
+        date: (today == true) ? Between(now, tomorrow) : (future == true) ? MoreThan(now) : null,
+      };
+
+      const [ticketDates, count] = await this.ticketDateRepo.findAndCount({
+        where: whereClause,
         relations: {
-          ticket: { ticketDetail: true },
+          ticket: {ticketDetail: true}
         },
+        order: {
+          id: 'DESC'
+        },
+        skip: page * limit,
+        take: limit
       });
-      return ticketDates;
+
+      return {
+        ticketDates,
+        count
+      }
+
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
+
 
   async getTodayTicket(currentUser: ICurrentUser, getTodayTicketsInput: GetTodayTicketsInput): Promise<GetAllTicketsPayload> {
     try {

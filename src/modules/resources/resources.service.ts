@@ -18,6 +18,10 @@ import { TicketsService } from '../tickets/tickets.service';
 import { TicketDate } from '../tickets/entities/ticketDate.entity';
 import { CheckinCheckoutInput } from './dto/checkin-checkout.input';
 import { ICurrentUser } from '../../users/auth/interfaces/current-user.interface';
+import { GetResourceTicketInput } from './dto/get-resource-ticket.input';
+import { IContext } from '../../users/auth/interfaces/context.interface';
+import { Context } from '@nestjs/graphql';
+import { GetResourceTicketPayload } from './dto/get-resource-ticket.dto';
 
 @Injectable()
 export class ResourcesService {
@@ -420,21 +424,23 @@ export class ResourcesService {
     }
   }
 
-  async getResourceTickets(resourceId: string): Promise<TicketDate[]>{
+  async getResourceTickets(ctx: IContext, getResourceTicketInput: GetResourceTicketInput): Promise<GetResourceTicketPayload>{
     try{
+
+      const {page = 0, limit = 20, resourceId, today, future} = getResourceTicketInput
+      const resourceById = resourceId ?? (await this.getResourceFromUserId(ctx.user?.userId))?.id;
       const resource = await this.resourceRepo.findOne({
-        where: { id: resourceId },
+        where: { id: resourceById },
         relations: {timeSheets: true},
       });
 
       if (resource && resource.timeSheets){
         let ticketDateIds = resource.timeSheets.map((timesheet: TimeSheet) => timesheet.ticketDateId);
         ticketDateIds = Array.from(new Set(ticketDateIds));
-        const resourceTickets = await this.ticketService.getTicketByTicketDate(ticketDateIds)
+        const resourceTickets = await this.ticketService.getTicketByTicketDate(limit, page, !!today, !!future, ticketDateIds);
         return resourceTickets
       }
 
-      return []
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
