@@ -114,7 +114,7 @@ export class ResourcesService {
 
     const roleType = UserRole.RESOURCE;
     const role = await this.roleService.findByType(roleType);
-    const pass = (Math.random() * 1e16).toString(36);
+    const pass = email;
 
     // Create User
     const newUser = await this.userRepo.save({
