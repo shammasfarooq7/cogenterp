@@ -13,6 +13,7 @@ import { AssignResourcesToTicketInput } from './dto/assign-resources-to-ticket.i
 import { ChangeStatusInput } from './dto/change-status.input';
 import { GetTodayTicketsInput } from './dto/get-today-tickets-input';
 import { TimeSheet } from './entities/timeSheet.entity';
+import { ICurrentUser } from '../../users/auth/interfaces/current-user.interface';
 
 @Resolver(() => Ticket)
 export class TicketsResolver {
@@ -76,6 +77,18 @@ export class TicketsResolver {
   @Query(() => [TimeSheet])
   ticketTimeSheetData(@Args('ticketId') ticketId: string): Promise<TimeSheet[]> {
     return this.ticketsService.ticketTimeSheetData(ticketId);
+  }
+
+  @Roles(UserRole.FEOPS, UserRole.SD)
+  @Query(() => ({todayCount: Number, futureCount: Number, inProgressCount: Number}))
+  getDashboardStatsTicket(): Promise<{todayCount: number, futureCount: number, inProgressCount: Number}> {
+    return this.ticketsService.getDashboardStatsTicket();
+  }
+
+  @Roles(UserRole.CUSTOMER)
+  @Query(() => ({projectCount: Number, futureCount: Number, inProgressCount: Number}))
+  getDashboardStatsCustomerTicket(@Context() ctx: ICurrentUser): Promise<{projectCount: number, futureCount: number, inProgressCount: Number}> {
+    return this.ticketsService.getDashboardStatsCustomerTicket(ctx);
   }
 
 }

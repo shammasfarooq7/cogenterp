@@ -27,7 +27,8 @@
     "createRmsUser": "ts-node ./src/scripts/createRmsUser.ts",
     "createSdUser": "ts-node ./src/scripts/createSdUser.ts",
     "createCustomerProjectJobsite": "ts-node ./src/scripts/createCustomerProjectJobsite.ts",
-    "assignRole": "ts-node ./src/scripts/assign-role-.ts"
+    "assignRole": "ts-node ./src/scripts/assign-role-.ts",
+    "createAdminUser": "ts-node ./src/scripts/createAdminUser.ts"
   },
   "dependencies": {
     "@azure/storage-blob": "^12.14.0",

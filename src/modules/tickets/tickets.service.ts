@@ -4,7 +4,7 @@ import { UpdateTicketInput } from './dto/update-ticket.input';
 import { TicketDetail } from './entities/ticketDetail.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository, DataSource, In, ILike, Between, MoreThan, Not } from 'typeorm';
-import { Ticket, TicketType } from './entities/ticket.entity';
+import { Ticket, TicketStatus, TicketType } from './entities/ticket.entity';
 import { ICurrentUser } from 'src/users/auth/interfaces/current-user.interface';
 import { GetAllTicketsInput } from './dto/get-all-tickets-input';
 import { GetAllTicketsPayload } from './dto/get-all-tickets.dto';
@@ -23,6 +23,7 @@ import { GetTodayTicketsInput } from './dto/get-today-tickets-input';
 import { GetTodayTicketsPayload } from './dto/get-today-tickets.dto';
 import { User } from '../../users/entities/user.entity';
 import { GetResourceTicketPayload } from '../resources/dto/get-resource-ticket.dto';
+import { Context, ObjectType } from '@nestjs/graphql';
 
 @Injectable()
 export class TicketsService {
@@ -399,7 +400,7 @@ export class TicketsService {
       const whereClause = {
         id: In(ticketDateIds),
         deletedAt: IsNull(),
-        date: (today == true) ? Between(now, tomorrow) : (future == true) ? MoreThan(now) : null,
+        date: (today == true) ? Between(now, tomorrow) : (future == true) ? MoreThan(tomorrow) : null,
       };
 
       const [ticketDates, count] = await this.ticketDateRepo.findAndCount({
@@ -521,6 +522,90 @@ export class TicketsService {
     return timeSheets
     } catch (error) {
       throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getDashboardStatsTicket(): Promise<{todayCount: number, futureCount: number, inProgressCount: Number}>{
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const ticketDateCount = await this.ticketDateRepo.count({
+      where: {
+        date: Between(today, tomorrow),
+        deletedAt: IsNull()
+      }
+    })
+
+    const futureTicketDateCount = await this.ticketDateRepo.count({
+      where: {
+        date: MoreThan(tomorrow),
+        deletedAt: IsNull()
+      }
+    })
+
+    const inProgressTicketCount = await this.ticketRepo.count({
+      where: {
+        status: TicketStatus.INPROGRESS,
+        deletedAt: IsNull()
+      }
+    })
+
+    return {
+      todayCount: ticketDateCount,
+      futureCount: futureTicketDateCount,
+      inProgressCount: inProgressTicketCount
+    }
+  }
+
+  async getDashboardStatsCustomerTicket(ctx: ICurrentUser): Promise<{projectCount: number, futureCount: number, inProgressCount: Number}>{
+
+    const customer = await this.customerRepo.findOne({
+      where: {
+        user: {
+          id: ctx?.userId
+        }
+      }
+    })
+
+    if(!customer) throw new NotFoundException("No Data for Customer.")
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const futureCount = await this.ticketRepo.count({
+      where: {
+        customerId: customer?.id,
+        deletedAt: IsNull(),
+        ticketDates: {
+          date: MoreThan(today),
+          deletedAt: IsNull()
+        }
+      },
+      relations: {ticketDates: true}
+    })
+
+    const inProgressTicketCount = await this.ticketRepo.count({
+      where: {
+        status: TicketStatus.INPROGRESS,
+        customerId: customer?.id,
+        deletedAt: IsNull()
+      }
+    })
+
+    const projectCount = await this.projectRepo.count({
+      where: {
+        customerId: customer?.id,
+        deletedAt: IsNull()
+      }
+    })
+
+    return {
+      projectCount: projectCount,
+      futureCount: futureCount,
+      inProgressCount: inProgressTicketCount
     }
   }
 }
