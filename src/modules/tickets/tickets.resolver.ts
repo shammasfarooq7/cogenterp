@@ -80,13 +80,13 @@ export class TicketsResolver {
   }
 
   @Roles(UserRole.FEOPS, UserRole.SD)
-  @Query(() => ({todayCount: Number, futureCount: Number, inProgressCount: Number}))
+  @Query()
   getDashboardStatsTicket(): Promise<{todayCount: number, futureCount: number, inProgressCount: Number}> {
     return this.ticketsService.getDashboardStatsTicket();
   }
 
   @Roles(UserRole.CUSTOMER)
-  @Query(() => ({projectCount: Number, futureCount: Number, inProgressCount: Number}))
+  @Query()
   getDashboardStatsCustomerTicket(@Context() ctx: ICurrentUser): Promise<{projectCount: number, futureCount: number, inProgressCount: Number}> {
     return this.ticketsService.getDashboardStatsCustomerTicket(ctx);
   }
