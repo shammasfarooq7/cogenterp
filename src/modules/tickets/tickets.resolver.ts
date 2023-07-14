@@ -46,8 +46,8 @@ export class TicketsResolver {
   }
 
   @Roles(UserRole.SD, UserRole.FEOPS)
-  @Mutation(() => Ticket)
-  updateTicket(@Args('updateTicketInput') updateTicketInput: UpdateTicketInput) {
+  @Mutation(() => CommonPayload)
+  updateTicket(@Args('updateTicketInput') updateTicketInput: UpdateTicketInput): Promise<CommonPayload> {
     return this.ticketsService.updateTicket(updateTicketInput.id, updateTicketInput);
   }
 

@@ -801,7 +801,7 @@ type Mutation {
   approveUserRequest(id: String!): CommonPayload!
   timeSheetCheckInOut(checkinCheckoutInput: CheckinCheckoutInput!): CommonPayload!
   createTicket(createTicketInput: CreateTicketInput!): CommonPayload!
-  updateTicket(updateTicketInput: UpdateTicketInput!): Ticket!
+  updateTicket(updateTicketInput: UpdateTicketInput!): CommonPayload!
   deleteTicket(id: String!): CommonPayload!
   assignResourcesToTicket(assignResourcesToTicketInput: AssignResourcesToTicketInput!): CommonPayload!
   approveExternalTicket(id: String!): CommonPayload!

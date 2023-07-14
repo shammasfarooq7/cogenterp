@@ -31,6 +31,7 @@ import { GetCustomerTicketDashboardStatsPayload } from './dto/get-customer-ticke
 export class TicketsService {
   constructor(
     @InjectRepository(Ticket) private ticketRepo: Repository<Ticket>,
+    @InjectRepository(TicketDetail) private ticketDetailRepo: Repository<TicketDetail>,
     @InjectRepository(TicketDate) private ticketDateRepo: Repository<TicketDate>,
     @InjectRepository(TicketAttachment) private ticketAttachmentRepo: Repository<TicketAttachment>,
     @InjectRepository(Customer) private customerRepo: Repository<Customer>,
@@ -174,8 +175,11 @@ export class TicketsService {
 
       const whereClause = {
         deletedAt: IsNull(),
-        isExternal: (external == true) ? true : null,
-        isApproved: (approved == false) ? false : null,
+        isExternal: (external === true) ? true : null,
+        isApproved: (approved === false) ? false : null,
+        ticketDates: {
+          deletedAt: IsNull(),
+        },
         ...(filterCustomerId && { customerId: filterCustomerId })
       };
 
@@ -217,11 +221,14 @@ export class TicketsService {
     }
   }
 
-  async updateTicket(id: string, updateTicketInput: UpdateTicketInput) {
+  async updateTicket(id: string, updateTicketInput: UpdateTicketInput): Promise<CommonPayload> {
     try {
+      const { attachments, scheduledTime, ticketDates, id, ...details } = updateTicketInput
+
       const ticket = await this.ticketRepo.findOne({
         where: { id, deletedAt: IsNull() },
-        relations: { ticketDates: true }
+        relations: { ticketDates: true, ticketDetail: true },
+        select: { id: true, ticketDetailId: true }
       });
 
       if (!ticket) throw new NotFoundException(`Ticket does not exist!`)
@@ -234,7 +241,38 @@ export class TicketsService {
       const hoursDifference = timeDifference / (1000 * 60 * 60);
 
       if (hoursDifference > 24) {
-        // write update ticket code here.
+        // Update Ticket Detail 
+        const ticketDetail = await this.ticketDetailRepo.findOne({
+          where: { id: ticket.ticketDetailId }
+        })
+        for (const detail in details) {
+          ticketDetail[detail] = details[detail]
+        }
+        await this.ticketDetailRepo.save(ticketDetail)
+
+        // Update Attachments
+        if (ticket.ticketDetailId && attachments.length) {
+          // First remove all attachments
+          await this.ticketAttachmentRepo.delete({ ticketDetailsId: +ticket.ticketDetailId })
+          // Create new Attachments
+          for (const attachmentUrl of attachments) {
+            await this.ticketAttachmentRepo.save({ url: attachmentUrl, ticketDetail: ticket.ticketDetail })
+          }
+        }
+
+        // Update Ticket Dates
+        if (ticketDates.length) {
+
+          // First Remove previous dates
+          await this.ticketDateRepo.update({ ticketId: id }, { deletedAt: new Date() })
+
+          // Create New Dates
+          for (const date of ticketDates) {
+            await this.ticketDateRepo.save({ date, scheduledTime, ticket })
+          }
+        }
+
+
         return { message: "Ticket Updated Successfully!" };
       } else {
         throw new Error("Update Ticket is only possible before 24 hours.");
@@ -408,7 +446,7 @@ export class TicketsService {
       const [ticketDates, count] = await this.ticketDateRepo.findAndCount({
         where: whereClause,
         relations: {
-          ticket: {ticketDetail: true}
+          ticket: { ticketDetail: true }
         },
         order: {
           id: 'DESC'
@@ -507,21 +545,21 @@ export class TicketsService {
 
   async ticketTimeSheetData(ticketId: string): Promise<TimeSheet[]> {
 
-    try{
+    try {
       const ticket = await this.ticketRepo.findOne({
-        where: {id: ticketId, deletedAt: IsNull()},
+        where: { id: ticketId, deletedAt: IsNull() },
       });
 
-      if(!ticket && ticket.cogentWorkOrderNumber.length == 0) throw new NotFoundException("No data found.")
+      if (!ticket && ticket.cogentWorkOrderNumber.length == 0) throw new NotFoundException("No data found.")
 
       const timeSheets = await this.timeSheetRepo.find({
         where: {
           id: In(ticket?.cogentWorkOrderNumber),
           deletedAt: IsNull()
         },
-        relations: {ticketDate: true, resource: true}
+        relations: { ticketDate: true, resource: true }
       })
-    return timeSheets
+      return timeSheets
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -563,7 +601,6 @@ export class TicketsService {
   }
 
   async getDashboardStatsCustomerTicket(ctx: ICurrentUser): Promise<GetCustomerTicketDashboardStatsPayload>{
-
     const customer = await this.customerRepo.findOne({
       where: {
         user: {
@@ -572,7 +609,7 @@ export class TicketsService {
       }
     })
 
-    if(!customer) throw new NotFoundException("No Data for Customer.")
+    if (!customer) throw new NotFoundException("No Data for Customer.")
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -586,7 +623,7 @@ export class TicketsService {
           deletedAt: IsNull()
         }
       },
-      relations: {ticketDates: true}
+      relations: { ticketDates: true }
     })
 
     const inProgressTicketCount = await this.ticketRepo.count({
