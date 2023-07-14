@@ -174,8 +174,8 @@ export class TicketsService {
 
       const whereClause = {
         deletedAt: IsNull(),
-        isExternal: external ? true : null,
-        isApproved: approved ? false : true,
+        isExternal: (external == true) ? true : null,
+        isApproved: (approved == false) ? false : null,
         ...(filterCustomerId && { customerId: filterCustomerId })
       };
 
