@@ -24,6 +24,8 @@ import { GetTodayTicketsPayload } from './dto/get-today-tickets.dto';
 import { User } from '../../users/entities/user.entity';
 import { GetResourceTicketPayload } from '../resources/dto/get-resource-ticket.dto';
 import { Context, ObjectType } from '@nestjs/graphql';
+import { GetTicketDashboardStatsPayload } from './dto/get-ticket-dashboard-stats.dto';
+import { GetCustomerTicketDashboardStatsPayload } from './dto/get-customer-ticket-dashboard-stats.dto';
 
 @Injectable()
 export class TicketsService {
@@ -525,7 +527,7 @@ export class TicketsService {
     }
   }
 
-  async getDashboardStatsTicket(): Promise<{todayCount: number, futureCount: number, inProgressCount: Number}>{
+  async getDashboardStatsTicket(): Promise<GetTicketDashboardStatsPayload>{
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -560,7 +562,7 @@ export class TicketsService {
     }
   }
 
-  async getDashboardStatsCustomerTicket(ctx: ICurrentUser): Promise<{projectCount: number, futureCount: number, inProgressCount: Number}>{
+  async getDashboardStatsCustomerTicket(ctx: ICurrentUser): Promise<GetCustomerTicketDashboardStatsPayload>{
 
     const customer = await this.customerRepo.findOne({
       where: {

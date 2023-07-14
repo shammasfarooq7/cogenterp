@@ -677,6 +677,18 @@ type GetAllTicketsPayload {
   count: Float!
 }
 
+type GetTicketDashboardStatsPayload {
+  todayCount: Float!
+  futureCount: Float!
+  inProgressCount: Float!
+}
+
+type GetCustomerTicketDashboardStatsPayload {
+  projectCount: Float!
+  futureCount: Float!
+  inProgressCount: Float!
+}
+
 type GetAllCustomersPayload {
   customers: [Customer!]!
   count: Float!
@@ -705,6 +717,8 @@ type Query {
   getTodayTicket(getTodayTicketsInput: GetTodayTicketsInput!): GetAllTicketsPayload!
   getTicket(id: String!): Ticket!
   ticketTimeSheetData(ticketId: String!): [TimeSheet!]!
+  getDashboardStatsTicket: GetTicketDashboardStatsPayload!
+  getDashboardStatsCustomerTicket: GetCustomerTicketDashboardStatsPayload!
   getAllUserPaymentMethods: [UserPaymentMethod!]!
   getAllCustomer(getAllCustomerInput: GetAllCustomersInput!): GetAllCustomersPayload!
   getCustomer(id: String = null): Customer!

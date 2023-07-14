@@ -14,6 +14,8 @@ import { ChangeStatusInput } from './dto/change-status.input';
 import { GetTodayTicketsInput } from './dto/get-today-tickets-input';
 import { TimeSheet } from './entities/timeSheet.entity';
 import { ICurrentUser } from '../../users/auth/interfaces/current-user.interface';
+import { GetTicketDashboardStatsPayload } from './dto/get-ticket-dashboard-stats.dto';
+import { GetCustomerTicketDashboardStatsPayload } from './dto/get-customer-ticket-dashboard-stats.dto';
 
 @Resolver(() => Ticket)
 export class TicketsResolver {
@@ -80,14 +82,14 @@ export class TicketsResolver {
   }
 
   @Roles(UserRole.FEOPS, UserRole.SD)
-  @Query()
-  getDashboardStatsTicket(): Promise<{todayCount: number, futureCount: number, inProgressCount: Number}> {
+  @Query(() => GetTicketDashboardStatsPayload)
+  getDashboardStatsTicket(): Promise<GetTicketDashboardStatsPayload> {
     return this.ticketsService.getDashboardStatsTicket();
   }
 
   @Roles(UserRole.CUSTOMER)
-  @Query()
-  getDashboardStatsCustomerTicket(@Context() ctx: ICurrentUser): Promise<{projectCount: number, futureCount: number, inProgressCount: Number}> {
+  @Query(() => GetCustomerTicketDashboardStatsPayload)
+  getDashboardStatsCustomerTicket(@Context() ctx: ICurrentUser): Promise<GetCustomerTicketDashboardStatsPayload> {
     return this.ticketsService.getDashboardStatsCustomerTicket(ctx);
   }
 
