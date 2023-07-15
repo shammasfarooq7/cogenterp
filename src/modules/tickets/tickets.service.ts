@@ -37,7 +37,7 @@ export class TicketsService {
     @InjectRepository(Customer) private customerRepo: Repository<Customer>,
     @InjectRepository(Project) private projectRepo: Repository<Project>,
     @InjectRepository(Jobsite) private jobsiteRepo: Repository<Jobsite>,
-    @InjectRepository(Jobsite) private timeSheetRepo: Repository<TimeSheet>,
+    @InjectRepository(TimeSheet) private timeSheetRepo: Repository<TimeSheet>,
     @InjectRepository(User) private userRepo: Repository<User>,
     private dataSource: DataSource
   ) { }
@@ -285,9 +285,10 @@ export class TicketsService {
   async deleteTicket(id: string): Promise<CommonPayload> {
     try {
       const ticket = await this.ticketRepo.findOne({
-        where: { id, deletedAt: IsNull() },
+        where: { id,ticketDates: { deletedAt: IsNull() } },
         relations: { ticketDates: true },
-        select: { ticketDates: { id: true }, id: true, deletedAt: true }
+        select: { id: true },
+        order: { ticketDates: { date: "ASC" } }
       });
 
       if (!ticket) {
@@ -295,15 +296,13 @@ export class TicketsService {
       }
 
       const firstTicketDate = ticket.ticketDates[0];
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
+      const currentDate = new Date();
 
-      const timeDifference = firstTicketDate.date.getTime() - yesterday.getTime();
+      const timeDifference = firstTicketDate.date.getTime() - currentDate.getTime();
       const hoursDifference = timeDifference / (1000 * 60 * 60);
 
       if (hoursDifference > 24) {
-        ticket.deletedAt = new Date();
-        await this.ticketRepo.save(ticket);
+        await this.ticketRepo.update({ id: ticket.id }, { deletedAt: new Date() })
 
         for (const ticketDate of ticket.ticketDates) {
           await this.ticketDateRepo.update(ticketDate.id, { deletedAt: new Date() });
