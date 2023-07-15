@@ -121,7 +121,7 @@ export class UsersService {
     return await this.userRepo.findOne(
       {
         where: { id, deletedAt: IsNull() },
-        relations: { roles: true }
+        relations: { roles: true, customer: true, resource: true }
       }
     )
   };

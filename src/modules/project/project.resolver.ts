@@ -35,7 +35,7 @@ export class ProjectResolver {
     return await this.projectService.getProject(id);
   }
 
-  @Roles(UserRole.ADMIN, UserRole.SD)
+  @Roles(UserRole.ADMIN, UserRole.SD, UserRole.CUSTOMER)
   @Query(() => [Project])
   async getProjectByCustomer(@Args('id') id: string, @Args('getProjectsByCustomerInput') getProjectsByCustomerInput: GetProjectsByCustomerInput): Promise<Project[]> {
     return await this.projectService.getProjectsByCustomer(id, getProjectsByCustomerInput);
