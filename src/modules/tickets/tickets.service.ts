@@ -600,11 +600,11 @@ export class TicketsService {
     }
   }
 
-  async getDashboardStatsCustomerTicket(ctx: ICurrentUser): Promise<GetCustomerTicketDashboardStatsPayload> {
+  async getDashboardStatsCustomerTicket(currentuser: ICurrentUser): Promise<GetCustomerTicketDashboardStatsPayload> {
     const customer = await this.customerRepo.findOne({
       where: {
         user: {
-          id: ctx?.userId
+          id: currentuser?.userId
         }
       }
     })

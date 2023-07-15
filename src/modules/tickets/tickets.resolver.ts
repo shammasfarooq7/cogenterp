@@ -89,8 +89,8 @@ export class TicketsResolver {
 
   @Roles(UserRole.CUSTOMER)
   @Query(() => GetCustomerTicketDashboardStatsPayload)
-  getDashboardStatsCustomerTicket(@Context() ctx: ICurrentUser): Promise<GetCustomerTicketDashboardStatsPayload> {
-    return this.ticketsService.getDashboardStatsCustomerTicket(ctx);
+  getDashboardStatsCustomerTicket(@Context() ctx: IContext): Promise<GetCustomerTicketDashboardStatsPayload> {
+    return this.ticketsService.getDashboardStatsCustomerTicket(ctx.user);
   }
 
 }
