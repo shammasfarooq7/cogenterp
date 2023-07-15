@@ -228,16 +228,16 @@ export class TicketsService {
       const ticket = await this.ticketRepo.findOne({
         where: { id, deletedAt: IsNull() },
         relations: { ticketDates: true, ticketDetail: true },
-        select: { id: true, ticketDetailId: true }
+        select: { id: true, ticketDetailId: true },
+        order: { ticketDates: { date: "ASC" } }
       });
 
       if (!ticket) throw new NotFoundException(`Ticket does not exist!`)
 
       const firstTicketDate = ticket.ticketDates[0];
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
+      const currentDate = new Date();
 
-      const timeDifference = firstTicketDate.date.getTime() - yesterday.getTime();
+      const timeDifference = firstTicketDate.date.getTime() - currentDate.getTime();
       const hoursDifference = timeDifference / (1000 * 60 * 60);
 
       if (hoursDifference > 24) {
@@ -565,7 +565,7 @@ export class TicketsService {
     }
   }
 
-  async getDashboardStatsTicket(): Promise<GetTicketDashboardStatsPayload>{
+  async getDashboardStatsTicket(): Promise<GetTicketDashboardStatsPayload> {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -600,7 +600,7 @@ export class TicketsService {
     }
   }
 
-  async getDashboardStatsCustomerTicket(ctx: ICurrentUser): Promise<GetCustomerTicketDashboardStatsPayload>{
+  async getDashboardStatsCustomerTicket(ctx: ICurrentUser): Promise<GetCustomerTicketDashboardStatsPayload> {
     const customer = await this.customerRepo.findOne({
       where: {
         user: {
