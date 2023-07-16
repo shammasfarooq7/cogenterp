@@ -353,7 +353,8 @@ export class TicketsService {
           // Find Ticket Dates
           const ticketDates = await queryRunner.manager.find(TicketDate, {
             where: {
-              ticketId
+              ticketId,
+              deletedAt: IsNull()
             },
             skip: page * limit,
             take: limit
