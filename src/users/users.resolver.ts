@@ -10,6 +10,7 @@ import { ICurrentUser } from './auth/interfaces/current-user.interface';
 import { GetAllUsersInput } from './dto/get-all-users-input';
 import { IContext } from './auth/interfaces/context.interface';
 import { GetAllUsersStatsPayload } from './dto/get-all-users.dto';
+import { ChangePasswordInput } from './dto/change-password.input';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -30,6 +31,12 @@ export class UsersResolver {
   @Mutation(() => User)
   async createuser(@Args('createUserInput') createUserInput: CreateUserInput): Promise<User> {
     return await this.usersService.create(createUserInput);
+  }
+
+  @Roles(UserRole.ADMIN, UserRole.RMS, UserRole.CUSTOMER, UserRole.FEOPS, UserRole.RESOURCE, UserRole.SD)
+  @Mutation(() => CommonPayload)
+  async changePassword(@Args('changePasswordInput') changePasswordInput: ChangePasswordInput): Promise<CommonPayload> {
+    return await this.usersService.changePassword(changePasswordInput);
   }
 
 }

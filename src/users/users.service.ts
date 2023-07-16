@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, IsNull, Repository } from 'typeorm';
+import { ILike, IsNull, Not, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UserRole } from './entities/role.entity';
@@ -8,6 +8,9 @@ import { RoleService } from './role.service';
 import { AuthService } from './auth/auth.service';
 import { GetAllUsersInput } from './dto/get-all-users-input';
 import { GetAllUsersStatsPayload } from './dto/get-all-users.dto';
+import { CommonPayload } from './dto/common.dto';
+import * as bcrypt from 'bcrypt';
+import { ChangePasswordInput } from './dto/change-password.input';
 
 @Injectable()
 export class UsersService {
@@ -125,5 +128,24 @@ export class UsersService {
       }
     )
   };
+
+  async changePassword(changePasswordInput: ChangePasswordInput): Promise<CommonPayload>{
+    try {
+      const {email, newPass, oldPass} = changePasswordInput
+      const user = await this.userRepo.findOne({ where: {email: email} })
+
+      if(!user) throw new NotFoundException("User not found.")
+
+      if(bcrypt.compareSync(oldPass, user.password)){
+        await this.userRepo.save({...user, password: newPass})
+      }
+
+      return{
+        message: "Password Changed Successfully."
+      }
+    } catch (error) {
+      throw error
+    }
+  }
 
 }

@@ -637,13 +637,13 @@ type LoginResponse {
   roles: [String!]
 }
 
+type CommonPayload {
+  message: String!
+}
+
 type GetAllUsersStatsPayload {
   users: [User!]!
   count: Float!
-}
-
-type CommonPayload {
-  message: String!
 }
 
 type GetAllResourcesStatsPayload {
@@ -823,6 +823,7 @@ input GetAllJobsitesInput {
 
 type Mutation {
   createuser(createUserInput: CreateUserInput!): User!
+  changePassword(changePasswordInput: ChangePasswordInput!): CommonPayload!
   createResource(createResourceInput: CreateResourceInput!): CommonPayload!
   updateResource(id: String!, updateResourceInput: UpdateResourceInput!): CommonPayload!
   approveUserRequest(id: String!): CommonPayload!
@@ -852,6 +853,12 @@ input CreateUserInput {
   lastName: String!
   middleName: String
   role: userRoles!
+}
+
+input ChangePasswordInput {
+  email: String!
+  oldPass: String!
+  newPass: String!
 }
 
 input CreateResourceInput {
