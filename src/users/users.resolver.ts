@@ -35,8 +35,8 @@ export class UsersResolver {
 
   @Roles(UserRole.ADMIN, UserRole.RMS, UserRole.CUSTOMER, UserRole.FEOPS, UserRole.RESOURCE, UserRole.SD)
   @Mutation(() => CommonPayload)
-  async changePassword(@Args('changePasswordInput') changePasswordInput: ChangePasswordInput): Promise<CommonPayload> {
-    return await this.usersService.changePassword(changePasswordInput);
+  async changePassword(@CurrentUser() user: ICurrentUser ,@Args('changePasswordInput') changePasswordInput: ChangePasswordInput): Promise<CommonPayload> {
+    return await this.usersService.changePassword(user,changePasswordInput);
   }
 
 }

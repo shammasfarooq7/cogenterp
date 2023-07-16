@@ -5,10 +5,6 @@ import { IsEmail } from '@nestjs/class-validator';
 export class ChangePasswordInput {
 
   @Field(() => String)
-  @IsEmail()
-  email: string;
-
-  @Field(() => String)
   oldPass: string;
 
   @Field(() => String)

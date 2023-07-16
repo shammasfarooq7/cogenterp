@@ -11,6 +11,7 @@ import { GetAllUsersStatsPayload } from './dto/get-all-users.dto';
 import { CommonPayload } from './dto/common.dto';
 import * as bcrypt from 'bcrypt';
 import { ChangePasswordInput } from './dto/change-password.input';
+import { ICurrentUser } from './auth/interfaces/current-user.interface';
 
 @Injectable()
 export class UsersService {
@@ -129,10 +130,10 @@ export class UsersService {
     )
   };
 
-  async changePassword(changePasswordInput: ChangePasswordInput): Promise<CommonPayload>{
+  async changePassword(ctx: ICurrentUser, changePasswordInput: ChangePasswordInput): Promise<CommonPayload>{
     try {
-      const {email, newPass, oldPass} = changePasswordInput
-      const user = await this.userRepo.findOne({ where: {email: email} })
+      const {newPass, oldPass} = changePasswordInput
+      const user = await this.userRepo.findOne({ where: {id: ctx.userId} })
 
       if(!user) throw new NotFoundException("User not found.")
 
