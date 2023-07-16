@@ -856,7 +856,6 @@ input CreateUserInput {
 }
 
 input ChangePasswordInput {
-  email: String!
   oldPass: String!
   newPass: String!
 }

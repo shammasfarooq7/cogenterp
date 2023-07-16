@@ -21,7 +21,7 @@ import { GetResourceTicketPayload } from './dto/get-resource-ticket.dto';
 export class ResourcesResolver {
   constructor(private readonly resourcesService: ResourcesService) { }
 
-  @Roles(UserRole.ADMIN, UserRole.RMS)
+  @Roles(UserRole.ADMIN, UserRole.RMS, UserRole.FEOPS)
   @Query(() => GetAllResourcesStatsPayload)
   async getAllResources(@CurrentUser() user: ICurrentUser, @Args('getAllResourcesInput') getAllResourcesInput: GetAllResourcesInput): Promise<GetAllResourcesStatsPayload> {
     return await this.resourcesService.getAllResources(getAllResourcesInput);
@@ -79,13 +79,13 @@ export class ResourcesResolver {
 
   @Roles(UserRole.ADMIN, UserRole.RESOURCE)
   @Query(() => GetResourceTicketPayload)
-  async getResourceTickets(@Context() ctx: IContext, @Args('getResourceTicketInput') getResourceTicketInput: GetResourceTicketInput): Promise<GetResourceTicketPayload>{
+  async getResourceTickets(@Context() ctx: IContext, @Args('getResourceTicketInput') getResourceTicketInput: GetResourceTicketInput): Promise<GetResourceTicketPayload> {
     return await this.resourcesService.getResourceTickets(ctx, getResourceTicketInput);
   }
 
   @Roles(UserRole.RESOURCE, UserRole.FEOPS, UserRole.SD)
   @Mutation(() => CommonPayload)
-  async timeSheetCheckInOut(@Context() ctx: IContext, @Args('checkinCheckoutInput') checkinCheckoutInput: CheckinCheckoutInput): Promise<CommonPayload>{
+  async timeSheetCheckInOut(@Context() ctx: IContext, @Args('checkinCheckoutInput') checkinCheckoutInput: CheckinCheckoutInput): Promise<CommonPayload> {
     return await this.resourcesService.timeSheetCheckInOut(ctx?.user, checkinCheckoutInput)
   }
 }

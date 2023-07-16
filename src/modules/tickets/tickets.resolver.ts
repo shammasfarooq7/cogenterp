@@ -27,19 +27,19 @@ export class TicketsResolver {
     return this.ticketsService.create(ctx.user, createTicketInput);
   }
 
-  @Roles(UserRole.SD, UserRole.CUSTOMER, UserRole.ADMIN, UserRole.RESOURCE)
+  @Roles(UserRole.SD, UserRole.CUSTOMER, UserRole.ADMIN, UserRole.RESOURCE, UserRole.FEOPS)
   @Query(() => GetAllTicketsPayload)
   getAllTickets(@Context() ctx: IContext, @Args('getAllTicketsInput') getAllTicketsInput: GetAllTicketsInput): Promise<GetAllTicketsPayload> {
     return this.ticketsService.findAll(ctx.user, getAllTicketsInput);
   }
 
-  @Roles(UserRole.SD, UserRole.CUSTOMER, UserRole.ADMIN, UserRole.RESOURCE)
+  @Roles(UserRole.SD, UserRole.CUSTOMER, UserRole.ADMIN, UserRole.RESOURCE, UserRole.FEOPS)
   @Query(() => GetAllTicketsPayload)
   async getTodayTicket(@Context() ctx: IContext, @Args('getTodayTicketsInput') getTodayTicketsInput: GetTodayTicketsInput): Promise<GetAllTicketsPayload> {
     return await this.ticketsService.getTodayTicket(ctx.user, getTodayTicketsInput);
   }
 
-  @Roles(UserRole.SD, UserRole.CUSTOMER, UserRole.ADMIN)
+  @Roles(UserRole.SD, UserRole.CUSTOMER, UserRole.ADMIN, UserRole.FEOPS)
   @Query(() => Ticket)
   getTicket(@Args('id') id: string): Promise<Ticket> {
     return this.ticketsService.findOne(id);
