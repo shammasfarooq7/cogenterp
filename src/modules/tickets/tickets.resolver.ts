@@ -51,7 +51,7 @@ export class TicketsResolver {
     return this.ticketsService.updateTicket(updateTicketInput.id, updateTicketInput);
   }
 
-  @Roles(UserRole.SD, UserRole.ADMIN)
+  @Roles(UserRole.SD, UserRole.ADMIN, UserRole.FEOPS)
   @Mutation(() => CommonPayload)
   deleteTicket(@Args('id') id: string): Promise<CommonPayload> {
     return this.ticketsService.deleteTicket(id);

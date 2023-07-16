@@ -14,7 +14,7 @@ import { GetAllCustomersInput } from './dto/get-all-customers.input';
 
 @Resolver(() => Customer)
 export class CustomerResolver {
-  constructor(private readonly customerService: CustomerService) {}
+  constructor(private readonly customerService: CustomerService) { }
 
 
   @Roles(UserRole.ADMIN)
@@ -23,7 +23,7 @@ export class CustomerResolver {
     return await this.customerService.createCustomer(ctx?.user?.userId, createCustomer)
   }
 
-  @Roles(UserRole.ADMIN, UserRole.SD)
+  @Roles(UserRole.ADMIN, UserRole.SD, UserRole.FEOPS)
   @Query(() => GetAllCustomersPayload)
   async getAllCustomer(@CurrentUser() user: ICurrentUser, @Args('getAllCustomerInput') getAllCustomerInput: GetAllCustomersInput): Promise<GetAllCustomersPayload> {
     return await this.customerService.getAllCustomers(getAllCustomerInput);
@@ -38,7 +38,7 @@ export class CustomerResolver {
   @Roles(UserRole.ADMIN)
   @Mutation(() => CommonPayload)
   async updateCustomer(@Args('id') id: string, @Args('updateCustomerInput') updateCustomerInput: UpdateCustomerInput): Promise<CommonPayload> {
-    return await this.customerService.updateCustomer( id, updateCustomerInput);
+    return await this.customerService.updateCustomer(id, updateCustomerInput);
   }
 
   @Roles(UserRole.ADMIN)
