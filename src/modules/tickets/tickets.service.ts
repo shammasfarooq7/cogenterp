@@ -7,7 +7,7 @@ import { IsNull, Repository, DataSource, In, ILike, Between, MoreThan, Not } fro
 import { Ticket, TicketStatus, TicketType } from './entities/ticket.entity';
 import { ICurrentUser } from 'src/users/auth/interfaces/current-user.interface';
 import { GetAllTicketsInput } from './dto/get-all-tickets-input';
-import { GetAllTicketsPayload } from './dto/get-all-tickets.dto';
+import { GetAllTicketsPayload, TicketWithPermissions } from './dto/get-all-tickets.dto';
 import { CommonPayload } from 'src/users/dto/common.dto';
 import { UserRole } from 'src/users/entities/role.entity';
 import { TicketDate } from './entities/ticketDate.entity';
@@ -189,12 +189,15 @@ export class TicketsService {
         { ...(searchQuery && { cogentCaseNumber: ILike(`%${searchQuery}%`) }), ...whereClause },
       ];
 
-      const [tickets, count] = await this.ticketRepo.findAndCount({
+      const [allTickets, count] = await this.ticketRepo.findAndCount({
         where,
         relations: { ticketDates: true, ticketDetail: { attachments: true } },
         skip: page * limit,
         take: limit,
+        order: { id: "ASC", ticketDates: { date: "ASC" } }
       });
+
+      const { tickets } = await this.addPermissionsInTicket(allTickets, page)
 
       return {
         count,
@@ -229,16 +232,14 @@ export class TicketsService {
         where: { id, deletedAt: IsNull() },
         relations: { ticketDates: true, ticketDetail: true },
         select: { id: true, ticketDetailId: true },
-        order: { ticketDates: { date: "ASC" } }
+        order: { id: "ASC", ticketDates: { date: "ASC" } }
       });
 
       if (!ticket) throw new NotFoundException(`Ticket does not exist!`)
 
       const firstTicketDate = ticket.ticketDates[0];
       const currentDate = new Date();
-
-      const timeDifference = firstTicketDate.date.getTime() - currentDate.getTime();
-      const hoursDifference = timeDifference / (1000 * 60 * 60);
+      const hoursDifference = this.getHourDifference(firstTicketDate.date, currentDate)
 
       if (hoursDifference > 24) {
         // Update Ticket Detail 
@@ -285,10 +286,10 @@ export class TicketsService {
   async deleteTicket(id: string): Promise<CommonPayload> {
     try {
       const ticket = await this.ticketRepo.findOne({
-        where: { id,ticketDates: { deletedAt: IsNull() } },
+        where: { id, ticketDates: { deletedAt: IsNull() } },
         relations: { ticketDates: true },
         select: { id: true },
-        order: { ticketDates: { date: "ASC" } }
+        order: { id: "ASC", ticketDates: { date: "ASC" } }
       });
 
       if (!ticket) {
@@ -297,9 +298,8 @@ export class TicketsService {
 
       const firstTicketDate = ticket.ticketDates[0];
       const currentDate = new Date();
+      const hoursDifference = this.getHourDifference(firstTicketDate.date, currentDate)
 
-      const timeDifference = firstTicketDate.date.getTime() - currentDate.getTime();
-      const hoursDifference = timeDifference / (1000 * 60 * 60);
 
       if (hoursDifference > 24) {
         await this.ticketRepo.update({ id: ticket.id }, { deletedAt: new Date() })
@@ -526,12 +526,15 @@ export class TicketsService {
         { ...(searchQuery && { customerName: ILike(`%${searchQuery}%`) }), ...whereClause },
         { ...(searchQuery && { cogentCaseNumber: ILike(`%${searchQuery}%`) }), ...whereClause },]
 
-      const [tickets, count] = await this.ticketRepo.findAndCount({
+      const [allTickets, count] = await this.ticketRepo.findAndCount({
         where: where,
         relations: { ticketDates: true, ticketDetail: { attachments: true } },
         skip: page * limit,
-        take: limit
+        take: limit,
+        order: { id: "ASC", ticketDates: { date: "ASC" } }
       });
+
+      const { tickets } = await this.addPermissionsInTicket(allTickets, page)
 
       return {
         count,
@@ -646,4 +649,61 @@ export class TicketsService {
       inProgressCount: inProgressTicketCount
     }
   }
+
+  // --------------------------------- Helper -----------------------------------------//
+  async addPermissionsInTicket(allTickets: Ticket[], page: number) {
+    const tickets: TicketWithPermissions[] = []
+
+    for (const ticket of allTickets) {
+      let index = 0;
+      let canEditAndDelete = false;
+
+      const currentDate = new Date();
+
+      if (ticket.ticketType === TicketType.FSE) {
+        let firstTicketDate = new Date();
+        if (index === 0 && page > 0) {
+          const firstTicket = await this.ticketRepo.findOne({
+            where: {
+              ticketDetailId: ticket.ticketDetailId
+            },
+            order: { id: "ASC" }
+          })
+          firstTicketDate = firstTicket.ticketDates?.[0]?.date;
+        }
+        else {
+          firstTicketDate = allTickets.find(all => all.ticketDetailId === ticket.ticketDetailId)?.ticketDates?.[0]?.date
+        }
+
+        if (firstTicketDate) {
+          const hoursDifference = this.getHourDifference(firstTicketDate, currentDate)
+          if (hoursDifference > 24) {
+            canEditAndDelete = true;
+          }
+        }
+      }
+      else {
+        // For FTE | PTE
+        const firstTicketDate = ticket.ticketDates?.[0]?.date;
+        if (firstTicketDate) {
+          const hoursDifference = this.getHourDifference(firstTicketDate, currentDate)
+          if (hoursDifference > 24) {
+            canEditAndDelete = true;
+          }
+        }
+      }
+      tickets.push({ ...ticket, canEditAndDelete })
+
+      index++;
+    }
+
+    return { tickets };
+  }
+
+  getHourDifference(firstTicketDate: Date, currentDate: Date): number {
+    const timeDifference = firstTicketDate.getTime() - currentDate.getTime();
+    const hoursDifference = timeDifference / (1000 * 60 * 60)
+    return hoursDifference
+  }
+
 }

@@ -672,8 +672,35 @@ type GetResourceTicketPayload {
   count: Float!
 }
 
+type TicketWithPermissions {
+  id: String!
+  customerTicketNumber: String!
+  customerName: String!
+  cogentCaseNumber: String!
+  cogentWorkOrderNumber: [String!]
+  ticketType: TicketType!
+  status: TicketStatus!
+  isExternal: Boolean!
+  isApproved: Boolean!
+  numberOfHoursReq: String!
+  numberOfResource: String!
+  ticketDetailId: String!
+  ticketDetail: TicketDetail!
+  ticketDates: [TicketDate!]!
+  projectId: String
+  jobSiteId: String
+  isAdhoc: Boolean!
+  customerId: String!
+  customer: Customer!
+  ticketReceivedTime: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  canEditAndDelete: Boolean!
+}
+
 type GetAllTicketsPayload {
-  tickets: [Ticket!]
+  tickets: [TicketWithPermissions!]
   count: Float!
 }
 
