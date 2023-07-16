@@ -12,13 +12,13 @@ export class CreateResourceInput {
     @Field({ nullable: true, defaultValue: null })
     phoneNumber: string;
 
-    @Field(() => ResourceStatus)
+    @Field(() => ResourceStatus, { nullable: true })
     status: ResourceStatus;
 
     @Field({ nullable: true })
     vendorName: string;
 
-    @Field(() => EngagementType)
+    @Field(() => EngagementType, { nullable: true })
     engagementType: EngagementType;
 
     @Field({ nullable: true })

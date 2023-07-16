@@ -13,7 +13,6 @@ import { GetAllResourcesInput } from './dto/get-all-resources-input';
 import { UpdateResourceInput } from './dto/update-resource-input';
 import { RMSDashboardStatsPayload } from './dto/rms-dashboard-stats.dto';
 import { ResourceDashboardStatsPayload } from './dto/resource-dashboard-stats.dto';
-import { TicketDate } from '../tickets/entities/ticketDate.entity';
 import { CheckinCheckoutInput } from './dto/checkin-checkout.input';
 import { GetResourceTicketInput } from './dto/get-resource-ticket.input';
 import { GetResourceTicketPayload } from './dto/get-resource-ticket.dto';
