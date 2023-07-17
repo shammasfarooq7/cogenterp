@@ -30,6 +30,7 @@ const { entities, migrations, ...options } = dataSourceOptions;
     driver: ApolloDriver,
     autoSchemaFile: './src/schema.gql',
     playground: true,
+    introspection: process.env.NODE_ENV !== 'production'
   }),
     UsersModule,
     ResourcesModule,

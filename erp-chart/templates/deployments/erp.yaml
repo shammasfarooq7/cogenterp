@@ -30,6 +30,8 @@ spec:
         - containerPort: 4000
           name: http-erp
         env:
+        - name: NODE_ENV
+          value: "production"
         - name: APP_PORT
           value: {{ .Values.port.erp | quote }}
         - name: DB_USERNAME
