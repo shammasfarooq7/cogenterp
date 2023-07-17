@@ -39,7 +39,7 @@ spec:
         - name: DB_HOST
           value: {{ template "relname" . }}-csproxy
         - name: DB_PORT
-          value: {{ .Values.postgresql.port }}
+          value: {{ .Values.postgresql.port | quote }}
         - name: DB_NAME
           value: {{ .Values.databases.erp }}
         - name: JWT_EXPIRY

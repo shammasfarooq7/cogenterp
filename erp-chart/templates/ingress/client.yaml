@@ -11,10 +11,10 @@
 # spec:
 #   tls:
 #   - hosts:
-#     - "34.116.219.209"
+#     - "cogentengine.com"
 #     secretName: {{ template "relname" . }}-client-tls
 #   rules:
-#   - host: "34.116.219.209"
+#   - host: "cogentengine.com"
 #     http:
 #       paths:
 #       - path: /
