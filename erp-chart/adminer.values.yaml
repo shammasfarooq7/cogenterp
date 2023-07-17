@@ -1,0 +1,43 @@
+replicaCount: 1
+
+image:
+  repository: adminer
+  tag: 4.8.1-standalone
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+
+config:
+  plugins: ""
+  design: "pepa-linha"
+  externalserver: ""
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+  annotations: {}
+
+ingress:
+  enabled: true
+  annotations: 
+    kubernetes.io/ingress.class: nginx
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+    # cert-manager.io/acme-challenge-type: dns01
+    # cert-manager.io/acme-dns01-provider: cloudflare
+  tls: 
+  - hosts: 
+    - "adminer.domain.com"
+    secretName: acdbtf-adminer-tls
+  hosts: 
+  - adminer.domain.com
+  path: /
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

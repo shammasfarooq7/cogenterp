@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "relname" . }}-erp
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ template "relname" . }}
+    component: erp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "relname" . }}
+      component: erp
+  template:
+    metadata:
+      labels:
+        app: {{ template "relname" . }}
+        component: erp
+    spec:
+      containers:
+      - name: {{ template "relname" . }}-erp
+        image: {{ .Values.images.erp }}:{{ .Values.tag }}
+        imagePullPolicy: {{ .Values.pullpolicy }}
+        command:
+        - sh
+        - -c
+        - "npm start"
+        ports:
+        - containerPort: 4000
+          name: http-erp
+        env:
+        - name: APP_PORT
+          value: {{ .Values.port.erp | quote }}
+        - name: POSTGRES_USERNAME
+          value: {{ .Values.postgresql.postgresqlUsername }}
+        - name: POSTGRES_PASSWORD
+          value: {{ .Values.postgresql.postgresqlPassword | quote }}
+        - name: POSTGRES_HOST
+          value: {{ template "relname" . }}-csproxy:{{ .Values.postgresql.port }}
+        - name: POSTGRES_DATABASE
+          value: {{ .Values.databases.erp }}
+        - name: JWT_EXPIRY
+          value: "24h"
+        - name: JWT_SECRET
+          value: {{ .Values.secrets.erpJwtKey }}
+        - name: SEND_GRID_KEY
+          value: {{ .Values.sendGridKey }}
+        - name: AZURE_CONNECTION_STRING
+          value: {{ .Values.azureConnectionString }}
+        - name: CONTAINER_NAME
+          value: {{ .Values.container_name }}
+        # livenessProbe:
+        #   exec:
+        #     command:
+        #       - ls
+        #   initialDelaySeconds: 15
+        #   timeoutSeconds: 15
+        # readinessProbe:
+        #   exec:
+        #     command:
+        #       - ls
+        #   initialDelaySeconds: 5
+        #   timeoutSeconds: 3
+      volumes:
+      - name: secrets
+        secret:
+          secretName: {{ template "relname" . }}-shared-vol
+      
+

@@ -1,0 +1,37 @@
+namespace: test
+
+images:
+  erp: gcr.io/shining-relic-392816/erp
+  web: gcr.io/shining-relic-392816/web
+
+tag: 
+
+pullpolicy: Always
+
+hostnames:
+  web: 
+
+google:
+  sa_key: 
+  project: shining-relic-392816
+
+databases:
+  erp: cogenterp
+
+port:
+  erp: 4000
+
+secrets:
+  erpJwtKey:
+
+postgresql:
+  connectionName: 
+  port: 5432
+  postgresqlUsername: postgres
+  postgresqlPassword: 
+
+sendGridKey: 
+
+azureConnectionString:
+
+container_name: cogentcvs
