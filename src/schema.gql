@@ -1,0 +1,1364 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type UserPaymentMethod {
+  id: String!
+  accountType: String!
+  accountTitle: String!
+  beneficiaryFirstName: String!
+  beneficiaryMiddleName: String
+  beneficiaryLastName: String!
+  beneficiaryAddress: String
+  sortCode: String
+  accountNumber: String!
+  iban: String!
+  swiftCode: String!
+  bankName: String!
+  branchName: String
+  bankAddress: String
+  resource: Resource!
+  userId: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+type TicketAttachment {
+  id: String!
+  url: String
+  ticketDetailsId: Float!
+  ticketDetail: TicketDetail!
+}
+
+type TicketDetail {
+  id: String!
+  accountName: String!
+  endClientName: String!
+  spocName: String!
+  spocContactNumber: String!
+  spocEmailAddress: String!
+  siteAccessInstruction: String!
+  customerCaseNumber: String!
+  jobSummary: String!
+  caseDetails: String!
+  scopeOfWork: String!
+  instructions: String!
+  addInstruction: String!
+  specialInstruction: String!
+  hardwareSN: String!
+  projectCode: String!
+  siteName: String!
+  country: String!
+  city: String!
+  province: String!
+  postCode: String!
+  siteAddress: String!
+  toolsRequested: [String!]
+  technologyType: TechnologyType
+  region: Region
+  serviceType: [String!]
+  serviceLevel: ServiceLevel!
+  servicePriority: ServicePriority!
+  slaPriority: SlaPriority!
+  serviceDocUrl: String
+  tickets: [Ticket!]!
+  attachments: [TicketAttachment!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""technology type"""
+enum TechnologyType {
+  EUC
+  NETWORK
+  OTHER
+}
+
+"""region"""
+enum Region {
+  EMEA
+  APAC
+  AMER
+  LATAM
+}
+
+"""service level"""
+enum ServiceLevel {
+  L0
+  L1
+  L2
+  L3
+  L4
+}
+
+"""service priority"""
+enum ServicePriority {
+  P1
+  P2
+  P3
+  P4
+  P5
+}
+
+"""sla priority"""
+enum SlaPriority {
+  t3BD
+  NBD
+  SBD
+  SBDH4
+  t4x7
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Jobsite {
+  id: String!
+  name: String!
+  country: String!
+  city: String!
+  state: String!
+  province: String!
+  postcode: String!
+  siteAddress: String!
+  pocName: String!
+  pocContactNumber: String!
+  pocEmailAdrress: String!
+  ppe1h: String!
+  ppe2h: String!
+  ppe3h: String!
+  ppe4h: String!
+  ppe5h: String!
+  ppe6h: String!
+  ppe7h: String!
+  ppe8h: String!
+  tandm30: String!
+  tandm1h: String!
+  afth: String!
+  wknd: String!
+  ph: String!
+  sat: Boolean!
+  sun: Boolean!
+  siteTiming: String!
+  timeZone: String!
+  dispatchAgreed: Float!
+  incrementTime: IncrementTimeForJob!
+  serviceType: ServiceTypeForJob!
+  supportType: SupportType!
+  serviceCatItem: ServiceCatItem!
+  agreedSla: AgreedSlaForJob!
+  coverage: CoverageForJob!
+  technologyType: TechnologyTypeForJob!
+  currency: Currency!
+  projectId: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+"""IncrementTime"""
+enum IncrementTimeForJob {
+  FIFTEEN
+  THIRTY
+  SIXTY
+  hund20
+}
+
+"""ServiceType"""
+enum ServiceTypeForJob {
+  BREAKFIX
+  IMAC
+  CABLING
+  HandF
+  TRAINING
+  DSS
+}
+
+"""SupportType"""
+enum SupportType {
+  FTE_WBF
+  FTE_NBF
+  FSE
+  PTE_WBF
+  PTE_NBF
+}
+
+"""ServiceCatItem"""
+enum ServiceCatItem {
+  BREAKFIX
+  IMAC
+  CABLING
+  HandF
+  TRAINING
+  DSS
+}
+
+"""Agreed SLA"""
+enum AgreedSlaForJob {
+  SBD4H
+  SBD2H
+  SBD
+  NBD
+  twoBD
+  threeBD
+  fiveBD
+  tenBD
+}
+
+"""coverage"""
+enum CoverageForJob {
+  fiveD9H
+  t4X7AFTH
+  t4X7WKND
+  t4X7HLDY
+}
+
+"""technology type"""
+enum TechnologyTypeForJob {
+  EUC
+  NETWORK
+  LINUX
+  MAC
+}
+
+"""currency"""
+enum Currency {
+  USD
+  EUR
+  GBP
+}
+
+type Project {
+  id: String!
+  startDate: DateTime!
+  endDate: DateTime!
+  status: Status!
+  projectNumber: String!
+  name: String!
+  clientPartnerName: String!
+  custSdmName: String!
+  custSdmEmail: String!
+  custSdmContNum: String!
+  cogSdmName: String!
+  cogSdmNum: String!
+  cogSdmCont: String!
+  cogSdEmail: String!
+  cogSdContNum: String!
+  agreedSla: AgreedSla!
+  coverage: Coverage!
+  technologyType: TechnologyTypeForProject!
+  serviceType: ServiceType!
+  supportModel: SupportModel!
+  talentLevel: TalentLevel!
+  cancelPolicy: String
+  dispatchAgreed: Float!
+  incrementTime: IncrementTime!
+  sow: String
+  sowDesc: SowDesc!
+  owJd: String
+  serviceDeliv: String
+  ssInst: String
+  asInst: String
+  toolsReq: String
+  namedWorker: Boolean!
+  assignedWorker: String
+  technicalSkill: String
+  behSkills: String
+  experienceReq: String
+  langReq: String
+  trainReq: String
+  trainDoc: String
+  reqTools: String
+  reqSoft: String
+  specReq: String
+
+  """Customer Level 1 Escalation Email"""
+  cl1ee: String
+
+  """Customer Level 1 Escalation Contact #"""
+  cl1ec: String
+
+  """Customer Level 2 Escalation Email"""
+  cl2ee: String
+
+  """Customer Level 2 Escalation Contact #"""
+  cl2ec: String
+
+  """Cogent Level 1 Escalation Email"""
+  cgl1ee: String
+
+  """Cogent Level 1 Escalation Contact#"""
+  cgl1ec: String
+
+  """Cogent Level 2 Escalation Email"""
+  cfl2ee: String
+
+  """Cogent Level 2 Escalation Contact#"""
+  cgl2ec: String
+  code: String!
+  customerId: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+"""status"""
+enum Status {
+  Planning
+  Signed
+  Approved
+  Live
+}
+
+"""Agreed SLA"""
+enum AgreedSla {
+  SBD4H
+  SBD2H
+  SBD
+  NBD
+  twoBD
+  threeBD
+  fiveBD
+  tenBD
+}
+
+"""coverage"""
+enum Coverage {
+  fiveD9H
+  t4X7AFTH
+  t4X7WKND
+  t4X7HLDY
+}
+
+"""technology type"""
+enum TechnologyTypeForProject {
+  EUC
+  NETWORK
+  LINUX
+  MAC
+}
+
+"""ServiceType"""
+enum ServiceType {
+  BREAKFIX
+  IMAC
+  CABLING
+  HandF
+  TRAINING
+  DSS
+}
+
+"""SupportModel"""
+enum SupportModel {
+  FTE_WBF
+  FTE_NBF
+  FSE
+  PTE_WBF
+  PTE_NBF
+}
+
+"""TalentLevel"""
+enum TalentLevel {
+  L0
+  L1
+  L2
+  L3
+}
+
+"""IncrementTime"""
+enum IncrementTime {
+  FIFTEEN
+  THIRTY
+  SIXTY
+  hund20
+}
+
+"""SowDesc"""
+enum SowDesc {
+  BREAKFIX
+  IMAC
+  CABLING
+  HandF
+  TRAINING
+  DSS
+}
+
+type Customer {
+  id: String!
+  name: String!
+  vendorReference: String!
+  website: String!
+  establishYear: String!
+  employeesCount: String!
+  dispatchGroupEmail: String!
+  city: String!
+  employeeCountLinkedin: String!
+  phone: String!
+  country: String!
+  postCode: String!
+  linkedinUrl: String!
+  email: String!
+  stateProvince: String!
+  address: String!
+  annualRevenue: String!
+  revenueSoftware: String!
+  revenueConsultancy: String!
+  revenueSupport: String!
+  revenueLogistics: String!
+  revenueOther: String!
+  contactNumber: String!
+  addressLine1: String!
+  addressLine2: String!
+  emailId: String!
+  mobile: String!
+  whatsappNumber: String!
+  whatsappGroup: String!
+  whatsappLink: String!
+  cogentEmailId: String!
+  workPermitStatus: String!
+  primaryTechService: String!
+  fieldService: String!
+  keyCustomerSupport: String!
+  languageSupport: String!
+  countrySupported: String!
+  certification: String!
+  customerAbbr: String!
+  onboardedBy: User
+  onboardedAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+type Ticket {
+  id: String!
+  customerTicketNumber: String!
+  customerName: String!
+  cogentCaseNumber: String!
+  cogentWorkOrderNumber: [String!]
+  ticketType: TicketType!
+  status: TicketStatus!
+  isExternal: Boolean!
+  isApproved: Boolean!
+  numberOfHoursReq: String!
+  numberOfResource: String!
+  ticketDetailId: String!
+  ticketDetail: TicketDetail!
+  ticketDates: [TicketDate!]!
+  projectId: String
+  jobSiteId: String
+  isAdhoc: Boolean!
+  customerId: String!
+  customer: Customer!
+  ticketReceivedTime: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+"""The ticket type"""
+enum TicketType {
+  FSE
+  FTE
+  PTE
+}
+
+enum TicketStatus {
+  OPEN
+  INPROGRESS
+  CANCELLED
+  SCHEDULED
+  CANCHAR
+  ONROUTE
+  ONSITE
+  WORKSTART
+  OFFSITE
+  COMPLETED
+  RESCHEDULED
+}
+
+type TicketDate {
+  id: String!
+  date: DateTime!
+  scheduledTime: String!
+  ticketId: String!
+  ticket: Ticket!
+  timeSheets: [TimeSheet!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+type TimeSheet {
+  id: String!
+  checkIn: String
+  checkOut: String
+  sdIdCheckIn: String
+  sdIdCheckOut: String
+  sdCheckIn: String
+  sdCheckOut: String
+  feopsCheckIn: String
+  feopsIdCheckIn: String
+  feopsCheckOut: String
+  feopsIdCheckOut: String
+  resourceId: String!
+  resource: Resource!
+  ticketDateId: String!
+  ticketDate: TicketDate!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+type Resource {
+  id: String!
+  email: String!
+  mobileNumber: String
+  contactNumber: String
+  status: ResourceStatus
+  idCardType: IdCardType
+  interviewStatus: InterviewStatus
+  vendorName: String
+  whatsappGroup: String
+  whatsappGroupLink: String
+  workPermitStatus: String
+  contractDocuments: Boolean
+  availability: String
+  engagementType: EngagementType
+  rpocName: String
+  rpocEmail: String
+  rpocContactNumber: String
+  firstName: String
+  lastName: String
+  middleName: String
+  idCardNumber: String
+  taxNumber: String
+  languages: [String!]
+  skillSet: [String!]
+  availableTools: [String!]
+  nationality: String
+  region: String
+  country: String
+  state: String
+  city: String
+  postalCode: String
+  addressLine1: String
+  addressLine2: String
+  whatsappNumber: String
+  cogentEmail: String
+  descriptionColor: String
+  hourlyRate: String
+  halfDayRate: String
+  fullDayRate: String
+  monthlyRate: String
+  anyExtraRate: String
+  transport: String
+  mobility: String
+  resumeDocUrl: String
+  identityDocUrl: String
+  onboardedBy: User
+  isOnboarded: Boolean!
+  isARequest: Boolean!
+  requestApproved: Boolean!
+  userPaymentMethod: [UserPaymentMethod!]
+  timeSheets: [TimeSheet!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  onboardedAt: DateTime
+}
+
+"""The user status"""
+enum ResourceStatus {
+  DIRECT
+  INDIRECT
+}
+
+"""The user id card type"""
+enum IdCardType {
+  DriverLicense
+  Passport
+  IdCard
+  ResidencePermit
+}
+
+"""The user interview status"""
+enum InterviewStatus {
+  Complete
+  Scheduled
+  NotScheduled
+}
+
+"""The user engagement type"""
+enum EngagementType {
+  FSE
+  FTE
+  PTE
+  Remote
+}
+
+type User {
+  id: String!
+  email: String!
+  firstName: String
+  lastName: String
+  middleName: String
+  onboardedResources: [Resource!]
+  onboardedCustomers: [Customer!]
+  roles: [Role!]!
+  resource: Resource
+  customer: Customer
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+}
+
+type Role {
+  id: String!
+  role: userRoles!
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The user role assigned"""
+enum userRoles {
+  RMS
+  SD
+  RESOURCE
+  FEOPS
+  ADMIN
+  CUSTOMER
+}
+
+type LoginResponse {
+  accessToken: String
+  roles: [String!]
+}
+
+type CommonPayload {
+  message: String!
+}
+
+type GetAllUsersStatsPayload {
+  users: [User!]!
+  count: Float!
+}
+
+type GetAllResourcesStatsPayload {
+  resources: [Resource!]!
+  count: Float!
+}
+
+type RMSDashboardStatsPayload {
+  totalResourceCount: Float!
+  newRequestCount: Float!
+  newHiringCount: Float!
+}
+
+type Stats {
+  total: Float!
+  difference: Float!
+}
+
+type ResourceDashboardStatsPayload {
+  resourceStats: Stats!
+  onboardedStats: Stats!
+}
+
+type GetResourceTicketPayload {
+  ticketDates: [TicketDate!]!
+  count: Float!
+}
+
+type TicketWithPermissions {
+  id: String!
+  customerTicketNumber: String!
+  customerName: String!
+  cogentCaseNumber: String!
+  cogentWorkOrderNumber: [String!]
+  ticketType: TicketType!
+  status: TicketStatus!
+  isExternal: Boolean!
+  isApproved: Boolean!
+  numberOfHoursReq: String!
+  numberOfResource: String!
+  ticketDetailId: String!
+  ticketDetail: TicketDetail!
+  ticketDates: [TicketDate!]!
+  projectId: String
+  jobSiteId: String
+  isAdhoc: Boolean!
+  customerId: String!
+  customer: Customer!
+  ticketReceivedTime: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  canEditAndDelete: Boolean!
+}
+
+type GetAllTicketsPayload {
+  tickets: [TicketWithPermissions!]
+  count: Float!
+}
+
+type GetTicketDashboardStatsPayload {
+  todayCount: Float!
+  futureCount: Float!
+  inProgressCount: Float!
+}
+
+type GetCustomerTicketDashboardStatsPayload {
+  projectCount: Float!
+  futureCount: Float!
+  inProgressCount: Float!
+}
+
+type GetAllCustomersPayload {
+  customers: [Customer!]!
+  count: Float!
+}
+
+type GetAllProjectsPayload {
+  projects: [Project!]
+  count: Float!
+}
+
+type GetAllJobsitesPayload {
+  jobsites: [Jobsite!]!
+  count: Float!
+}
+
+type Query {
+  getAllUsers(getAllUsersInput: GetAllUsersInput!): GetAllUsersStatsPayload!
+  getCurrentUser: User!
+  getAllResources(getAllResourcesInput: GetAllResourcesInput!): GetAllResourcesStatsPayload!
+  getResource(id: String = null): Resource!
+  getRMSDashboardStats: RMSDashboardStatsPayload!
+  getResourceDashboardStats: ResourceDashboardStatsPayload!
+  getNewRequestUsers(getNewRequestUsersInput: GetAllResourcesInput!): GetAllResourcesStatsPayload!
+  getResourceTickets(getResourceTicketInput: GetResourceTicketInput!): GetResourceTicketPayload!
+  getAllTickets(getAllTicketsInput: GetAllTicketsInput!): GetAllTicketsPayload!
+  getTodayTicket(getTodayTicketsInput: GetTodayTicketsInput!): GetAllTicketsPayload!
+  getTicket(id: String!): Ticket!
+  ticketTimeSheetData(ticketId: String!): [TimeSheet!]!
+  getDashboardStatsTicket: GetTicketDashboardStatsPayload!
+  getDashboardStatsCustomerTicket: GetCustomerTicketDashboardStatsPayload!
+  getAllUserPaymentMethods: [UserPaymentMethod!]!
+  getAllCustomer(getAllCustomerInput: GetAllCustomersInput!): GetAllCustomersPayload!
+  getCustomer(id: String = null): Customer!
+  getAllProjects(getAllProjectsInput: GetAllProjectsInput!): GetAllProjectsPayload!
+  getProject(id: String!): Project!
+  getProjectByCustomer(id: String!, getProjectsByCustomerInput: GetProjectsByCustomerInput!): [Project!]!
+  getJobsite(id: String!): Jobsite!
+  getJobsitesByProject(id: String!): [Jobsite!]!
+  getAllJobsites(getAllJobsitesInput: GetAllJobsitesInput!): GetAllJobsitesPayload!
+}
+
+input GetAllUsersInput {
+  role: userRoles
+  page: Float
+  limit: Float
+  searchQuery: String
+}
+
+input GetAllResourcesInput {
+  page: Float
+  limit: Float
+  searchQuery: String
+}
+
+input GetResourceTicketInput {
+  resourceId: String
+  today: Boolean
+  future: Boolean
+  page: Float
+  limit: Float
+}
+
+input GetAllTicketsInput {
+  page: Float
+  limit: Float
+  searchQuery: String
+  external: Boolean
+  customerId: String
+  approved: Boolean
+}
+
+input GetTodayTicketsInput {
+  page: Float
+  limit: Float
+  searchQuery: String
+  customerId: String
+}
+
+input GetAllCustomersInput {
+  role: userRoles
+  page: Float
+  limit: Float
+  searchQuery: String
+}
+
+input GetAllProjectsInput {
+  role: userRoles
+  page: Float
+  limit: Float
+  searchQuery: String
+  customerId: String
+}
+
+input GetProjectsByCustomerInput {
+  projectId: String
+  page: Float
+  limit: Float
+}
+
+input GetAllJobsitesInput {
+  page: Float
+  limit: Float
+  searchQuery: String
+}
+
+type Mutation {
+  createuser(createUserInput: CreateUserInput!): User!
+  changePassword(changePasswordInput: ChangePasswordInput!): CommonPayload!
+  createResource(createResourceInput: CreateResourceInput!): CommonPayload!
+  updateResource(id: String!, updateResourceInput: UpdateResourceInput!): CommonPayload!
+  approveUserRequest(id: String!): CommonPayload!
+  timeSheetCheckInOut(checkinCheckoutInput: CheckinCheckoutInput!): CommonPayload!
+  createTicket(createTicketInput: CreateTicketInput!): CommonPayload!
+  updateTicket(updateTicketInput: UpdateTicketInput!): CommonPayload!
+  deleteTicket(id: String!): CommonPayload!
+  assignResourcesToTicket(assignResourcesToTicketInput: AssignResourcesToTicketInput!): CommonPayload!
+  approveExternalTicket(id: String!): CommonPayload!
+  changeStatus(changeStatus: ChangeStatusInput!): CommonPayload!
+  signin(loginUserInput: LoginUserInput!): LoginResponse!
+  signup(signUpUserInput: SignUpUserInput!): User!
+  createCustomer(createCustomerInput: CreateCustomerInput!): CommonPayload!
+  updateCustomer(id: String!, updateCustomerInput: UpdateCustomerInput!): CommonPayload!
+  deleteCustomer(id: String!): CommonPayload!
+  createProject(createProjectInput: CreateProjectInput!): CommonPayload!
+  updateProject(id: String!, updateProjectInput: UpdateProjectInput!): CommonPayload!
+  deleteProject(id: String!): CommonPayload!
+  createJobsite(createJobsiteInput: CreateJobsiteInput!): CommonPayload!
+  updateJobsite(id: String!, updateJobsiteInput: UpdateJobsiteInput!): CommonPayload!
+  deleteJobsite(id: String!): CommonPayload!
+}
+
+input CreateUserInput {
+  email: String!
+  firstName: String!
+  lastName: String!
+  middleName: String
+  role: userRoles!
+}
+
+input ChangePasswordInput {
+  oldPass: String!
+  newPass: String!
+}
+
+input CreateResourceInput {
+  email: String!
+  phoneNumber: String = null
+  status: ResourceStatus!
+  vendorName: String
+  engagementType: EngagementType!
+  rpocName: String
+  rpocEmail: String
+  rpocContactNumber: String = null
+  firstName: String
+  lastName: String
+  middleName: String
+  idCardNumber: String
+  taxNumber: String
+  languages: [String!]!
+  skillSet: [String!]!
+  availableTools: [String!]!
+  nationality: String
+  region: String
+  country: String
+  state: String
+  city: String
+  postalCode: String
+  addressLine1: String
+  addressLine2: String
+  whatsappNumber: String = null
+  cogentEmail: String
+  descriptionColor: String
+  hourlyRate: String
+  halfDayRate: String
+  fullDayRate: String
+  monthlyRate: String
+  anyExtraRate: String
+  accountType: String
+  accountTitle: String
+  beneficiaryFirstName: String!
+  beneficiaryMiddleName: String!
+  beneficiaryLastName: String!
+  beneficiaryAddress: String!
+  sortCode: String
+  accountNumber: String!
+  iban: String!
+  swiftCode: String!
+  bankName: String!
+  branchName: String!
+  bankAddress: String!
+  transport: String
+  mobility: String
+  resumeDocUrl: String
+  identityDocUrl: String
+  idCardType: String
+  interviewStatus: String
+  isOnboarded: Boolean
+  workPermitStatus: String!
+  mobileNumber: String!
+  contactNumber: String
+  whatsappGroup: String
+  whatsappGroupLink: String
+  availability: String
+  contractDocuments: Boolean
+}
+
+input UpdateResourceInput {
+  email: String!
+  phoneNumber: String = null
+  status: ResourceStatus!
+  vendorName: String
+  engagementType: EngagementType!
+  rpocName: String
+  rpocEmail: String
+  rpocContactNumber: String = null
+  firstName: String
+  lastName: String
+  middleName: String
+  idCardNumber: String
+  taxNumber: String
+  languages: [String!]!
+  skillSet: [String!]!
+  availableTools: [String!]!
+  nationality: String
+  region: String
+  country: String
+  state: String
+  city: String
+  postalCode: String
+  addressLine1: String
+  addressLine2: String
+  whatsappNumber: String = null
+  cogentEmail: String
+  descriptionColor: String
+  hourlyRate: String
+  halfDayRate: String
+  fullDayRate: String
+  monthlyRate: String
+  anyExtraRate: String
+  accountType: String
+  accountTitle: String
+  beneficiaryFirstName: String!
+  beneficiaryMiddleName: String!
+  beneficiaryLastName: String!
+  beneficiaryAddress: String!
+  sortCode: String
+  accountNumber: String!
+  iban: String!
+  swiftCode: String!
+  bankName: String!
+  branchName: String!
+  bankAddress: String!
+  transport: String
+  mobility: String
+  resumeDocUrl: String
+  identityDocUrl: String
+  idCardType: String
+  interviewStatus: String
+  isOnboarded: Boolean
+  workPermitStatus: String!
+  mobileNumber: String!
+  contactNumber: String
+  whatsappGroup: String
+  whatsappGroupLink: String
+  availability: String
+  contractDocuments: Boolean
+}
+
+input CheckinCheckoutInput {
+  resourceId: String!
+  ticketDateId: String!
+  checkinOrCheckout: CheckinCheckout!
+  time: Time!
+}
+
+enum CheckinCheckout {
+  CHECK_IN
+  CHECK_OUT
+}
+
+"""
+A time string at UTC, such as 10:15:30Z, compliant with the `full-time` format outlined in section 5.6 of the RFC 3339profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+"""
+scalar Time
+
+input CreateTicketInput {
+  customerId: String!
+  projectId: String
+  jobSiteId: String
+  ticketType: TicketType!
+  numberOfHoursReq: String!
+  numberOfResource: String!
+  accountName: String!
+  endClientName: String!
+  scheduledTime: String!
+  spocName: String!
+  spocContactNumber: String!
+  spocEmailAddress: String!
+  siteAccessInstruction: String!
+  customerCaseNumber: String!
+  jobSummary: String!
+  caseDetails: String!
+  scopeOfWork: String!
+  instructions: String!
+  addInstruction: String!
+  specialInstruction: String!
+  hardwareSN: String!
+  toolsRequested: [String!]
+  technologyType: TechnologyType
+  region: Region
+  serviceType: [String!]
+  serviceLevel: ServiceLevel!
+  servicePriority: ServicePriority!
+  slaPriority: SlaPriority!
+  serviceDocUrl: String
+  ticketDates: [DateTime!]!
+  projectCode: String!
+  siteName: String!
+  country: String!
+  city: String!
+  province: String!
+  postCode: String!
+  siteAddress: String!
+  attachments: [String!]
+}
+
+input UpdateTicketInput {
+  numberOfHoursReq: String!
+  numberOfResource: String!
+  accountName: String!
+  endClientName: String!
+  scheduledTime: String!
+  spocName: String!
+  spocContactNumber: String!
+  spocEmailAddress: String!
+  siteAccessInstruction: String!
+  customerCaseNumber: String!
+  jobSummary: String!
+  caseDetails: String!
+  scopeOfWork: String!
+  instructions: String!
+  addInstruction: String!
+  specialInstruction: String!
+  hardwareSN: String!
+  toolsRequested: [String!]
+  technologyType: TechnologyType
+  serviceType: [String!]
+  serviceLevel: ServiceLevel!
+  servicePriority: ServicePriority!
+  slaPriority: SlaPriority!
+  serviceDocUrl: String
+  ticketDates: [DateTime!]!
+  attachments: [String!]
+  id: String!
+}
+
+input AssignResourcesToTicketInput {
+  ticketId: String!
+  resourceIds: [String!]!
+}
+
+input ChangeStatusInput {
+  ticketId: String!
+  ticketStatus: TicketStatus!
+}
+
+input LoginUserInput {
+  email: String!
+  password: String!
+}
+
+input SignUpUserInput {
+  email: String!
+  password: String!
+  firstName: String!
+  lastName: String!
+  middleName: String
+}
+
+input CreateCustomerInput {
+  name: String!
+  vendorReference: String!
+  website: String!
+  establishYear: String!
+  employeesCount: String!
+  dispatchGroupEmail: String!
+  city: String!
+  employeeCountLinkedin: String!
+  phone: String!
+  country: String!
+  postCode: String!
+  linkedinUrl: String!
+  email: String!
+  stateProvince: String!
+  address: String!
+  annualRevenue: String!
+  revenueSoftware: String!
+  revenueConsultancy: String!
+  revenueSupport: String!
+  revenueLogistics: String!
+  revenueOther: String!
+  contactNumber: String!
+  addressLine1: String!
+  addressLine2: String!
+  emailId: String!
+  mobile: String!
+  whatsappNumber: String!
+  whatsappGroup: String!
+  whatsappLink: String!
+  cogentEmailId: String!
+  workPermitStatus: String!
+  primaryTechService: String!
+  fieldService: String!
+  keyCustomerSupport: String!
+  languageSupport: String!
+  countrySupported: String!
+  certification: String!
+  customerAbbr: String!
+}
+
+input UpdateCustomerInput {
+  name: String!
+  vendorReference: String!
+  website: String!
+  establishYear: String!
+  employeesCount: String!
+  dispatchGroupEmail: String!
+  city: String!
+  employeeCountLinkedin: String!
+  phone: String!
+  country: String!
+  postCode: String!
+  linkedinUrl: String!
+  email: String!
+  stateProvince: String!
+  address: String!
+  annualRevenue: String!
+  revenueSoftware: String!
+  revenueConsultancy: String!
+  revenueSupport: String!
+  revenueLogistics: String!
+  revenueOther: String!
+  contactNumber: String!
+  addressLine1: String!
+  addressLine2: String!
+  emailId: String!
+  mobile: String!
+  whatsappNumber: String!
+  whatsappGroup: String!
+  whatsappLink: String!
+  cogentEmailId: String!
+  workPermitStatus: String!
+  primaryTechService: String!
+  fieldService: String!
+  keyCustomerSupport: String!
+  languageSupport: String!
+  countrySupported: String!
+  certification: String!
+  customerAbbr: String!
+}
+
+input CreateProjectInput {
+  startDate: DateTime!
+  endDate: DateTime!
+  customerId: String!
+  status: Status!
+  name: String!
+  clientPartnerName: String!
+  custSdmName: String!
+  custSdmEmail: String!
+  custSdmContNum: String!
+  cogSdmName: String!
+  cogSdmNum: String!
+  cogSdmCont: String!
+  cogSdEmail: String!
+  cogSdContNum: String!
+  agreedSla: [AgreedSla!]!
+  coverage: [Coverage!]!
+  technologyType: [TechnologyTypeForProject!]!
+  serviceType: [ServiceType!]!
+  supportModel: [SupportModel!]!
+  talentLevel: [TalentLevel!]!
+  cancelPolicy: String
+  dispatchAgreed: Float!
+  incrementTime: IncrementTime!
+  sow: String
+  sowDesc: SowDesc!
+  owJd: String
+  serviceDeliv: String
+  ssInst: String
+  asInst: String
+  toolsReq: String
+  namedWorker: Boolean!
+  assignedWorker: String
+  technicalSkill: String
+  behSkills: String
+  experienceReq: String
+  langReq: String
+  trainReq: String
+  trainDoc: String
+  reqTools: String
+  reqSoft: String
+  specReq: String
+  cl1ee: String
+  cl1ec: String
+  cl2ee: String
+  cl2ec: String
+  cgl1ee: String
+  cgl1ec: String
+  cfl2ee: String
+  cgl2ec: String
+  code: String!
+}
+
+input UpdateProjectInput {
+  startDate: DateTime!
+  endDate: DateTime!
+  customerId: String!
+  status: Status!
+  name: String!
+  clientPartnerName: String!
+  custSdmName: String!
+  custSdmEmail: String!
+  custSdmContNum: String!
+  cogSdmName: String!
+  cogSdmNum: String!
+  cogSdmCont: String!
+  cogSdEmail: String!
+  cogSdContNum: String!
+  agreedSla: [AgreedSla!]!
+  coverage: [Coverage!]!
+  technologyType: [TechnologyTypeForProject!]!
+  serviceType: [ServiceType!]!
+  supportModel: [SupportModel!]!
+  talentLevel: [TalentLevel!]!
+  cancelPolicy: String
+  dispatchAgreed: Float!
+  incrementTime: IncrementTime!
+  sow: String
+  sowDesc: SowDesc!
+  owJd: String
+  serviceDeliv: String
+  ssInst: String
+  asInst: String
+  toolsReq: String
+  namedWorker: Boolean!
+  assignedWorker: String
+  technicalSkill: String
+  behSkills: String
+  experienceReq: String
+  langReq: String
+  trainReq: String
+  trainDoc: String
+  reqTools: String
+  reqSoft: String
+  specReq: String
+  cl1ee: String
+  cl1ec: String
+  cl2ee: String
+  cl2ec: String
+  cgl1ee: String
+  cgl1ec: String
+  cfl2ee: String
+  cgl2ec: String
+  code: String!
+}
+
+input CreateJobsiteInput {
+  name: String!
+  country: String!
+  city: String!
+  state: String!
+  province: String!
+  postcode: String!
+  siteAddress: String!
+  pocName: String!
+  pocContactNumber: String!
+  pocEmailAdrress: String!
+  ppe1h: String!
+  ppe2h: String!
+  ppe3h: String!
+  ppe4h: String!
+  ppe5h: String!
+  ppe6h: String!
+  ppe7h: String!
+  ppe8h: String!
+  tandm30: String!
+  tandm1h: String!
+  afth: String!
+  wknd: String!
+  ph: String!
+  sat: Boolean!
+  sun: Boolean!
+  siteTiming: String!
+  timeZone: String!
+  dispatchAgreed: Float!
+  incrementTime: IncrementTimeForJob!
+  serviceType: [ServiceTypeForJob!]!
+  supportType: [SupportType!]!
+  serviceCatItem: [ServiceCatItem!]!
+  agreedSla: [AgreedSlaForJob!]!
+  coverage: [CoverageForJob!]!
+  technologyType: [TechnologyTypeForJob!]!
+  currency: [Currency!]!
+  projectId: String!
+}
+
+input UpdateJobsiteInput {
+  name: String!
+  country: String!
+  city: String!
+  state: String!
+  province: String!
+  postcode: String!
+  siteAddress: String!
+  pocName: String!
+  pocContactNumber: String!
+  pocEmailAdrress: String!
+  ppe1h: String!
+  ppe2h: String!
+  ppe3h: String!
+  ppe4h: String!
+  ppe5h: String!
+  ppe6h: String!
+  ppe7h: String!
+  ppe8h: String!
+  tandm30: String!
+  tandm1h: String!
+  afth: String!
+  wknd: String!
+  ph: String!
+  sat: Boolean!
+  sun: Boolean!
+  siteTiming: String!
+  timeZone: String!
+  dispatchAgreed: Float!
+  incrementTime: IncrementTimeForJob!
+  serviceType: [ServiceTypeForJob!]!
+  supportType: [SupportType!]!
+  serviceCatItem: [ServiceCatItem!]!
+  agreedSla: [AgreedSlaForJob!]!
+  coverage: [CoverageForJob!]!
+  technologyType: [TechnologyTypeForJob!]!
+  currency: [Currency!]!
+  projectId: String!
+}
