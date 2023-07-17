@@ -71,3 +71,74 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+## INFRA
+#### Prerequisites
+- gcloud sdk/cli, Kubectl cli, helm (helm3 installation setups are added in following scripts)
+- Make sure this json key is present in your root directory and make sure you don't commit it 'shining-relic-392816-f89ede29c1cd.json', I had put it in gitignore to avoid such scenerios.  
+  
+### Building and pushing image to gcr:
+In order to build and push the image to gcr run following commands:
+```
+gcloud auth activate-service-account --key-file shining-relic-392816-f89ede29c1cd.json
+gcloud config set core/project shining-relic-392816
+gcloud builds submit --config=cloudbuild.yaml --substitutions=_COMMIT_SHA=1z2x3c4
+```
+
+This `_COMMIT_SHA` tag need to have same value for client(frontend) service as well.  
+
+### Cluster Setup
+```bash
+export GCP_PROJECT=shining-relic-392816
+export GCP_REGION=europe-central2
+export GCP_ZONE=europe-central2-b
+export CUSTOM_PREFIX=shining
+
+gcloud config set project ${GCP_PROJECT}
+gcloud config set compute/zone ${GCP_ZONE}
+
+# create a k8s cluster with  one preemtive node with e2-machine type
+gcloud container clusters create ${CUSTOM_PREFIX} --zone ${GCP_ZONE} --machine-type e2-medium --num-nodes 1 --preemptible
+
+# for fetching cluster get-credentials and set the current context in a kubeconfig file
+gcloud container clusters get-credentials ${CUSTOM_PREFIX} --zone ${GCP_ZONE} --project ${GCP_PROJECT}
+kubectl config use-context gke_${GCP_PROJECT}_${GCP_ZONE}_${CUSTOM_PREFIX}
+
+
+# install helm 3
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+
+rm get_helm.sh
+
+helm repo add stable https://charts.helm.sh/stable
+helm repo update
+
+# create a static external IP to be configured with nginx 
+gcloud compute addresses create ${CUSTOM_PREFIX}-ingress --region ${GCP_REGION}
+export INGRESS_IP=$(gcloud compute addresses describe ${CUSTOM_PREFIX}-ingress --region ${GCP_REGION} | grep address: | sed -E 's/address:[[:space:]]+//')
+
+# echo $INGRESS_IP
+# 34.116.219.209
+
+cat <<EOF >> nginx-custom.yaml
+controller:
+  metrics:
+    service:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "10254"
+EOF
+
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm upgrade --install opeth ingress-nginx/ingress-nginx \
+    --set controller.metrics.enabled=true \
+    --set defaultBackend.enabled=true \
+    --set controller.service.type=LoadBalancer \
+    --set controller.service.loadBalancerIP=${INGRESS_IP} \
+    -f nginx-custom.yaml
+
+rm nginx-custom.yaml 
+
+```

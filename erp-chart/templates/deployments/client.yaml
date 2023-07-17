@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "relname" . }}-client
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ template "relname" . }}
+    component: client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "relname" . }}
+      component: client
+  template:
+    metadata:
+      labels:
+        app: {{ template "relname" . }}
+        component: client
+    spec:
+      containers:
+      - name: {{ template "relname" . }}-client
+        image: {{ .Values.images.web }}:{{ .Values.tag }}
+        imagePullPolicy: {{ .Values.pullpolicy }}
+        ports:
+        - containerPort: 80
+          name: http-web
+        env:
+        - name: REACT_APP_API_BASE_URL
+          value: "http://34.116.219.209:4000"
+        # livenessProbe:
+        #   exec:
+        #     command:
+        #       - ls
+        #   initialDelaySeconds: 15
+        #   timeoutSeconds: 15
+        # readinessProbe:
+        #   exec:
+        #     command:
+        #       - ls
+        #   initialDelaySeconds: 5
+        #   timeoutSeconds: 3

@@ -1,0 +1,10 @@
+steps:
+  - name: gcr.io/kaniko-project/executor:v0.16.0
+    args:
+    - --destination=gcr.io/shining-relic-392816/erp:${_COMMIT_SHA}
+    - --cache=true
+    
+
+
+
+

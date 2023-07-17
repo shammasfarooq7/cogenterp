@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "relname" . }}-csproxy
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ template "relname" . }}
+    component: csproxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "relname" . }}
+      component: csproxy
+  template:
+    metadata:
+      labels:
+        app: {{ template "relname" . }}
+        component: csproxy
+    spec:
+      containers:
+      - name: {{ template "relname" . }}-csproxy
+        image: gcr.io/cloudsql-docker/gce-proxy:1.17
+        imagePullPolicy: Always
+        command:
+        - /cloud_sql_proxy
+        - -instances={{ .Values.postgresql.connectionName }}=tcp:0.0.0.0:{{ .Values.postgresql.port }}
+        - -credential_file=/tmp/secrets/google_sa.json
+        ports:
+        - containerPort: {{ .Values.postgresql.port }}
+          name: http-csp
+        volumeMounts:
+        - name: secrets
+          mountPath: /tmp/secrets
+          readOnly: true
+      volumes:
+      - name: secrets
+        secret:
+          secretName: {{ template "relname" . }}-shared-vol
