@@ -552,8 +552,8 @@ export class TicketsService {
       const ticket = await this.ticketRepo.findOne({
         where: { id: ticketId, deletedAt: IsNull() },
       });
-
-      if (!ticket && ticket.cogentWorkOrderNumber.length == 0) throw new NotFoundException("No data found.")
+      if (!ticket) throw new NotFoundException("No data found.")
+      if (!ticket.cogentWorkOrderNumber?.length) throw new NotFoundException("No Resource Assign.")
 
       const timeSheets = await this.timeSheetRepo.find({
         where: {
