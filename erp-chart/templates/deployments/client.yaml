@@ -27,7 +27,7 @@ spec:
           name: http-web
         env:
         - name: REACT_APP_API_BASE_URL
-          value: "http://34.116.219.209:4000"
+          value: "https://app.cogentengine.com"
         # livenessProbe:
         #   exec:
         #     command:

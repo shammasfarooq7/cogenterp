@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ template "relname" . }}-client
+  name: {{ template "relname" . }}-erp
   namespace: {{ .Values.namespace }}
   annotations:
     kubernetes.io/ingress.class: nginx
@@ -11,16 +11,16 @@ metadata:
 spec:
   tls:
   - hosts:
-    - "cogentengine.com"
-    secretName: {{ template "relname" . }}-client-tls
+    - "app.cogentengine.com"
+    secretName: {{ template "relname" . }}-erp-tls
   rules:
-  - host: "cogentengine.com"
+  - host: "app.cogentengine.com"
     http:
       paths:
       - path: /
         pathType: ImplementationSpecific
         backend:
           service:
-            name: {{ template "relname" . }}-client
+            name: {{ template "relname" . }}-erp
             port:
               number: 80

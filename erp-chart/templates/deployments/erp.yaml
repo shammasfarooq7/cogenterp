@@ -32,13 +32,15 @@ spec:
         env:
         - name: APP_PORT
           value: {{ .Values.port.erp | quote }}
-        - name: POSTGRES_USERNAME
+        - name: DB_USERNAME
           value: {{ .Values.postgresql.postgresqlUsername }}
-        - name: POSTGRES_PASSWORD
+        - name: DB_PASSWORD
           value: {{ .Values.postgresql.postgresqlPassword | quote }}
-        - name: POSTGRES_HOST
-          value: {{ template "relname" . }}-csproxy:{{ .Values.postgresql.port }}
-        - name: POSTGRES_DATABASE
+        - name: DB_HOST
+          value: {{ template "relname" . }}-csproxy
+        - name: DB_PORT
+          value: {{ .Values.postgresql.port | quote }}
+        - name: DB_NAME
           value: {{ .Values.databases.erp }}
         - name: JWT_EXPIRY
           value: "24h"
