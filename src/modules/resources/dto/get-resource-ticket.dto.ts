@@ -3,9 +3,9 @@ import { TicketDate } from '@app/modules/tickets/entities/ticketDate.entity';
 
 @ObjectType()
 export class GetResourceTicketPayload {
-    @Field(()=>[TicketDate])
+    @Field(() => [TicketDate], { nullable: true })
     ticketDates: TicketDate[];
 
-    @Field()
+    @Field({ nullable: true })
     count: number;
 }

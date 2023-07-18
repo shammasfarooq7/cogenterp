@@ -668,8 +668,8 @@ type ResourceDashboardStatsPayload {
 }
 
 type GetResourceTicketPayload {
-  ticketDates: [TicketDate!]!
-  count: Float!
+  ticketDates: [TicketDate!]
+  count: Float
 }
 
 type TicketWithPermissions {

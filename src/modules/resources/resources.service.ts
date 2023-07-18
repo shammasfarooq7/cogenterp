@@ -430,18 +430,26 @@ export class ResourcesService {
 
       const { page = 0, limit = 20, resourceId, today, future } = getResourceTicketInput
       const resourceById = resourceId ?? (await this.getResourceFromUserId(ctx.user?.userId))?.id;
-      const resource = await this.resourceRepo.findOne({
-        where: { id: resourceById },
-        relations: { timeSheets: true },
+
+      const resourceTimesheets = await this.timeSheetRepo.find({
+        where: {
+          resourceId: resourceById,
+        },
+        skip: page * limit,
+        take: limit,
+        order: { id: "DESC" }
       });
 
-      if (resource && resource.timeSheets) {
-        let ticketDateIds = resource.timeSheets.map((timesheet: TimeSheet) => timesheet.ticketDateId);
+      if (resourceTimesheets?.length) {
+        let ticketDateIds = resourceTimesheets.map((timesheet: TimeSheet) => timesheet.ticketDateId);
         ticketDateIds = Array.from(new Set(ticketDateIds));
         const resourceTickets = await this.ticketService.getTicketByTicketDate(limit, page, !!today, !!future, ticketDateIds);
         return resourceTickets
       }
-
+      return {
+        count: 0,
+        ticketDates: []
+      }
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

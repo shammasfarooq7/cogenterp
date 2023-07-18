@@ -75,7 +75,7 @@ export class TicketsResolver {
     return this.ticketsService.changeStatus(changeStatusInput);
   }
 
-  @Roles(UserRole.FEOPS, UserRole.SD)
+  @Roles(UserRole.FEOPS, UserRole.SD, UserRole.RESOURCE)
   @Query(() => [TimeSheet])
   ticketTimeSheetData(@Args('ticketId') ticketId: string): Promise<TimeSheet[]> {
     return this.ticketsService.ticketTimeSheetData(ticketId);
