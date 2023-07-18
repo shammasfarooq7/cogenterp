@@ -139,6 +139,8 @@ export class UsersService {
 
       if(bcrypt.compareSync(oldPass, user.password)){
         await this.userRepo.save({...user, password: newPass})
+      } else {
+        throw new InternalServerErrorException("Please enter correct password.")
       }
 
       return{
