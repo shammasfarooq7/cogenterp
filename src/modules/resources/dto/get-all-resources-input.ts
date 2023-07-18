@@ -13,4 +13,7 @@ export class GetAllResourcesInput {
 
     @Field(() => String, { nullable: true })
     searchQuery: string;
+
+    @Field(() => Boolean, { nullable: true })
+    isOnboarded: boolean;
 }

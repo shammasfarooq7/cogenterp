@@ -37,11 +37,12 @@ export class ResourcesService {
 
   async getAllResources(getAllResourcesInput: GetAllResourcesInput): Promise<GetAllResourcesStatsPayload> {
     try {
-      const { limit = 20, page = 0, searchQuery } = getAllResourcesInput;
+      const { limit = 20, page = 0, searchQuery, isOnboarded } = getAllResourcesInput;
 
       const whereClause = {
         deletedAt: IsNull(),
         requestApproved: true,
+        ...(isOnboarded !== undefined && { isOnboarded })
       };
 
       const where = [
@@ -424,17 +425,17 @@ export class ResourcesService {
     }
   }
 
-  async getResourceTickets(ctx: IContext, getResourceTicketInput: GetResourceTicketInput): Promise<GetResourceTicketPayload>{
-    try{
+  async getResourceTickets(ctx: IContext, getResourceTicketInput: GetResourceTicketInput): Promise<GetResourceTicketPayload> {
+    try {
 
-      const {page = 0, limit = 20, resourceId, today, future} = getResourceTicketInput
+      const { page = 0, limit = 20, resourceId, today, future } = getResourceTicketInput
       const resourceById = resourceId ?? (await this.getResourceFromUserId(ctx.user?.userId))?.id;
       const resource = await this.resourceRepo.findOne({
         where: { id: resourceById },
-        relations: {timeSheets: true},
+        relations: { timeSheets: true },
       });
 
-      if (resource && resource.timeSheets){
+      if (resource && resource.timeSheets) {
         let ticketDateIds = resource.timeSheets.map((timesheet: TimeSheet) => timesheet.ticketDateId);
         ticketDateIds = Array.from(new Set(ticketDateIds));
         const resourceTickets = await this.ticketService.getTicketByTicketDate(limit, page, !!today, !!future, ticketDateIds);
@@ -446,8 +447,8 @@ export class ResourcesService {
     }
   }
 
-  async timeSheetCheckInOut(currentUser: ICurrentUser, checkinCheckoutInput: CheckinCheckoutInput): Promise<CommonPayload>{
-    try{
+  async timeSheetCheckInOut(currentUser: ICurrentUser, checkinCheckoutInput: CheckinCheckoutInput): Promise<CommonPayload> {
+    try {
       const timeSheet = await this.timeSheetRepo.findOne({
         where: {
           resourceId: checkinCheckoutInput.resourceId,
@@ -455,38 +456,38 @@ export class ResourcesService {
         }
       })
 
-      if (currentUser.roles?.includes(UserRole.SD)){
+      if (currentUser.roles?.includes(UserRole.SD)) {
 
-        if(checkinCheckoutInput.checkinOrCheckout === CheckinCheckout.CHECK_IN){
-          await this.timeSheetRepo.update({id: timeSheet.id}, {sdIdCheckIn: currentUser.userId, sdCheckIn: checkinCheckoutInput.time})
-        } else if (checkinCheckoutInput.checkinOrCheckout === CheckinCheckout.CHECK_OUT && timeSheet.sdCheckIn){
-          await this.timeSheetRepo.update({id: timeSheet.id}, {sdIdCheckOut: currentUser.userId, sdCheckOut: checkinCheckoutInput.time})
-        } else{
-          throw new InternalServerErrorException({message: "Provide check-in time first."});
+        if (checkinCheckoutInput.checkinOrCheckout === CheckinCheckout.CHECK_IN) {
+          await this.timeSheetRepo.update({ id: timeSheet.id }, { sdIdCheckIn: currentUser.userId, sdCheckIn: checkinCheckoutInput.time })
+        } else if (checkinCheckoutInput.checkinOrCheckout === CheckinCheckout.CHECK_OUT && timeSheet.sdCheckIn) {
+          await this.timeSheetRepo.update({ id: timeSheet.id }, { sdIdCheckOut: currentUser.userId, sdCheckOut: checkinCheckoutInput.time })
+        } else {
+          throw new InternalServerErrorException({ message: "Provide check-in time first." });
         }
 
-      } else if(currentUser.roles?.includes(UserRole.FEOPS)){
+      } else if (currentUser.roles?.includes(UserRole.FEOPS)) {
 
-        if(checkinCheckoutInput.checkinOrCheckout === CheckinCheckout.CHECK_IN){
-          await this.timeSheetRepo.update({id: timeSheet.id}, {feopsIdCheckIn: currentUser.userId, feopsCheckIn: checkinCheckoutInput.time})
-        } else if (checkinCheckoutInput.checkinOrCheckout === CheckinCheckout.CHECK_OUT && timeSheet.feopsCheckIn){
-          await this.timeSheetRepo.update({id: timeSheet.id}, {feopsIdCheckOut: currentUser.userId, feopsCheckOut: checkinCheckoutInput.time})
-        } else{
-          throw new InternalServerErrorException({message: "Provide check-in time first."});
+        if (checkinCheckoutInput.checkinOrCheckout === CheckinCheckout.CHECK_IN) {
+          await this.timeSheetRepo.update({ id: timeSheet.id }, { feopsIdCheckIn: currentUser.userId, feopsCheckIn: checkinCheckoutInput.time })
+        } else if (checkinCheckoutInput.checkinOrCheckout === CheckinCheckout.CHECK_OUT && timeSheet.feopsCheckIn) {
+          await this.timeSheetRepo.update({ id: timeSheet.id }, { feopsIdCheckOut: currentUser.userId, feopsCheckOut: checkinCheckoutInput.time })
+        } else {
+          throw new InternalServerErrorException({ message: "Provide check-in time first." });
         }
 
-      } else{
+      } else {
 
-        if(checkinCheckoutInput.checkinOrCheckout === CheckinCheckout.CHECK_IN){
-          await this.timeSheetRepo.update({id: timeSheet.id}, { checkIn: checkinCheckoutInput.time})
-        } else if (checkinCheckoutInput.checkinOrCheckout === CheckinCheckout.CHECK_OUT && timeSheet.checkIn){
-          await this.timeSheetRepo.update({id: timeSheet.id}, { checkOut: checkinCheckoutInput.time})
-        } else{
-          throw new InternalServerErrorException({message: "Provide check-in time first."});
+        if (checkinCheckoutInput.checkinOrCheckout === CheckinCheckout.CHECK_IN) {
+          await this.timeSheetRepo.update({ id: timeSheet.id }, { checkIn: checkinCheckoutInput.time })
+        } else if (checkinCheckoutInput.checkinOrCheckout === CheckinCheckout.CHECK_OUT && timeSheet.checkIn) {
+          await this.timeSheetRepo.update({ id: timeSheet.id }, { checkOut: checkinCheckoutInput.time })
+        } else {
+          throw new InternalServerErrorException({ message: "Provide check-in time first." });
         }
 
       }
-      return{
+      return {
         message: "Time Updated."
       }
     }
