@@ -560,6 +560,7 @@ export class TicketsService {
           id: In(ticket?.cogentWorkOrderNumber),
           deletedAt: IsNull()
         },
+        order: { id: "ASC" },
         relations: { ticketDate: true, resource: true }
       })
       return timeSheets
